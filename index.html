@@ -6,19 +6,17 @@
   <title>LA MUNDO DOS SABORES</title>
 
   <!--
-  Test Cases:
-  1) Digitar "Atum" no campo de busca deve colocar a pizza "Atum" no topo da lista.
-  2) Selecionar "Meio a Meio" e clicar em "Escolher outra metade" deve voltar à lista de produtos e permitir escolher outro sabor.
-  3) Adicionar uma pizza normal deve aparecer em "Ver Pedidos" com o valor esperado.
-  4) Ao escolher duas metades, o valor final deve ser a soma das duas pizzas dividida por 2 (a média).
-  5) Na tela de pedidos, o botão "Adicionar mais" deve levar à tela de categorias.
-  6) Na tela de pedidos, o botão "Enviar Pedido" deve formatar todos os itens e abrir o WhatsApp.
-  7) O valor total de todos os itens deve aparecer na tela de pedidos.
-  8) Ao montar uma pizza meio-a-meio, a identificação deve ser, por ex.: "19 4 Queijos + 13 Americana".
-  9) Melhorar organização e espaçamento dos botões na tela de "Seus pedidos".
-  10) "Enviar Pedido" só fica ativo se houver pelo menos 1 item.
-  11) Lixeira foi removida; não deve mais aparecer.
-  12) Agora, para itens individuais, deve exibir ex.: "19 4 Queijos", e meio-a-meio segue "19 4 Queijos + 13 Americana".
+    Aqui está o "código completo" que mantém a ESTRUTURA e LAYOUT do seu "código antigo" (multiplas telas, .tela divs),
+    mas com as alterações e funcionalidades do "código atual":
+
+    - Tela inicial com Menu (Cardápio, Ver Pedidos, Informações)
+    - Ao clicar em Cardápio, carrega tela de categorias (Pizzas + Outras)
+    - Se for Pizzas, abre tela de Subcategorias
+    - Subcategoria -> Tela de Produtos com busca
+    - "Meio a Meio" -> valor da pizza é SEMPRE o da metade mais cara
+    - Carrinho e Envio WhatsApp funcionando
+    - "Enviar Pedido" só habilitado se houver itens
+    - Lixeira removida
   -->
 
   <style>
@@ -43,6 +41,7 @@
       font-weight: bold;
     }
 
+    /* Menu Inicial */
     nav {
       display: flex;
       flex-direction: column;
@@ -79,6 +78,10 @@
       text-align: center;
     }
 
+    .active {
+      display: block;
+    }
+
     .categorias, .subcategorias {
       display: flex;
       flex-direction: column;
@@ -88,10 +91,6 @@
 
     .categorias button, .subcategorias button {
       background-color: #003049;
-    }
-
-    .active {
-      display: block;
     }
 
     /* Tela de Produtos */
@@ -255,17 +254,19 @@
   <div id="cardapio" class="tela">
     <div class="categorias">
       <h2>Escolha uma categoria:</h2>
+      <!-- Pizzas abre subcategorias -->
       <button onclick="mostrarSubcategorias('Pizzas')">Pizzas</button>
-      <button>Hambúrgueres</button>
-      <button>Pastéis</button>
-      <button>Esfihas</button>
-      <button>Açaí</button>
-      <button>Gelados</button>
+      <!-- Outras categorias -->
+      <button onclick="mostrarProdutosGenerico('Hambúrgueres')">Hambúrgueres</button>
+      <button onclick="mostrarProdutosGenerico('Pastéis')">Pastéis</button>
+      <button onclick="mostrarProdutosGenerico('Esfihas')">Esfihas</button>
+      <button onclick="mostrarProdutosGenerico('Açaí')">Açaí</button>
+      <button onclick="mostrarProdutosGenerico('Gelados')">Gelados</button>
       <button onclick="voltarMenu()">Voltar</button>
     </div>
   </div>
 
-  <!-- Tela de Subcategorias (para Pizzas, etc.) -->
+  <!-- Tela de Subcategorias (para Pizzas) -->
   <div id="subcategorias" class="tela">
     <div class="subcategorias">
       <h2 id="tituloSubcategoria"></h2>
@@ -283,6 +284,7 @@
     <input type="text" id="busca" placeholder="Buscar por nome..." oninput="filtrarProdutos()"/>
     <div id="listaProdutos"></div>
     <br>
+    <!-- Voltar -->
     <button onclick="mostrarTela('subcategorias')">Voltar às Subcategorias</button>
   </div>
 
@@ -352,7 +354,7 @@
     let isSelecionandoSegundaMetade = false;
     let primeiraMetade = null;
 
-    // Base de produtos (exemplo)
+    // Base de produtos + Outras Categorias!
     const produtosPizzas = {
       'Salgadas': [
         { codigo: '19', nome: '4 Queijos', preco: 40.00, desc: 'Molho, muçarela, catupiry, cheddar, parmesão e orégano' },
@@ -375,10 +377,32 @@
       'Premium': [
         { codigo: '300', nome: 'Trufada', preco: 60.00, desc: 'Molho, muçarela especial, creme trufado e orégano' },
         { codigo: '301', nome: 'Parma', preco: 65.00, desc: 'Molho, muçarela, presunto parma, rúcula e orégano' }
+      ],
+      // Outras Categorias
+      'Hambúrgueres': [
+        { codigo: 'HB01', nome: 'Cheese Burger', preco: 18.00, desc: 'Hambúrguer bovino, queijo, alface, tomate e molho especial' },
+        { codigo: 'HB02', nome: 'Bacon Burger', preco: 20.00, desc: 'Hambúrguer bovino, queijo, bacon, alface, tomate e molho especial' },
+        { codigo: 'HB03', nome: 'Egg Burger', preco: 19.00, desc: 'Hambúrguer bovino, queijo, ovo, alface e molho especial' }
+      ],
+      'Pastéis': [
+        { codigo: 'PT01', nome: 'Pastel de Carne', preco: 8.00, desc: 'Pastel recheado com carne moída e temperos especiais' },
+        { codigo: 'PT02', nome: 'Pastel de Queijo', preco: 8.00, desc: 'Pastel recheado com queijo muçarela' }
+      ],
+      'Esfihas': [
+        { codigo: 'EF01', nome: 'Esfiha de Carne', preco: 5.00, desc: 'Esfiha recheada com carne moída' },
+        { codigo: 'EF02', nome: 'Esfiha de Frango', preco: 6.00, desc: 'Esfiha recheada com frango desfiado' }
+      ],
+      'Açaí': [
+        { codigo: 'AC01', nome: 'Açaí 300ml', preco: 12.00, desc: 'Açaí puro com acompanhamentos a escolher' },
+        { codigo: 'AC02', nome: 'Açaí 500ml', preco: 18.00, desc: 'Açaí puro com acompanhamentos a escolher' }
+      ],
+      'Gelados': [
+        { codigo: 'GL01', nome: 'Sorvete Casquinha', preco: 5.00, desc: 'Casquinha crocante com sorvete de baunilha' },
+        { codigo: 'GL02', nome: 'Milkshake 400ml', preco: 10.00, desc: 'Milkshake de chocolate ou morango' }
       ]
     };
 
-    // Função para exibir uma tela específica
+    // Função para exibir uma tela específica e ocultar as outras
     function mostrarTela(id) {
       document.getElementById('menuInicial').style.display = 'none';
       const telas = document.querySelectorAll('.tela');
@@ -393,13 +417,17 @@
       document.getElementById('menuInicial').style.display = 'flex';
     }
 
-    // Exibir subcategorias de uma categoria
+    // Exibir subcategorias de Pizzas ou abrir produtos p/ outras categorias
     function mostrarSubcategorias(categoria) {
-      document.getElementById('tituloSubcategoria').innerText = categoria + ' - Subcategorias';
-      mostrarTela('subcategorias');
+      if (categoria === 'Pizzas') {
+        document.getElementById('tituloSubcategoria').innerText = 'Pizzas - Subcategorias';
+        mostrarTela('subcategorias');
+      } else {
+        // Se não for pizzas
+        mostrarProdutosGenerico(categoria);
+      }
     }
 
-    // Exibir lista de produtos de uma subcategoria de pizzas
     function mostrarProdutosPizzas(subcat) {
       subcategoriaAtual = subcat;
       document.getElementById('tituloCategoria').innerText = 'Pizzas ' + subcat;
@@ -408,12 +436,37 @@
       mostrarTela('produtos');
     }
 
-    // Filtrar produtos pela busca
+    // Exibir produtos genéricos (sem subcategorias)
+    function mostrarProdutosGenerico(cat) {
+      subcategoriaAtual = cat;
+      document.getElementById('tituloCategoria').innerText = cat;
+      document.getElementById('busca').value = '';
+      atualizarListaProdutos();
+      mostrarTela('produtos');
+    }
+
+    // Voltar dentro da tela de Produtos
+    function voltarParaProdutos() {
+      mostrarTela('produtos');
+    }
+
+    // Voltar subcategorias
+    function voltarSubcats() {
+      // Se for pizza, volta subcats, senão volta categorias
+      const pizzaCats = ['Salgadas','Doces','Especiais','Premium'];
+      if (pizzaCats.includes(subcategoriaAtual)) {
+        mostrarTela('subcategorias');
+      } else {
+        mostrarTela('cardapio');
+      }
+    }
+
+    // Buscar produtos
     function filtrarProdutos() {
       atualizarListaProdutos();
     }
 
-    // Atualiza a lista de produtos com base na busca
+    // Atualiza a lista de produtos
     function atualizarListaProdutos() {
       const busca = document.getElementById('busca').value.toLowerCase();
       const lista = document.getElementById('listaProdutos');
@@ -447,31 +500,36 @@
       });
     }
 
-    // Ao clicar num produto
+    // Ao clicar em um produto
     function produtoClicado(prod) {
-      if (isSelecionandoSegundaMetade) {
-        // Selecionar a segunda metade
-        montarMeioAMeio(primeiraMetade, prod);
+      // Verifica se é pizza e se estamos escolhendo outra metade
+      const pizzaCats = ['Salgadas','Doces','Especiais','Premium'];
+      if (pizzaCats.includes(subcategoriaAtual)) {
+        if (isSelecionandoSegundaMetade) {
+          montarMeioAMeio(primeiraMetade, prod);
+        } else {
+          mostrarDetalhesPizza(prod);
+        }
       } else {
-        mostrarDetalhes(prod);
+        // Item comum
+        mostrarDetalhesGenerico(prod);
       }
     }
 
-    // Exibe tela de detalhes do produto
-    function mostrarDetalhes(prod) {
+    function mostrarDetalhesPizza(prod) {
       produtoSelecionado = prod;
       quantidadeSelecionada = 1;
       precoBase = prod.preco;
 
-      // Ajusta título e descrição
       document.getElementById('detalhesTitulo').innerText = `${prod.codigo} ${prod.nome}`;
       document.getElementById('detalhesDescricao').innerText = prod.desc;
-
-      // Reseta quantidade
-      document.getElementById('quantidadeValor').innerText = quantidadeSelecionada;
+      document.getElementById('quantidadeValor').innerText = '1';
       document.getElementById('observacao').value = '';
 
-      // Reseta opção (Inteira / Meio a Meio)
+      // Mostra opções (Inteira/Meio a Meio)
+      document.querySelector('.opcoes').style.display = 'block';
+
+      // Marca "Inteira"
       const radios = document.getElementsByName('opcaoPizza');
       radios.forEach(r => {
         r.checked = (r.value === 'Inteira');
@@ -485,84 +543,27 @@
       mostrarTela('detalhes');
     }
 
-    // Configurar meio a meio
-    function montarMeioAMeio(metade1, metade2) {
-      // Exemplo: '19 4 Queijos + 13 Americana'
-      const displayNome = `${metade1.codigo} ${metade1.nome} + ${metade2.codigo} ${metade2.nome}`;
+    function mostrarDetalhesGenerico(prod) {
+      produtoSelecionado = prod;
+      quantidadeSelecionada = 1;
+      precoBase = prod.preco;
 
-      produtoSelecionado = {
-        codigo: displayNome, // Aqui, armazenamos o nome completo do sabor
-        nome: displayNome,   // Idem, para manter coerência
-        preco: calcularPrecoMeioAMeio(metade1.preco, metade2.preco),
-        desc: `${metade1.desc} | ${metade2.desc}`
-      };
-      precoBase = produtoSelecionado.preco;
+      document.getElementById('detalhesTitulo').innerText = `${prod.codigo} ${prod.nome}`;
+      document.getElementById('detalhesDescricao').innerText = prod.desc;
+      document.getElementById('quantidadeValor').innerText = '1';
+      document.getElementById('observacao').value = '';
 
-      mostrarTela('detalhes');
-
-      document.getElementById('detalhesTitulo').innerText = produtoSelecionado.codigo;
-      document.getElementById('detalhesDescricao').innerText = produtoSelecionado.desc;
-
-      // Força a seleção "Meio a Meio"
-      const radios = document.getElementsByName('opcaoPizza');
-      radios.forEach(r => {
-        r.checked = (r.value === 'Meio a Meio');
-      });
+      // Esconde opções de pizza
+      document.querySelector('.opcoes').style.display = 'none';
 
       atualizarTotal();
-
-      isSelecionandoSegundaMetade = false;
-      primeiraMetade = null;
-
       document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
+      mostrarTela('detalhes');
     }
 
-    // Cálculo de preço para meio a meio: média
-    function calcularPrecoMeioAMeio(p1, p2) {
-      return (p1 + p2) / 2;
-    }
-
-    // Alterar entre Inteira e Meio a Meio
-    function mudarTipoPizza() {
-      const radios = document.getElementsByName('opcaoPizza');
-      let tipoPizza = 'Inteira';
-      radios.forEach(r => {
-        if (r.checked) tipoPizza = r.value;
-      });
-
-      if (tipoPizza === 'Meio a Meio') {
-        // Se ainda não tiver o + no código, é porque não escolhemos a segunda metade
-        if (!produtoSelecionado.codigo.includes('+')) {
-          document.getElementById('botaoAcao').textContent = 'Escolher outra metade';
-        }
-      } else {
-        document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
-      }
-
-      atualizarTotal();
-    }
-
-    // Botão "Adicionar ao Pedido" ou "Escolher outra metade"
-    function acaoDetalhes() {
-      const radios = document.getElementsByName('opcaoPizza');
-      let tipoPizza = 'Inteira';
-      radios.forEach(r => {
-        if (r.checked) tipoPizza = r.value;
-      });
-
-      if (tipoPizza === 'Meio a Meio' && !produtoSelecionado.codigo.includes('+')) {
-        // Iniciar escolha da segunda metade
-        primeiraMetade = produtoSelecionado;
-        isSelecionandoSegundaMetade = true;
-        mostrarTela('produtos');
-      } else {
-        adicionarAoPedido();
-      }
-    }
-
-    // Ajustar quantidade
-    function alterarQuantidade(valor) {
-      quantidadeSelecionada += valor;
+    // Altera quantidade
+    function alterarQuantidade(v) {
+      quantidadeSelecionada += v;
       if (quantidadeSelecionada < 1) {
         quantidadeSelecionada = 1;
       }
@@ -570,31 +571,102 @@
       atualizarTotal();
     }
 
-    // Atualizar valor total com base em quantidade
-    function atualizarTotal() {
-      const precoFinal = precoBase * quantidadeSelecionada;
-      document.getElementById('precoTotal').innerText = `Total: R$ ${precoFinal.toFixed(2)}`;
+    function mudarTipoPizza() {
+      const radios = document.getElementsByName('opcaoPizza');
+      let tipo = 'Inteira';
+      radios.forEach(r => {
+        if (r.checked) tipo = r.value;
+      });
+
+      if (tipo === 'Meio a Meio' && !produtoSelecionado.codigo.includes('+')) {
+        document.getElementById('botaoAcao').textContent = 'Escolher outra metade';
+      } else {
+        document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
+      }
+
+      atualizarTotal();
     }
 
-    // Adicionar item ao carrinho
-    function adicionarAoPedido() {
+    function atualizarTotal() {
+      const total = precoBase * quantidadeSelecionada;
+      document.getElementById('precoTotal').innerText = `Total: R$ ${total.toFixed(2)}`;
+    }
+
+    // Principal botão da tela de detalhes
+    function acaoDetalhes() {
+      // Se for pizza ou não
+      const pizzaCats = ['Salgadas','Doces','Especiais','Premium'];
+      if (!pizzaCats.includes(subcategoriaAtual)) {
+        // Item normal
+        adicionarAoPedidoGenerico();
+        return;
+      }
+
+      // Pizza
       const radios = document.getElementsByName('opcaoPizza');
       let tipoPizza = 'Inteira';
       radios.forEach(r => {
-        if (r.checked) tipoPizza = r.value;
+        if (r.checked) {
+          tipoPizza = r.value;
+        }
       });
 
+      // Se "Meio a Meio" mas ainda não escolheu a segunda metade
+      if (tipoPizza === 'Meio a Meio' && !produtoSelecionado.codigo.includes('+')) {
+        primeiraMetade = produtoSelecionado;
+        isSelecionandoSegundaMetade = true;
+        mostrarTela('produtos');
+      } else {
+        adicionarAoPedidoPizza();
+      }
+    }
+
+    // Monta pizza meio a meio => valor = da mais cara
+    function montarMeioAMeio(metade1, metade2) {
+      const displayNome = `${metade1.codigo} ${metade1.nome} + ${metade2.codigo} ${metade2.nome}`;
+      const valorMaisCara = Math.max(metade1.preco, metade2.preco);
+
+      produtoSelecionado = {
+        codigo: displayNome,
+        nome: displayNome,
+        preco: valorMaisCara,
+        desc: `${metade1.desc} | ${metade2.desc}`
+      };
+      precoBase = valorMaisCara;
+
+      mostrarTela('detalhes');
+
+      document.getElementById('detalhesTitulo').innerText = produtoSelecionado.codigo;
+      document.getElementById('detalhesDescricao').innerText = produtoSelecionado.desc;
+
+      // Força "Meio a Meio" marcado
+      const radios = document.getElementsByName('opcaoPizza');
+      radios.forEach(r => {
+        r.checked = (r.value === 'Meio a Meio');
+      });
+
+      atualizarTotal();
+      isSelecionandoSegundaMetade = false;
+      primeiraMetade = null;
+
+      document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
+    }
+
+    function adicionarAoPedidoPizza() {
+      const radios = document.getElementsByName('opcaoPizza');
+      let tipoPizza = 'Inteira';
+      radios.forEach(r => {
+        if (r.checked) {
+          tipoPizza = r.value;
+        }
+      });
       const obs = document.getElementById('observacao').value;
       const precoFinal = precoBase * quantidadeSelecionada;
 
-      // Se for uma pizza normal, exibir ex.: "19 4 Queijos"
-      // Se for meia, já teremos "19 4 Queijos + 13 Americana"
       let nomeFinal;
       if (produtoSelecionado.codigo.includes('+')) {
-        // Já é meio a meio
         nomeFinal = produtoSelecionado.codigo;
       } else {
-        // Pizza inteira normal => juntar codigo + nome
         nomeFinal = `${produtoSelecionado.codigo} ${produtoSelecionado.nome}`;
       }
 
@@ -611,7 +683,27 @@
       atualizarListaPedidos();
     }
 
-    // Atualizar a tela de pedidos
+    // Itens genéricos
+    function adicionarAoPedidoGenerico() {
+      const obs = document.getElementById('observacao').value;
+      const precoFinal = precoBase * quantidadeSelecionada;
+
+      const nomeFinal = `${produtoSelecionado.codigo} ${produtoSelecionado.nome}`;
+
+      const itemPedido = {
+        nome: nomeFinal,
+        quantidade: quantidadeSelecionada,
+        tipo: 'Normal',
+        observacao: obs,
+        precoFinal: precoFinal
+      };
+
+      carrinho.push(itemPedido);
+      mostrarTela('pedidos');
+      atualizarListaPedidos();
+    }
+
+    // Atualiza lista de pedidos
     function atualizarListaPedidos() {
       const container = document.getElementById('listaPedidos');
       container.innerHTML = '';
@@ -631,27 +723,26 @@
         somaTotal += item.precoFinal;
         const div = document.createElement('div');
         div.classList.add('pedido-item');
-
-        // Agora exibimos ex.: (1) 19 4 Queijos
         div.innerHTML = `
-          <h4>(${index + 1}) ${item.nome}</h4>
-          <p>Quantidade: ${item.quantidade}</p>
+          <h4>(${index+1}) ${item.nome}</h4>
+          <p>Quantidade: ${item.quantity}</p>
           <p>Tipo: ${item.tipo}</p>
           ${item.observacao ? `<p>Obs: ${item.observacao}</p>` : ''}
           <p>Total: R$ ${item.precoFinal.toFixed(2)}</p>
         `;
+        div.innerHTML = div.innerHTML.replace('${item.quantity}', item.quantidade);
         container.appendChild(div);
       });
 
       document.getElementById('pedidoTotal').innerText = `Valor Total: R$ ${somaTotal.toFixed(2)}`;
     }
 
-    // Botão "Adicionar Mais" -> volta à tela de categorias
+    // Botão "Adicionar Mais" -> volta pro cardapio
     function adicionarMais() {
       mostrarTela('cardapio');
     }
 
-    // Botão "Enviar Pedido" -> formar texto e abrir WhatsApp
+    // Botão "Enviar Pedido"
     function enviarPedido() {
       if (carrinho.length === 0) {
         alert('Nenhum pedido para enviar.');
@@ -662,7 +753,7 @@
       let valorTotal = 0;
 
       carrinho.forEach((item, index) => {
-        mensagem += `(${index + 1}) ${item.nome} - ${item.tipo}\n` +
+        mensagem += `(${index+1}) ${item.nome} - ${item.tipo}\n` +
                     `Quantidade: ${item.quantidade}\n` +
                     `Total: R$ ${item.precoFinal.toFixed(2)}\n`;
         if (item.observacao) {
@@ -675,18 +766,10 @@
       mensagem += `Valor Total: R$ ${valorTotal.toFixed(2)}\n`;
       mensagem += '\nObrigado!';
 
-      // Ajustar conforme o número da pizzaria
-      const telefoneWhatsApp = '87981473819';
-
+      const telefoneWhatsApp = '87920008169';
       const textoEncoded = encodeURIComponent(mensagem);
-      // Exemplo: https://api.whatsapp.com/send
       const url = `https://api.whatsapp.com/send?phone=${telefoneWhatsApp}&text=${textoEncoded}`;
-
       window.open(url, '_blank');
-    }
-
-    function voltarParaProdutos() {
-      mostrarTela('produtos');
     }
   </script>
 </body>
