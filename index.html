@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LA MUNDO DOS SABORES</title>
+
+  <!--
+  Test Cases:
+  1) Digitar "Atum" no campo de busca deve colocar a pizza "Atum" no topo da lista.
+  2) Selecionar "Meio a Meio" e clicar em "Escolher outra metade" deve voltar à lista de produtos e permitir escolher outro sabor.
+  3) Adicionar uma pizza normal deve aparecer em "Ver Pedidos" com o valor esperado.
+  4) Ao escolher duas metades, o valor final deve ser a soma das duas pizzas dividida por 2 (a média).
+  5) Na tela de pedidos, o botão "Adicionar mais" deve levar à tela de categorias.
+  6) Na tela de pedidos, o botão "Enviar Pedido" deve formatar todos os itens e abrir o WhatsApp.
+  7) O valor total de todos os itens deve aparecer na tela de pedidos.
+  8) Ao montar uma pizza meio-a-meio, a identificação deve ser, por ex.: "19 4 Queijos + 13 Americana".
+  9) Melhorar organização e espaçamento dos botões na tela de "Seus pedidos".
+  10) "Enviar Pedido" só fica ativo se houver pelo menos 1 item.
+  11) Lixeira foi removida; não deve mais aparecer.
+  12) Agora, para itens individuais, deve exibir ex.: "19 4 Queijos", e meio-a-meio segue "19 4 Queijos + 13 Americana".
+  -->
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #fdf6f0;
+      color: #333;
+    }
+
+    header {
+      background-color: #d62828;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      font-size: 1.8em;
+      font-weight: bold;
+    }
+
+    nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    button {
+      padding: 15px 25px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 10px;
+      background-color: #f77f00;
+      color: white;
+      cursor: pointer;
+      width: 80%;
+      max-width: 300px;
+      transition: background 0.3s;
+    }
+
+    button:disabled {
+      background-color: #999;
+      cursor: not-allowed;
+    }
+
+    button:hover {
+      background-color: #c75700;
+    }
+
+    .tela {
+      display: none;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .categorias, .subcategorias {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .categorias button, .subcategorias button {
+      background-color: #003049;
+    }
+
+    .active {
+      display: block;
+    }
+
+    /* Tela de Produtos */
+    #produtos {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    #busca {
+      width: 90%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+
+    .produto {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px 0;
+      text-align: left;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+
+    .produto h3 {
+      color: #d62828;
+      margin-bottom: 5px;
+    }
+
+    .produto p {
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .produto .preco {
+      color: #d62828;
+      font-weight: bold;
+      float: right;
+    }
+
+    /* Tela de Detalhes */
+    #detalhes {
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    #detalhes .detalhes-container {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    #detalhes h2 {
+      margin-bottom: 10px;
+      color: #d62828;
+      text-align: center;
+    }
+
+    .quantidade {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .quantidade button {
+      background-color: #003049;
+      margin: 0 10px;
+      width: 40px;
+    }
+
+    .quantidade span {
+      font-size: 1.2em;
+      width: 30px;
+      text-align: center;
+    }
+
+    .opcoes {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .opcoes label {
+      margin-right: 10px;
+    }
+
+    .observacao {
+      width: 100%;
+      height: 60px;
+      resize: none;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 2px solid #ccc;
+      padding: 8px;
+      font-size: 1em;
+    }
+
+    .total {
+      font-size: 1.2em;
+      color: #d62828;
+      font-weight: bold;
+      text-align: right;
+      margin-bottom: 15px;
+    }
+
+    /* Tela de Pedidos */
+    #pedidos {
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .pedido-item {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px 0;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .pedido-item h4 {
+      color: #d62828;
+      margin-bottom: 5px;
+    }
+
+    .pedido-total {
+      margin-top: 15px;
+      font-size: 1.2em;
+      font-weight: bold;
+      text-align: right;
+      color: #d62828;
+    }
+
+    /* Botões na tela de pedidos */
+    .botoes-pedidos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>LA MUNDO DOS SABORES</header>
+
+  <!-- Menu Inicial -->
+  <nav id="menuInicial">
+    <button onclick="mostrarTela('cardapio')">Cardápio</button>
+    <button onclick="mostrarTela('pedidos')">Ver Pedidos</button>
+    <button onclick="mostrarTela('informacoes')">Informações</button>
+  </nav>
+
+  <!-- Tela de Categorias -->
+  <div id="cardapio" class="tela">
+    <div class="categorias">
+      <h2>Escolha uma categoria:</h2>
+      <button onclick="mostrarSubcategorias('Pizzas')">Pizzas</button>
+      <button>Hambúrgueres</button>
+      <button>Pastéis</button>
+      <button>Esfihas</button>
+      <button>Açaí</button>
+      <button>Gelados</button>
+      <button onclick="voltarMenu()">Voltar</button>
+    </div>
+  </div>
+
+  <!-- Tela de Subcategorias (para Pizzas, etc.) -->
+  <div id="subcategorias" class="tela">
+    <div class="subcategorias">
+      <h2 id="tituloSubcategoria"></h2>
+      <button onclick="mostrarProdutosPizzas('Salgadas')">Salgadas</button>
+      <button onclick="mostrarProdutosPizzas('Doces')">Doces</button>
+      <button onclick="mostrarProdutosPizzas('Especiais')">Especiais</button>
+      <button onclick="mostrarProdutosPizzas('Premium')">Premium</button>
+      <button onclick="mostrarTela('cardapio')">Voltar</button>
+    </div>
+  </div>
+
+  <!-- Tela de Produtos -->
+  <div id="produtos" class="tela">
+    <h2 id="tituloCategoria"></h2>
+    <input type="text" id="busca" placeholder="Buscar por nome..." oninput="filtrarProdutos()"/>
+    <div id="listaProdutos"></div>
+    <br>
+    <button onclick="mostrarTela('subcategorias')">Voltar às Subcategorias</button>
+  </div>
+
+  <!-- Tela de Detalhes do Produto -->
+  <div id="detalhes" class="tela">
+    <div class="detalhes-container">
+      <h2 id="detalhesTitulo"></h2>
+      <p id="detalhesDescricao"></p>
+      <div class="quantidade">
+        <label>Quantidade:</label>
+        <button onclick="alterarQuantidade(-1)">-</button>
+        <span id="quantidadeValor">1</span>
+        <button onclick="alterarQuantidade(1)">+</button>
+      </div>
+      <div class="opcoes">
+        <label>
+          <input type="radio" name="opcaoPizza" value="Inteira" checked onchange="mudarTipoPizza()"/>
+          Inteira
+        </label>
+        <label>
+          <input type="radio" name="opcaoPizza" value="Meio a Meio" onchange="mudarTipoPizza()"/>
+          Meio a Meio
+        </label>
+      </div>
+      <textarea class="observacao" id="observacao" placeholder="Alguma observação?"></textarea>
+      <div class="total" id="precoTotal"></div>
+      <button id="botaoAcao" onclick="acaoDetalhes()">Adicionar ao Pedido</button>
+    </div>
+    <br>
+    <button onclick="voltarParaProdutos()">Voltar</button>
+  </div>
+
+  <!-- Tela de Pedidos -->
+  <div id="pedidos" class="tela">
+    <h2>Seus pedidos</h2>
+    <div id="listaPedidos"></div>
+    <div class="pedido-total" id="pedidoTotal"></div>
+
+    <div class="botoes-pedidos">
+      <button onclick="adicionarMais()">Adicionar Mais</button>
+      <button id="botaoEnviar" onclick="enviarPedido()" disabled>Enviar Pedido</button>
+      <button onclick="voltarMenu()">Voltar</button>
+    </div>
+  </div>
+
+  <!-- Tela de Informações -->
+  <div id="informacoes" class="tela">
+    <h2>Informações</h2>
+    <p>Endereço: Rua das Delícias, 123 - Jucati</p>
+    <p>Telefone: (87) 99999-9999</p>
+    <p>Horário de funcionamento: 18h às 23h</p>
+    <br>
+    <button onclick="voltarMenu()">Voltar</button>
+  </div>
+
+  <script>
+    // Array global para armazenar o carrinho
+    let carrinho = [];
+
+    // Armazenar item selecionado e subcategoria atual
+    let produtoSelecionado = null;
+    let quantidadeSelecionada = 1;
+    let precoBase = 0;
+    let subcategoriaAtual = '';
+
+    // Controle para pizzas meio a meio
+    let isSelecionandoSegundaMetade = false;
+    let primeiraMetade = null;
+
+    // Base de produtos (exemplo)
+    const produtosPizzas = {
+      'Salgadas': [
+        { codigo: '19', nome: '4 Queijos', preco: 40.00, desc: 'Molho, muçarela, catupiry, cheddar, parmesão e orégano' },
+        { codigo: '13', nome: 'Americana', preco: 40.00, desc: 'Molho, muçarela, presunto, ovo, cebola e orégano' },
+        { codigo: '01', nome: 'Atum', preco: 42.00, desc: 'Molho, muçarela, atum, cebola e orégano' },
+        { codigo: '14', nome: 'Bacon', preco: 45.00, desc: 'Molho, muçarela, bacon, cebola e orégano' },
+        { codigo: '15', nome: 'Bacon c/ Catupiry', preco: 48.00, desc: 'Molho, muçarela, bacon, catupiry e orégano' },
+        { codigo: '25', nome: 'Baiana', preco: 40.00, desc: 'Molho, muçarela, presunto, calabresa, pimenta, pimentão, cebola e orégano' },
+        { codigo: '06', nome: 'Calabresa', preco: 38.00, desc: 'Molho, muçarela, calabresa, cebola e orégano' }
+      ],
+      'Doces': [
+        { codigo: '100', nome: 'Chocolate', preco: 36.00, desc: 'Chocolate ao leite, granulados e muçarela' },
+        { codigo: '101', nome: 'Prestígio', preco: 38.00, desc: 'Chocolate, coco ralado e muçarela' },
+        { codigo: '102', nome: 'Romeu e Julieta', preco: 35.00, desc: 'Goiabada e muçarela' }
+      ],
+      'Especiais': [
+        { codigo: '200', nome: 'Camarão Especial', preco: 55.00, desc: 'Molho, muçarela, camarão, catupiry, alho e orégano' },
+        { codigo: '201', nome: 'Mexicana', preco: 50.00, desc: 'Molho, muçarela, pimenta jalapeño, calabresa, cebola e orégano' }
+      ],
+      'Premium': [
+        { codigo: '300', nome: 'Trufada', preco: 60.00, desc: 'Molho, muçarela especial, creme trufado e orégano' },
+        { codigo: '301', nome: 'Parma', preco: 65.00, desc: 'Molho, muçarela, presunto parma, rúcula e orégano' }
+      ]
+    };
+
+    // Função para exibir uma tela específica
+    function mostrarTela(id) {
+      document.getElementById('menuInicial').style.display = 'none';
+      const telas = document.querySelectorAll('.tela');
+      telas.forEach(tela => tela.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // Voltar ao menu inicial
+    function voltarMenu() {
+      const telas = document.querySelectorAll('.tela');
+      telas.forEach(tela => tela.classList.remove('active'));
+      document.getElementById('menuInicial').style.display = 'flex';
+    }
+
+    // Exibir subcategorias de uma categoria
+    function mostrarSubcategorias(categoria) {
+      document.getElementById('tituloSubcategoria').innerText = categoria + ' - Subcategorias';
+      mostrarTela('subcategorias');
+    }
+
+    // Exibir lista de produtos de uma subcategoria de pizzas
+    function mostrarProdutosPizzas(subcat) {
+      subcategoriaAtual = subcat;
+      document.getElementById('tituloCategoria').innerText = 'Pizzas ' + subcat;
+      document.getElementById('busca').value = '';
+      atualizarListaProdutos();
+      mostrarTela('produtos');
+    }
+
+    // Filtrar produtos pela busca
+    function filtrarProdutos() {
+      atualizarListaProdutos();
+    }
+
+    // Atualiza a lista de produtos com base na busca
+    function atualizarListaProdutos() {
+      const busca = document.getElementById('busca').value.toLowerCase();
+      const lista = document.getElementById('listaProdutos');
+      lista.innerHTML = '';
+
+      let listaSubcat = produtosPizzas[subcategoriaAtual] || [];
+
+      if (busca.trim() !== '') {
+        const matched = [];
+        const others = [];
+        listaSubcat.forEach(prod => {
+          const nomeLower = prod.nome.toLowerCase();
+          if (nomeLower.includes(busca)) {
+            matched.push(prod);
+          } else {
+            others.push(prod);
+          }
+        });
+        listaSubcat = [...matched, ...others];
+      }
+
+      listaSubcat.forEach(prod => {
+        const item = document.createElement('div');
+        item.classList.add('produto');
+        item.innerHTML = `
+          <h3>${prod.codigo} ${prod.nome} <span class="preco">R$ ${prod.preco.toFixed(2)}</span></h3>
+          <p>${prod.desc}</p>
+        `;
+        item.onclick = () => produtoClicado(prod);
+        lista.appendChild(item);
+      });
+    }
+
+    // Ao clicar num produto
+    function produtoClicado(prod) {
+      if (isSelecionandoSegundaMetade) {
+        // Selecionar a segunda metade
+        montarMeioAMeio(primeiraMetade, prod);
+      } else {
+        mostrarDetalhes(prod);
+      }
+    }
+
+    // Exibe tela de detalhes do produto
+    function mostrarDetalhes(prod) {
+      produtoSelecionado = prod;
+      quantidadeSelecionada = 1;
+      precoBase = prod.preco;
+
+      // Ajusta título e descrição
+      document.getElementById('detalhesTitulo').innerText = `${prod.codigo} ${prod.nome}`;
+      document.getElementById('detalhesDescricao').innerText = prod.desc;
+
+      // Reseta quantidade
+      document.getElementById('quantidadeValor').innerText = quantidadeSelecionada;
+      document.getElementById('observacao').value = '';
+
+      // Reseta opção (Inteira / Meio a Meio)
+      const radios = document.getElementsByName('opcaoPizza');
+      radios.forEach(r => {
+        r.checked = (r.value === 'Inteira');
+      });
+
+      isSelecionandoSegundaMetade = false;
+      primeiraMetade = null;
+
+      atualizarTotal();
+      document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
+      mostrarTela('detalhes');
+    }
+
+    // Configurar meio a meio
+    function montarMeioAMeio(metade1, metade2) {
+      // Exemplo: '19 4 Queijos + 13 Americana'
+      const displayNome = `${metade1.codigo} ${metade1.nome} + ${metade2.codigo} ${metade2.nome}`;
+
+      produtoSelecionado = {
+        codigo: displayNome, // Aqui, armazenamos o nome completo do sabor
+        nome: displayNome,   // Idem, para manter coerência
+        preco: calcularPrecoMeioAMeio(metade1.preco, metade2.preco),
+        desc: `${metade1.desc} | ${metade2.desc}`
+      };
+      precoBase = produtoSelecionado.preco;
+
+      mostrarTela('detalhes');
+
+      document.getElementById('detalhesTitulo').innerText = produtoSelecionado.codigo;
+      document.getElementById('detalhesDescricao').innerText = produtoSelecionado.desc;
+
+      // Força a seleção "Meio a Meio"
+      const radios = document.getElementsByName('opcaoPizza');
+      radios.forEach(r => {
+        r.checked = (r.value === 'Meio a Meio');
+      });
+
+      atualizarTotal();
+
+      isSelecionandoSegundaMetade = false;
+      primeiraMetade = null;
+
+      document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
+    }
+
+    // Cálculo de preço para meio a meio: média
+    function calcularPrecoMeioAMeio(p1, p2) {
+      return (p1 + p2) / 2;
+    }
+
+    // Alterar entre Inteira e Meio a Meio
+    function mudarTipoPizza() {
+      const radios = document.getElementsByName('opcaoPizza');
+      let tipoPizza = 'Inteira';
+      radios.forEach(r => {
+        if (r.checked) tipoPizza = r.value;
+      });
+
+      if (tipoPizza === 'Meio a Meio') {
+        // Se ainda não tiver o + no código, é porque não escolhemos a segunda metade
+        if (!produtoSelecionado.codigo.includes('+')) {
+          document.getElementById('botaoAcao').textContent = 'Escolher outra metade';
+        }
+      } else {
+        document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
+      }
+
+      atualizarTotal();
+    }
+
+    // Botão "Adicionar ao Pedido" ou "Escolher outra metade"
+    function acaoDetalhes() {
+      const radios = document.getElementsByName('opcaoPizza');
+      let tipoPizza = 'Inteira';
+      radios.forEach(r => {
+        if (r.checked) tipoPizza = r.value;
+      });
+
+      if (tipoPizza === 'Meio a Meio' && !produtoSelecionado.codigo.includes('+')) {
+        // Iniciar escolha da segunda metade
+        primeiraMetade = produtoSelecionado;
+        isSelecionandoSegundaMetade = true;
+        mostrarTela('produtos');
+      } else {
+        adicionarAoPedido();
+      }
+    }
+
+    // Ajustar quantidade
+    function alterarQuantidade(valor) {
+      quantidadeSelecionada += valor;
+      if (quantidadeSelecionada < 1) {
+        quantidadeSelecionada = 1;
+      }
+      document.getElementById('quantidadeValor').innerText = quantidadeSelecionada;
+      atualizarTotal();
+    }
+
+    // Atualizar valor total com base em quantidade
+    function atualizarTotal() {
+      const precoFinal = precoBase * quantidadeSelecionada;
+      document.getElementById('precoTotal').innerText = `Total: R$ ${precoFinal.toFixed(2)}`;
+    }
+
+    // Adicionar item ao carrinho
+    function adicionarAoPedido() {
+      const radios = document.getElementsByName('opcaoPizza');
+      let tipoPizza = 'Inteira';
+      radios.forEach(r => {
+        if (r.checked) tipoPizza = r.value;
+      });
+
+      const obs = document.getElementById('observacao').value;
+      const precoFinal = precoBase * quantidadeSelecionada;
+
+      // Se for uma pizza normal, exibir ex.: "19 4 Queijos"
+      // Se for meia, já teremos "19 4 Queijos + 13 Americana"
+      let nomeFinal;
+      if (produtoSelecionado.codigo.includes('+')) {
+        // Já é meio a meio
+        nomeFinal = produtoSelecionado.codigo;
+      } else {
+        // Pizza inteira normal => juntar codigo + nome
+        nomeFinal = `${produtoSelecionado.codigo} ${produtoSelecionado.nome}`;
+      }
+
+      const itemPedido = {
+        nome: nomeFinal,
+        quantidade: quantidadeSelecionada,
+        tipo: tipoPizza,
+        observacao: obs,
+        precoFinal: precoFinal
+      };
+
+      carrinho.push(itemPedido);
+      mostrarTela('pedidos');
+      atualizarListaPedidos();
+    }
+
+    // Atualizar a tela de pedidos
+    function atualizarListaPedidos() {
+      const container = document.getElementById('listaPedidos');
+      container.innerHTML = '';
+
+      const botaoEnviar = document.getElementById('botaoEnviar');
+      if (carrinho.length === 0) {
+        container.innerHTML = '<p>Nenhum pedido até agora.</p>';
+        document.getElementById('pedidoTotal').innerText = '';
+        botaoEnviar.disabled = true;
+        return;
+      } else {
+        botaoEnviar.disabled = false;
+      }
+
+      let somaTotal = 0;
+      carrinho.forEach((item, index) => {
+        somaTotal += item.precoFinal;
+        const div = document.createElement('div');
+        div.classList.add('pedido-item');
+
+        // Agora exibimos ex.: (1) 19 4 Queijos
+        div.innerHTML = `
+          <h4>(${index + 1}) ${item.nome}</h4>
+          <p>Quantidade: ${item.quantidade}</p>
+          <p>Tipo: ${item.tipo}</p>
+          ${item.observacao ? `<p>Obs: ${item.observacao}</p>` : ''}
+          <p>Total: R$ ${item.precoFinal.toFixed(2)}</p>
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById('pedidoTotal').innerText = `Valor Total: R$ ${somaTotal.toFixed(2)}`;
+    }
+
+    // Botão "Adicionar Mais" -> volta à tela de categorias
+    function adicionarMais() {
+      mostrarTela('cardapio');
+    }
+
+    // Botão "Enviar Pedido" -> formar texto e abrir WhatsApp
+    function enviarPedido() {
+      if (carrinho.length === 0) {
+        alert('Nenhum pedido para enviar.');
+        return;
+      }
+
+      let mensagem = 'Olá, gostaria de fazer o seguinte pedido:\n\n';
+      let valorTotal = 0;
+
+      carrinho.forEach((item, index) => {
+        mensagem += `(${index + 1}) ${item.nome} - ${item.tipo}\n` +
+                    `Quantidade: ${item.quantidade}\n` +
+                    `Total: R$ ${item.precoFinal.toFixed(2)}\n`;
+        if (item.observacao) {
+          mensagem += `Observação: ${item.observacao}\n`;
+        }
+        mensagem += '\n';
+        valorTotal += item.precoFinal;
+      });
+
+      mensagem += `Valor Total: R$ ${valorTotal.toFixed(2)}\n`;
+      mensagem += '\nObrigado!';
+
+      // Ajustar conforme o número da pizzaria
+      const telefoneWhatsApp = '87981473819';
+
+      const textoEncoded = encodeURIComponent(mensagem);
+      // Exemplo: https://api.whatsapp.com/send
+      const url = `https://api.whatsapp.com/send?phone=${telefoneWhatsApp}&text=${textoEncoded}`;
+
+      window.open(url, '_blank');
+    }
+
+    function voltarParaProdutos() {
+      mostrarTela('produtos');
+    }
+  </script>
+</body>
+</html>
