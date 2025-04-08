@@ -6,10 +6,13 @@
   <title>LA MUNDO DOS SABORES</title>
 
   <!--
-    Ajustes:
-      - Texto dos botões da tela inicial (Cardápio, Combos da Noite, etc.) permanece dentro dos botões, sem quebrar linha.
-      - Botão flutuante no canto inferior esquerdo, redondo, exibindo uma logo (imagens_inicial/logo.png).
-    Restante das funcionalidades (combos, pizzas meio-a-meio, etc.) mantidas.
+    Destaques:
+      - Exemplos de produtos em todas as categorias (Pizzas Grandes, Pequenas, etc.).
+      - Nova categoria “Batata Frita” com 2 exemplos.
+      - Tela “Seus Pedidos” com escolha de local (Vila Neves / Sitio) + endereço, 
+        habilitando “Enviar Pedido” só se houver itens no carrinho e endereço preenchido.
+      - Corrigido: “Quantidade: undefined” -> usamos “item.quantidade”.
+      - Restante das funcionalidades (combos, pizzas meio-a-meio, etc.) mantidas.
   -->
 
   <style>
@@ -33,7 +36,7 @@
       font-size: 1.8em;
       font-weight: bold;
       position: relative;
-      z-index: 10; /* Fica acima do slideshow */
+      z-index: 10;
     }
 
     /* Container p/ slideshow e botões iniciais */
@@ -41,24 +44,25 @@
       position: relative;
       width: 100%;
       min-height: 80vh;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
 
-    /* Slideshow de fundo com menos zoom */
+    /* Slideshow de fundo (menos zoom) */
     #menuInicialSlideshow {
       position: absolute;
-      top: 0; left: 0;
+      top: 0; 
+      left: 0;
       width: 100%;
       height: 100%;
       background-repeat: no-repeat;
-      background-size: contain;   /* Mostrar mais a imagem */
+      background-size: contain; 
       background-position: center;
       transition: background-image 1s ease-in-out;
-      z-index: 1; /* abaixo dos botões */
+      z-index: 1;
     }
 
     /* Menu Inicial (botões) */
@@ -78,20 +82,18 @@
       border: none;
       border-radius: 10px;
       background-color: #f77f00;
-      color: rgb(0, 0, 0);
+      color: #000;
       cursor: pointer;
       width: 100%;
       max-width: 300px;
       transition: background 0.3s;
-      white-space: nowrap; /* impede quebra de linha no texto */
-      text-align: center;  /* texto centralizado */
+      white-space: nowrap; 
+      text-align: center;  
     }
-
     button:disabled {
       background-color: #999;
       cursor: not-allowed;
     }
-
     button:hover {
       background-color: #f77f00;
     }
@@ -101,7 +103,6 @@
       padding: 20px;
       text-align: center;
     }
-
     .active {
       display: block;
     }
@@ -112,7 +113,6 @@
       align-items: center;
       gap: 10px;
     }
-
     .categorias button, .subcategorias button {
       background-color: #f77f00;
     }
@@ -274,12 +274,29 @@
       gap: 15px;
       margin-top: 20px;
     }
+
+    /* Entrega: local e endereço */
+    .entrega-opcoes {
+      margin-top: 15px;
+      text-align: left;
+    }
+    .entrega-opcoes label {
+      margin-right: 10px;
+    }
+    #enderecoEntrega {
+      width: 100%;
+      max-width: 400px;
+      padding: 8px;
+      font-size: 1em;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
   <header>LA MUNDO DOS SABORES</header>
 
-  <!-- Container p/ slideshow e botões iniciais -->
   <div id="menuInicialContainer">
     <!-- Slideshow de fundo -->
     <div id="menuInicialSlideshow"></div>
@@ -293,7 +310,7 @@
     </nav>
   </div>
 
-  <!-- Tela de Categorias -->
+  <!-- Tela de Categorias (Cardápio) -->
   <div id="cardapio" class="tela">
     <div class="categorias">
       <h2>Escolha uma categoria:</h2>
@@ -305,6 +322,7 @@
       <button onclick="mostrarProdutosGenerico('Açaí')">Açaí</button>
       <button onclick="mostrarProdutosGenerico('Gelados')">Gelados</button>
       <button onclick="mostrarProdutosGenerico('Refrigerantes')">Refrigerantes</button>
+      <button onclick="mostrarProdutosGenerico('Batata Frita')">Batata Frita</button>
       <button onclick="voltarMenu()">Voltar</button>
     </div>
   </div>
@@ -317,7 +335,7 @@
     <button onclick="voltarMenu()">Voltar</button>
   </div>
 
-  <!-- Tela de Subcategorias (para Pizzas Grandes ou Pequenas) -->
+  <!-- Tela de Subcategorias (Grandes ou Pequenas) -->
   <div id="subcategorias" class="tela">
     <div class="subcategorias">
       <h2 id="tituloSubcategoria"></h2>
@@ -364,7 +382,7 @@
       <button id="botaoAcao" onclick="acaoDetalhes()">Adicionar ao Pedido</button>
     </div>
     <br>
-    <button onclick="voltarParaProdutos()">Voltar</button>
+    <button onclick="mostrarTela('produtos')">Voltar</button>
   </div>
 
   <!-- Tela de Pedidos -->
@@ -372,6 +390,23 @@
     <h2>Seus pedidos</h2>
     <div id="listaPedidos"></div>
     <div class="pedido-total" id="pedidoTotal"></div>
+
+    <!-- Opções de local de entrega + endereço -->
+    <div class="entrega-opcoes">
+      <p><strong>Entrega em:</strong></p>
+      <label>
+        <input type="radio" name="localEntrega" value="Vila Neves" onchange="atualizarEntrega()"/>
+        Vila Neves
+      </label>
+      <label>
+        <input type="radio" name="localEntrega" value="Sitio" onchange="atualizarEntrega()"/>
+        Sitio
+      </label>
+      <br><br>
+      <label for="enderecoEntrega">Endereço / Local:</label>
+      <br>
+      <input type="text" id="enderecoEntrega" oninput="atualizarEntrega()" placeholder="Digite aqui..."/>
+    </div>
 
     <div class="botoes-pedidos">
       <button onclick="adicionarMais()">Adicionar Mais</button>
@@ -391,7 +426,7 @@
   </div>
 
   <script>
-    /* ======= S L I D E S H O W   D E   F U N D O ======= */
+    /* ============= S L I D E S H O W ============= */
     const imagensFundo = [
       'imagens_inicial/pizza1.jpg',
       'imagens_inicial/pizza2.jpg',
@@ -404,22 +439,15 @@
       slideshowElement.style.backgroundImage = `url(${imagensFundo[indexFundo]})`;
       indexFundo = (indexFundo + 1) % imagensFundo.length;
     }
-
-    // Troca a cada 4 segundos
     setInterval(trocarImagemFundo, 4000);
-    // Primeiro disparo
     trocarImagemFundo();
 
-    /* ======= Exibir/Ocultar Telas ======= */
     function mostrarTela(id) {
-      const allScreens = document.querySelectorAll('.tela');
-      allScreens.forEach(s => s.classList.remove('active'));
+      const telas = document.querySelectorAll('.tela');
+      telas.forEach(t => t.classList.remove('active'));
+      const alvo = document.getElementById(id);
+      if (alvo) alvo.classList.add('active');
 
-      const target = document.getElementById(id);
-      if (target) {
-        target.classList.add('active');
-      }
-      // Se não for a tela inicial, esconde container do slideshow
       if (id !== 'menuInicial') {
         document.getElementById('menuInicialContainer').style.display = 'none';
       } else {
@@ -428,9 +456,8 @@
     }
 
     function voltarMenu() {
-      const allScreens = document.querySelectorAll('.tela');
-      allScreens.forEach(s => s.classList.remove('active'));
-      // Volta ao container principal c/ slideshow
+      const telas = document.querySelectorAll('.tela');
+      telas.forEach(t => t.classList.remove('active'));
       document.getElementById('menuInicialContainer').style.display = 'block';
     }
 
@@ -438,7 +465,7 @@
       mostrarTela('produtos');
     }
 
-    /* ======= Carrinho e Dados Globais ======= */
+    /* =========== L Ó G I C A  /  C A R R I N H O ========== */
     let carrinho = [];
     let produtoSelecionado = null;
     let quantidadeSelecionada = 1;
@@ -447,7 +474,11 @@
     let isSelecionandoSegundaMetade = false;
     let primeiraMetade = null;
 
-    /* ======= Combos da Noite ======= */
+    // Entrega
+    let localEntrega = '';   
+    let enderecoEntrega = '';  
+
+    // Combos
     const combosNoite = [
       {
         codigo: 'CB01',
@@ -497,52 +528,41 @@
 
       // Oculta opções de pizza
       document.querySelector('.opcoes').style.display = 'none';
-
       atualizarTotal();
+
       document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
       mostrarTela('detalhes');
     }
 
-    /* ======= Pizzas e Outras Categorias ======= */
+    // Subcategorias (Pizzas Grandes / Pequenas)
     function mostrarSubcategorias(categoria) {
-      if (categoria === 'Pizzas Grandes' || categoria === 'Pizzas Pequenas') {
-        document.getElementById('tituloSubcategoria').innerText = categoria + ' - Subcategorias';
-        mostrarTela('subcategorias');
-      } else {
-        mostrarProdutosGenerico(categoria);
-      }
+      document.getElementById('tituloSubcategoria').innerText = categoria + ' - Subcategorias';
+      mostrarTela('subcategorias');
     }
 
+    // Banco de dados (Exemplos)
     const produtosPizzas = {
       'Salgadas': [
         { codigo: '19', nome: '4 Queijos', preco: 40.00, desc: 'Molho, muçarela, catupiry, cheddar, parmesão e orégano' },
-        { codigo: '13', nome: 'Americana', preco: 40.00, desc: 'Molho, muçarela, presunto, ovo, cebola e orégano' },
-        { codigo: '01', nome: 'Atum', preco: 42.00, desc: 'Molho, muçarela, atum, cebola e orégano' },
-        { codigo: '14', nome: 'Bacon', preco: 45.00, desc: 'Molho, muçarela, bacon, cebola e orégano' },
-        { codigo: '15', nome: 'Bacon c/ Catupiry', preco: 48.00, desc: 'Molho, muçarela, bacon, catupiry e orégano' },
-        { codigo: '25', nome: 'Baiana', preco: 40.00, desc: 'Molho, muçarela, presunto, calabresa, pimenta, pimentão, cebola e orégano' },
-        { codigo: '06', nome: 'Calabresa', preco: 38.00, desc: 'Molho, muçarela, calabresa, cebola e orégano' }
+        { codigo: '01', nome: 'Atum', preco: 42.00, desc: 'Molho, muçarela, atum, cebola e orégano' }
       ],
       'Doces': [
         { codigo: '100', nome: 'Chocolate', preco: 36.00, desc: 'Chocolate ao leite, granulados e muçarela' },
-        { codigo: '101', nome: 'Prestígio', preco: 38.00, desc: 'Chocolate, coco ralado e muçarela' },
         { codigo: '102', nome: 'Romeu e Julieta', preco: 35.00, desc: 'Goiabada e muçarela' }
       ],
       'Especiais': [
-        { codigo: '200', nome: 'Camarão Especial', preco: 55.00, desc: 'Molho, muçarela, camarão, catupiry, alho e orégano' },
-        { codigo: '201', nome: 'Mexicana', preco: 50.00, desc: 'Molho, muçarela, pimenta jalapeño, calabresa, cebola e orégano' }
+        { codigo: '200', nome: 'Camarão Especial', preco: 55.00, desc: 'Molho, muçarela, camarão, catupiry, alho e orégano' }
       ],
       'Premium': [
-        { codigo: '300', nome: 'Trufada', preco: 60.00, desc: 'Molho, muçarela especial, creme trufado e orégano' },
-        { codigo: '301', nome: 'Parma', preco: 65.00, desc: 'Molho, muçarela, presunto parma, rúcula e orégano' }
+        { codigo: '300', nome: 'Trufada', preco: 60.00, desc: 'Molho, muçarela especial, creme trufado e orégano' }
       ],
+      // Outras
       'Hambúrgueres': [
         { codigo: 'HB01', nome: 'Cheese Burger', preco: 18.00, desc: 'Hambúrguer bovino, queijo, alface, tomate e molho especial' },
-        { codigo: 'HB02', nome: 'Bacon Burger', preco: 20.00, desc: 'Hambúrguer bovino, queijo, bacon, alface, tomate e molho especial' },
-        { codigo: 'HB03', nome: 'Egg Burger', preco: 19.00, desc: 'Hambúrguer bovino, queijo, ovo, alface e molho especial' }
+        { codigo: 'HB02', nome: 'Bacon Burger', preco: 20.00, desc: 'Hambúrguer bovino, queijo, bacon e molho especial' }
       ],
       'Pastéis': [
-        { codigo: 'PT01', nome: 'Pastel de Carne', preco: 8.00, desc: 'Pastel recheado com carne moída e temperos especiais' },
+        { codigo: 'PT01', nome: 'Pastel de Carne', preco: 8.00, desc: 'Pastel recheado com carne moída' },
         { codigo: 'PT02', nome: 'Pastel de Queijo', preco: 8.00, desc: 'Pastel recheado com queijo muçarela' }
       ],
       'Esfihas': [
@@ -554,13 +574,16 @@
         { codigo: 'AC02', nome: 'Açaí 500ml', preco: 18.00, desc: 'Açaí puro com acompanhamentos a escolher' }
       ],
       'Gelados': [
-        { codigo: 'GL01', nome: 'Sorvete Casquinha', preco: 5.00, desc: 'Casquinha crocante com sorvete de baunilha' },
+        { codigo: 'GL01', nome: 'Sorvete Casquinha', preco: 5.00, desc: 'Casquinha crocante de baunilha' },
         { codigo: 'GL02', nome: 'Milkshake 400ml', preco: 10.00, desc: 'Milkshake de chocolate ou morango' }
       ],
       'Refrigerantes': [
-        { codigo: 'RF01', nome: 'Coca-Cola Lata 350ml', preco: 5.00, desc: 'Refrigerante de cola, geladinho' },
-        { codigo: 'RF02', nome: 'Guaraná Antarctica Lata 350ml', preco: 5.00, desc: 'Refrigerante de guaraná clássico' },
-        { codigo: 'RF03', nome: 'Fanta Laranja Lata 350ml', preco: 5.00, desc: 'Refrigerante de laranja saboroso' }
+        { codigo: 'RF01', nome: 'Coca-Cola Lata', preco: 5.00, desc: '350ml' },
+        { codigo: 'RF02', nome: 'Guaraná Antarctica Lata', preco: 5.00, desc: '350ml' }
+      ],
+      'Batata Frita': [
+        { codigo: 'BT01', nome: 'Batata Cheddar e Bacon', preco: 15.00, desc: 'Fritas com cheddar e bacon crocante' },
+        { codigo: 'BT02', nome: 'Batata Temperada', preco: 12.00, desc: 'Fritas com toque de especiarias' }
       ]
     };
 
@@ -584,23 +607,21 @@
       atualizarListaProdutos();
     }
 
+    // Renderiza a lista de produtos
     function atualizarListaProdutos() {
-      const busca = document.getElementById('busca').value.toLowerCase();
+      const busca = document.getElementById('busca').value.toLowerCase().trim();
       const lista = document.getElementById('listaProdutos');
       lista.innerHTML = '';
 
       let listaSubcat = produtosPizzas[subcategoriaAtual] || [];
 
-      if (busca.trim() !== '') {
+      if (busca !== '') {
         const matched = [];
         const others = [];
         listaSubcat.forEach(prod => {
           const nomeLower = prod.nome.toLowerCase();
-          if (nomeLower.includes(busca)) {
-            matched.push(prod);
-          } else {
-            others.push(prod);
-          }
+          if (nomeLower.includes(busca)) matched.push(prod);
+          else others.push(prod);
         });
         listaSubcat = [...matched, ...others];
       }
@@ -620,12 +641,14 @@
     function produtoClicado(prod) {
       const pizzaCats = ['Salgadas','Doces','Especiais','Premium'];
       if (pizzaCats.includes(subcategoriaAtual)) {
+        // Pizza
         if (isSelecionandoSegundaMetade) {
           montarMeioAMeio(primeiraMetade, prod);
         } else {
           mostrarDetalhesPizza(prod);
         }
       } else {
+        // Item genérico
         mostrarDetalhesGenerico(prod);
       }
     }
@@ -640,12 +663,10 @@
       document.getElementById('quantidadeValor').innerText = '1';
       document.getElementById('observacao').value = '';
 
+      // Mostra opcoes (inteira / meio a meio)
       document.querySelector('.opcoes').style.display = 'block';
-
       const radios = document.getElementsByName('opcaoPizza');
-      radios.forEach(r => {
-        r.checked = (r.value === 'Inteira');
-      });
+      radios.forEach(r => r.checked = (r.value === 'Inteira'));
 
       isSelecionandoSegundaMetade = false;
       primeiraMetade = null;
@@ -665,7 +686,6 @@
       document.getElementById('quantidadeValor').innerText = '1';
       document.getElementById('observacao').value = '';
 
-      // Oculta opções de pizza
       document.querySelector('.opcoes').style.display = 'none';
 
       atualizarTotal();
@@ -675,9 +695,7 @@
 
     function alterarQuantidade(v) {
       quantidadeSelecionada += v;
-      if (quantidadeSelecionada < 1) {
-        quantidadeSelecionada = 1;
-      }
+      if (quantidadeSelecionada < 1) quantidadeSelecionada = 1;
       document.getElementById('quantidadeValor').innerText = quantidadeSelecionada;
       atualizarTotal();
     }
@@ -686,9 +704,7 @@
       const radios = document.getElementsByName('opcaoPizza');
       let tipo = 'Inteira';
       radios.forEach(r => {
-        if (r.checked) {
-          tipo = r.value;
-        }
+        if (r.checked) tipo = r.value;
       });
 
       if (tipo === 'Meio a Meio' && !produtoSelecionado.codigo.includes('+')) {
@@ -707,19 +723,20 @@
     function acaoDetalhes() {
       const pizzaCats = ['Salgadas','Doces','Especiais','Premium'];
       if (!pizzaCats.includes(subcategoriaAtual)) {
+        // genérico
         adicionarAoPedidoGenerico();
         return;
       }
 
+      // pizza
       const radios = document.getElementsByName('opcaoPizza');
       let tipoPizza = 'Inteira';
       radios.forEach(r => {
-        if (r.checked) {
-          tipoPizza = r.value;
-        }
+        if (r.checked) tipoPizza = r.value;
       });
 
       if (tipoPizza === 'Meio a Meio' && !produtoSelecionado.codigo.includes('+')) {
+        // Escolher a segunda metade
         primeiraMetade = produtoSelecionado;
         isSelecionandoSegundaMetade = true;
         mostrarTela('produtos');
@@ -728,15 +745,16 @@
       }
     }
 
-    function montarMeioAMeio(metade1, metade2) {
-      const displayNome = `${metade1.codigo} ${metade1.nome} + ${metade2.codigo} ${metade2.nome}`;
-      const valorMaisCara = Math.max(metade1.preco, metade2.preco);
+    // Montar pizza meio a meio => valor da mais cara
+    function montarMeioAMeio(m1, m2) {
+      const displayNome = `${m1.codigo} ${m1.nome} + ${m2.codigo} ${m2.nome}`;
+      const valorMaisCara = Math.max(m1.preco, m2.preco);
 
       produtoSelecionado = {
         codigo: displayNome,
         nome: displayNome,
         preco: valorMaisCara,
-        desc: `${metade1.desc} | ${metade2.desc}`
+        desc: `${m1.desc} | ${m2.desc}`
       };
       precoBase = valorMaisCara;
 
@@ -745,9 +763,7 @@
       document.getElementById('detalhesDescricao').innerText = produtoSelecionado.desc;
 
       const radios = document.getElementsByName('opcaoPizza');
-      radios.forEach(r => {
-        r.checked = (r.value === 'Meio a Meio');
-      });
+      radios.forEach(r => r.checked = (r.value === 'Meio a Meio'));
 
       atualizarTotal();
       isSelecionandoSegundaMetade = false;
@@ -760,9 +776,7 @@
       const radios = document.getElementsByName('opcaoPizza');
       let tipoPizza = 'Inteira';
       radios.forEach(r => {
-        if (r.checked) {
-          tipoPizza = r.value;
-        }
+        if (r.checked) tipoPizza = r.value;
       });
 
       const obs = document.getElementById('observacao').value;
@@ -777,7 +791,7 @@
 
       const itemPedido = {
         nome: nomeFinal,
-        quantidade: quantidadeSelecionada,
+        quantidade: quantidadeSelecionada, // fix
         tipo: tipoPizza,
         observacao: obs,
         precoFinal: precoFinal
@@ -795,7 +809,7 @@
 
       const itemPedido = {
         nome: nomeFinal,
-        quantidade: quantidadeSelecionada,
+        quantidade: quantidadeSelecionada, // fix
         tipo: 'Normal',
         observacao: obs,
         precoFinal: precoFinal
@@ -810,14 +824,12 @@
       const container = document.getElementById('listaPedidos');
       container.innerHTML = '';
 
-      const botaoEnviar = document.getElementById('botaoEnviar');
+      verificarEnvioHabilitado();
+
       if (carrinho.length === 0) {
         container.innerHTML = '<p>Nenhum pedido até agora.</p>';
         document.getElementById('pedidoTotal').innerText = '';
-        botaoEnviar.disabled = true;
         return;
-      } else {
-        botaoEnviar.disabled = false;
       }
 
       let somaTotal = 0;
@@ -827,26 +839,51 @@
         div.classList.add('pedido-item');
         div.innerHTML = `
           <h4>(${index+1}) ${item.nome}</h4>
-          <p>Quantidade: ${item.quantity}</p>
+          <p>Quantidade: ${item.quantidade}</p>
           <p>Tipo: ${item.tipo}</p>
           ${item.observacao ? `<p>Obs: ${item.observacao}</p>` : ''}
           <p>Total: R$ ${item.precoFinal.toFixed(2)}</p>
         `;
-        // Corrige exibição da quantidade
-        div.innerHTML = div.innerHTML.replace('${item.quantity}', item.quantidade);
         container.appendChild(div);
       });
 
       document.getElementById('pedidoTotal').innerText = `Valor Total: R$ ${somaTotal.toFixed(2)}`;
+      verificarEnvioHabilitado();
     }
 
     function adicionarMais() {
       mostrarTela('cardapio');
     }
 
+    // Controle de entrega
+    function atualizarEntrega() {
+      const radios = document.getElementsByName('localEntrega');
+      localEntrega = '';
+      radios.forEach(r => {
+        if (r.checked) localEntrega = r.value;
+      });
+
+      enderecoEntrega = document.getElementById('enderecoEntrega').value.trim();
+      verificarEnvioHabilitado();
+    }
+
+    function verificarEnvioHabilitado() {
+      const botaoEnviar = document.getElementById('botaoEnviar');
+      // Habilita se houver itens e endereço não vazio
+      if (carrinho.length > 0 && enderecoEntrega !== '') {
+        botaoEnviar.disabled = false;
+      } else {
+        botaoEnviar.disabled = true;
+      }
+    }
+
     function enviarPedido() {
       if (carrinho.length === 0) {
         alert('Nenhum pedido para enviar.');
+        return;
+      }
+      if (!enderecoEntrega) {
+        alert('Digite o endereço/local de entrega.');
         return;
       }
 
@@ -864,14 +901,17 @@
         valorTotal += item.precoFinal;
       });
 
-      mensagem += `Valor Total: R$ ${valorTotal.toFixed(2)}\n`;
-      mensagem += '\nObrigado!';
+      mensagem += `Valor Total: R$ ${valorTotal.toFixed(2)}\n\n`;
 
-      // Ajuste p/ seu número em formato E.164
-      const telefoneWhatsApp = '5587920008169';
+      // Info de entrega
+      mensagem += `Entrega em: ${localEntrega}\n`;
+      mensagem += `Endereço: ${enderecoEntrega}\n\n`;
+
+      mensagem += 'Obrigado!';
+
+      const telefoneWhatsApp = '5587920008169'; // Ajuste p/ seu número
       const textoEncoded = encodeURIComponent(mensagem);
       const url = `https://wa.me/${telefoneWhatsApp}?text=${textoEncoded}`;
-
       window.open(url, '_blank');
     }
   </script>
