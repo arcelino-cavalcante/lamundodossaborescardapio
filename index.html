@@ -321,7 +321,7 @@
       <button onclick="mostrarSubcategorias('Pizzas Pequenas')">Pizzas Pequenas</button>
       <button onclick="mostrarProdutosGenerico('Hambúrgueres')">Hambúrgueres</button>
       <button onclick="mostrarProdutosGenerico('Pastéis')">Pastéis</button>
-      <button onclick="mostrarProdutosGenerico('Esfihas')">Esfirras</button>
+      <button onclick="mostrarProdutosGenerico('Esfirras')">Esfirras</button>
       <button onclick="mostrarProdutosGenerico('Açaí')">Açaí</button>
       <button onclick="mostrarProdutosGenerico('Gelados')">Gelados</button>
       <button onclick="mostrarProdutosGenerico('Refrigerantes')">Refrigerantes</button>
@@ -787,8 +787,8 @@
         { codigo: 'PA006', nome: '4 Sabores', preco: 8.00, desc: 'Frango Catupiry, Frango Cheddar, Mussarela, 4 Queijos, Presunto, Milho e Ervilha, Cebola e Tomate' }
       ],
       'Esfirras': [
-        { codigo: 'EF01', nome: 'Esfiha de Carne', preco: 5.00, desc: 'Esfiha recheada com carne moída' },
-        { codigo: 'EF02', nome: 'Esfiha de Frango', preco: 6.00, desc: 'Esfiha recheada com frango desfiado' }
+        { codigo: 'EF01', nome: 'Esfirra de Carne', preco: 5.00, desc: 'Esfirra recheada com carne moída' },
+        { codigo: 'EF02', nome: 'Esfirra de Frango', preco: 6.00, desc: 'Esfirra recheada com frango desfiado' }
       ],
       'Açaí': [
         { codigo: 'AC01', nome: 'Açaí 300ml', preco: 12.00, desc: 'Açaí puro com acompanhamentos a escolher' },
@@ -891,7 +891,7 @@
 
     function produtoClicado(prod) {
       // Verifica se é pizza (subcategoria nas 4 subcats de pizza) ou item genérico
-      const pizzaCats = ['Salgadas','Doces','Especiais','Premium'];
+      const pizzaCats = ['Tradicionais','Doces','Premium Doces','Premium Salgadas'];
       if (pizzaCats.includes(subcategoriaAtual)) {
         // É pizza
         if (isSelecionandoSegundaMetade) {
@@ -973,7 +973,7 @@
     }
 
     function acaoDetalhes() {
-      const pizzaCats = ['Salgadas','Doces','Especiais','Premium'];
+      const pizzaCats = ['Tradicionais','Doces','Premium Doces','Premium Salgadas'];
       if (!pizzaCats.includes(subcategoriaAtual)) {
         // genérico
         adicionarAoPedidoGenerico();
@@ -1139,26 +1139,27 @@
         return;
       }
 
-      let mensagem = 'Olá, gostaria de fazer o seguinte pedido:\n\n';
+      let mensagem = "*Olá, gostaria de fazer o seguinte pedido:*\n\n";
+      mensagem += "*Itens do Pedido:*\n";
       let valorTotal = 0;
 
       carrinho.forEach((item, index) => {
-        mensagem += `(${index+1}) ${item.nome} - ${item.tipo}\n` +
-                    `Quantidade: ${item.quantidade}\n` +
-                    `Total: R$ ${item.precoFinal.toFixed(2)}\n`;
+        mensagem += `*(${index+1}) ${item.nome} - ${item.tipo}*\n`;
+        mensagem += `Quantidade: ${item.quantidade}\n`;
+        mensagem += `Total: R$ ${item.precoFinal.toFixed(2)}\n`;
         if (item.observacao) {
           mensagem += `Observação: ${item.observacao}\n`;
         }
-        mensagem += '\n';
+        mensagem += "\n";
         valorTotal += item.precoFinal;
       });
 
-      mensagem += `Valor Total: R$ ${valorTotal.toFixed(2)}\n\n`;
-      mensagem += `Entrega em: ${localEntrega}\n`;
-      mensagem += `Endereço: ${enderecoEntrega}\n\n`;
-      mensagem += 'Obrigado!';
+      mensagem += `*Valor Total:* R$ ${valorTotal.toFixed(2)}\n\n`;
+      mensagem += `*Entrega em:* ${localEntrega}\n`;
+      mensagem += `*Endereço:* ${enderecoEntrega}\n\n`;
+      mensagem += "*Obrigado!*";
 
-      const telefoneWhatsApp = '5587920008169'; // Ajuste p/ seu número
+      const telefoneWhatsApp = '5587920008169'; // Ajuste para o seu número
       const textoEncoded = encodeURIComponent(mensagem);
       const url = `https://wa.me/${telefoneWhatsApp}?text=${textoEncoded}`;
       window.open(url, '_blank');
