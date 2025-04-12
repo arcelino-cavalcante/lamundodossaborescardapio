@@ -1071,7 +1071,12 @@
       mostrarTela('pedidos');
       atualizarListaPedidos();
     }
-
+    function removerPedido(index) {
+      if (confirm("Tem certeza que deseja remover este item do pedido?")) {
+        carrinho.splice(index, 1);
+        atualizarListaPedidos();
+      }
+    }
     function atualizarListaPedidos() {
       const container = document.getElementById('listaPedidos');
       container.innerHTML = '';
@@ -1087,15 +1092,25 @@
       let somaTotal = 0;
       carrinho.forEach((item, index) => {
         somaTotal += item.precoFinal;
+
         const div = document.createElement('div');
         div.classList.add('pedido-item');
+
         div.innerHTML = `
-          <h4>(${index+1}) ${item.nome}</h4>
-          <p>Quantidade: ${item.quantidade}</p>
-          <p>Tipo: ${item.tipo}</p>
-          ${item.observacao ? `<p>Obs: ${item.observacao}</p>` : ''}
-          <p>Total: R$ ${item.precoFinal.toFixed(2)}</p>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div style="flex: 1;">
+              <h4>(${index + 1}) ${item.nome}</h4>
+              <p>Quantidade: ${item.quantidade}</p>
+              <p>Tipo: ${item.tipo}</p>
+              ${item.observacao ? `<p>Obs: ${item.observacao}</p>` : ''}
+              <p>Total: R$ ${item.precoFinal.toFixed(2)}</p>
+            </div>
+            <div style="margin-left: 10px;">
+              <button onclick="removerPedido(${index})" style="background-color: #ffee00; color: #000; border: none; border-radius: 8px; padding: 8px 10px; font-size: 1em; cursor: pointer;">🗑️</button>
+            </div>
+          </div>
         `;
+
         container.appendChild(div);
       });
 
