@@ -3,16 +3,15 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LA MUNDO DOS SABORES</title>
+  <title>LA MUNDO DOS SABORES 🦁</title>
 
   <!--
     Destaques:
-      - Exemplos de produtos em todas as categorias (Pizzas Grandes, Pequenas, etc.).
-      - Nova categoria “Batata Frita” com 2 exemplos.
-      - Tela “Seus Pedidos” com escolha de local (Vila Neves / Sitio) + endereço, 
-        habilitando “Enviar Pedido” só se houver itens no carrinho e endereço preenchido.
-      - Corrigido: “Quantidade: undefined” -> usamos “item.quantidade”.
-      - Restante das funcionalidades (combos, pizzas meio-a-meio, etc.) mantidas.
+      - Mantidas todas as funcionalidades existentes (pizzas meio a meio, combos, carrinho, etc.).
+      - Campo de busca funciona em todas as categorias.
+      - Nova opção “Promoção da Noite” no menu inicial, exibindo uma tela semelhante à de combos.
+      - Imagens de promoções vêm da pasta "imagens_promocao".
+      - Responsividade para dispositivos móveis permanece inalterada.
   -->
 
   <style>
@@ -24,15 +23,15 @@
     }
 
     body {
-      background-color: #fdf6f0;
-      color: #333;
+      background-color: #000000;
+      color: #ff0000;
     }
 
     header {
       background-color: #000000;
       padding: 20px;
       text-align: center;
-      color: rgb(255, 136, 0);
+      color: rgb(255, 251, 0);
       font-size: 1.8em;
       font-weight: bold;
       position: relative;
@@ -54,12 +53,12 @@
     /* Slideshow de fundo (menos zoom) */
     #menuInicialSlideshow {
       position: absolute;
-      top: 0; 
+      top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       background-repeat: no-repeat;
-      background-size: contain; 
+      background-size: cover; /* Alterado de 'contain' para 'cover' */
       background-position: center;
       transition: background-image 1s ease-in-out;
       z-index: 1;
@@ -81,21 +80,21 @@
       font-size: 1.1em;
       border: none;
       border-radius: 10px;
-      background-color: #f77f00;
+      background-color: #ffee00;
       color: #000;
       cursor: pointer;
       width: 100%;
       max-width: 300px;
       transition: background 0.3s;
-      white-space: nowrap; 
-      text-align: center;  
+      white-space: nowrap;
+      text-align: center;
     }
     button:disabled {
-      background-color: #999;
+      background-color: #969696;
       cursor: not-allowed;
     }
     button:hover {
-      background-color: #f77f00;
+      background-color: #ffee00;
     }
 
     .tela {
@@ -114,7 +113,7 @@
       gap: 10px;
     }
     .categorias button, .subcategorias button {
-      background-color: #f77f00;
+      background-color: #f70000;
     }
 
     /* Tela de Produtos */
@@ -127,7 +126,7 @@
       width: 90%;
       padding: 10px;
       margin-bottom: 15px;
-      border: 2px solid #ccc;
+      border: 2px solid #f70000;
       border-radius: 8px;
       font-size: 1em;
     }
@@ -138,7 +137,7 @@
       padding: 15px;
       margin: 10px 0;
       text-align: left;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.555);
       cursor: pointer;
     }
     .produto h3 {
@@ -146,17 +145,17 @@
       margin-bottom: 5px;
     }
     .produto p {
-      color: #333;
+      color: #000000;
       margin-bottom: 5px;
     }
     .produto .preco {
-      color: #d62828;
+      color: #ff0000;
       font-weight: bold;
       float: right;
     }
 
-    /* Tela de Combos */
-    #combosLista {
+    /* Tela de Combos/Promoções (layout similar) */
+    #combosLista, #promocoesLista {
       max-width: 500px;
       margin: 0 auto;
     }
@@ -165,7 +164,7 @@
       border-radius: 10px;
       padding: 15px;
       margin: 10px 0;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.445);
       text-align: left;
       cursor: pointer;
     }
@@ -174,10 +173,11 @@
       max-width: 250px;
       display: block;
       margin-bottom: 10px;
+      margin: 0 auto 10px;
       border-radius: 8px;
     }
     .combo-item h3 {
-      color: #d62828;
+      color: #000000;
       margin-bottom: 5px;
     }
     .combo-item p {
@@ -198,7 +198,7 @@
     }
     #detalhes h2 {
       margin-bottom: 10px;
-      color: #d62828;
+      color: #000000;
       text-align: center;
     }
     .quantidade {
@@ -208,7 +208,7 @@
       margin-bottom: 10px;
     }
     .quantidade button {
-      background-color: #003049;
+      background-color: #ffee00;
       margin: 0 10px;
       width: 40px;
     }
@@ -230,13 +230,13 @@
       resize: none;
       margin-bottom: 10px;
       border-radius: 8px;
-      border: 2px solid #ccc;
+      border: 2px solid #000000;
       padding: 8px;
       font-size: 1em;
     }
     .total {
       font-size: 1.2em;
-      color: #d62828;
+      color: #ff0000;
       font-weight: bold;
       text-align: right;
       margin-bottom: 15px;
@@ -257,7 +257,7 @@
       position: relative;
     }
     .pedido-item h4 {
-      color: #d62828;
+      color: #000000;
       margin-bottom: 5px;
     }
     .pedido-total {
@@ -265,7 +265,7 @@
       font-size: 1.2em;
       font-weight: bold;
       text-align: right;
-      color: #d62828;
+      color: #fbff00;
     }
     .botoes-pedidos {
       display: flex;
@@ -288,14 +288,14 @@
       max-width: 400px;
       padding: 8px;
       font-size: 1em;
-      border: 2px solid #ccc;
+      border: 2px solid #000000;
       border-radius: 8px;
       margin-top: 8px;
     }
   </style>
 </head>
 <body>
-  <header>LA MUNDO DOS SABORES</header>
+  <header>LA MUNDO DOS SABORES 🦁</header>
 
   <div id="menuInicialContainer">
     <!-- Slideshow de fundo -->
@@ -305,6 +305,8 @@
     <nav id="menuInicial">
       <button onclick="mostrarTela('cardapio')">Cardápio</button>
       <button onclick="mostrarCombos()">Combos da Noite</button>
+      <!-- NOVO BOTÃO: Promoção da Noite -->
+      <button onclick="mostrarPromocoes()">Promoção da Noite</button>
       <button onclick="mostrarTela('pedidos')">Ver Pedidos</button>
       <button onclick="mostrarTela('informacoes')">Informações</button>
     </nav>
@@ -331,6 +333,14 @@
   <div id="combos" class="tela">
     <h2>Combos da Noite</h2>
     <div id="combosLista"></div>
+    <br>
+    <button onclick="voltarMenu()">Voltar</button>
+  </div>
+
+  <!-- NOVA TELA: Promoções da Noite -->
+  <div id="promocoes" class="tela">
+    <h2>Promoção da Noite</h2>
+    <div id="promocoesLista"></div>
     <br>
     <button onclick="voltarMenu()">Voltar</button>
   </div>
@@ -417,10 +427,20 @@
 
   <!-- Tela de Informações -->
   <div id="informacoes" class="tela">
-    <h2>Informações</h2>
-    <p>Endereço: Rua das Delícias, 123 - Jucati</p>
-    <p>Telefone: (87) 99999-9999</p>
-    <p>Horário de funcionamento: 18h às 23h</p>
+    <h1>Informações</h1>
+    <br>
+    <p>Rua josé Protázio Burgos, 50 - jucati Vila Neves</p>
+    <br>
+    <p>Telefone: (87) 98129-5167</p>
+    <br>
+    <p>Horário de funcionamento: 
+      <br>
+      Segunda à Sexta 18h as 23h 
+      <br>
+      <br>
+      Final de semana 18h às 00:00h</p>
+      <br>
+    <p>Fazemos entregas nos Sítios Vizinhos</p>
     <br>
     <button onclick="voltarMenu()">Voltar</button>
   </div>
@@ -471,14 +491,15 @@
     let quantidadeSelecionada = 1;
     let precoBase = 0;
     let subcategoriaAtual = '';
+    let tipoPizzaAtual = ''; // 'grande', 'pequena' ou 'outros'
     let isSelecionandoSegundaMetade = false;
     let primeiraMetade = null;
 
     // Entrega
-    let localEntrega = '';   
-    let enderecoEntrega = '';  
+    let localEntrega = '';
+    let enderecoEntrega = '';
 
-    // Combos
+    // ====================== COMBOS =========================
     const combosNoite = [
       {
         codigo: 'CB01',
@@ -496,6 +517,27 @@
       }
     ];
 
+    // ================== PROMOÇÕES DA NOITE =================
+    /* Exemplo de array com promoções e suas imagens
+       (pasta "imagens_promocao") */
+    const promocoesNoite = [
+      {
+        codigo: 'PR01',
+        nome: 'Promoção 1',
+        preco: 29.90,
+        desc: 'Pizza Pequena + 1 Refri Lata',
+        imagem: 'imagens_promocao/promo1.jpg'
+      },
+      {
+        codigo: 'PR02',
+        nome: 'Promoção 2',
+        preco: 39.90,
+        desc: '2 Pastéis + 1 Suco',
+        imagem: 'imagens_promocao/promo2.jpg'
+      }
+    ];
+
+    /* Função para exibir combos */
     function mostrarCombos() {
       mostrarTela('combos');
       const combosLista = document.getElementById('combosLista');
@@ -534,38 +576,216 @@
       mostrarTela('detalhes');
     }
 
-    // Subcategorias (Pizzas Grandes / Pequenas)
-    function mostrarSubcategorias(categoria) {
-      document.getElementById('tituloSubcategoria').innerText = categoria + ' - Subcategorias';
-      mostrarTela('subcategorias');
+    /* Função para exibir promoções */
+    function mostrarPromocoes() {
+      mostrarTela('promocoes');
+      const promocoesLista = document.getElementById('promocoesLista');
+      promocoesLista.innerHTML = '';
+
+      promocoesNoite.forEach(promo => {
+        const div = document.createElement('div');
+        div.classList.add('combo-item');
+        div.onclick = () => promocaoClicada(promo);
+
+        div.innerHTML = `
+          <img src="${promo.imagem}" alt="${promo.nome}" />
+          <h3>${promo.codigo} ${promo.nome}</h3>
+          <p>${promo.desc}</p>
+          <p class="preco">R$ ${promo.preco.toFixed(2)}</p>
+        `;
+        promocoesLista.appendChild(div);
+      });
     }
 
-    // Banco de dados (Exemplos)
-    const produtosPizzas = {
+    function promocaoClicada(promo) {
+      produtoSelecionado = promo;
+      quantidadeSelecionada = 1;
+      precoBase = promo.preco;
+
+      document.getElementById('detalhesTitulo').innerText = `${promo.codigo} ${promo.nome}`;
+      document.getElementById('detalhesDescricao').innerText = promo.desc;
+      document.getElementById('quantidadeValor').innerText = '1';
+      document.getElementById('observacao').value = '';
+
+      // Oculta opções de pizza
+      document.querySelector('.opcoes').style.display = 'none';
+      atualizarTotal();
+
+      document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
+      mostrarTela('detalhes');
+    }
+
+    // Pizzas Grandes (separadas por subcategorias)
+    const pizzasGrandes = {
       'Salgadas': [
-        { codigo: '19', nome: '4 Queijos', preco: 40.00, desc: 'Molho, muçarela, catupiry, cheddar, parmesão e orégano' },
-        { codigo: '01', nome: 'Atum', preco: 42.00, desc: 'Molho, muçarela, atum, cebola e orégano' }
+        { codigo: 'T001', nome: 'A Moda do Chefe (G)', preco: 38.00, desc: 'Frango desfiado, palmito, ovos, bacon, catupiry' },
+        { codigo: 'T002', nome: 'Atum (G)', preco: 36.00, desc: 'Atum, mussarela, cebola, orégano' },
+        { codigo: 'T003', nome: 'Bacon (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, bacon, ovos, tomate' },
+        { codigo: 'T004', nome: 'Baiana (G)', preco: 35.00, desc: 'Molho de tomate, calabresa, ovos, cebola, mussarela, pimenta' },
+        { codigo: 'T005', nome: 'Brasileira Pizza (G)', preco: 36.00, desc: 'Mussarela, presunto, milho, ervilha, tomate' },
+        { codigo: 'T006', nome: 'Calabresa (G)', preco: 35.00, desc: 'Molho de tomate, calabresa, cebola' },
+        { codigo: 'T007', nome: 'Calabresa 3 Queijos (G)', preco: 40.00, desc: 'Molho de tomate, calabresa, mussarela, catupiry, cheddar' },
+        { codigo: 'T008', nome: 'Caipira (G)', preco: 38.00, desc: 'Molho de tomate, mussarela, frango desfiado, cebola, milho, tomate, bacon' },
+        { codigo: 'T009', nome: 'Charque (G)', preco: 40.00, desc: 'Molho de tomate, mussarela, charque, tomate, azeitona' },
+        { codigo: 'T010', nome: 'Dois Queijos (G)', preco: 35.00, desc: 'Molho de tomate, mussarela, catupiry' },
+        { codigo: 'T011', nome: 'Três Queijos (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, catupiry, parmesão' },
+        { codigo: 'T012', nome: 'Quatro Queijos (G)', preco: 37.00, desc: 'Molho de tomate, mussarela, catupiry, cheddar, parmesão, orégano' },
+        { codigo: 'T013', nome: 'Do Pizzaiolo (G)', preco: 39.00, desc: 'Molho de tomate, mussarela, calabresa, bacon, palmito, queijo provolone, milho, ovos' },
+        { codigo: 'T014', nome: 'Favorita (G)', preco: 37.00, desc: 'Molho de tomate, calabresa, ovos, calabresa, palmito, azeitona' },
+        { codigo: 'T015', nome: 'Frango c/ Catupiry (G)', preco: 35.00, desc: 'Molho de tomate, frango desfiado e catupiry' },
+        { codigo: 'T016', nome: 'Frango c/ Cheddar (G)', preco: 35.00, desc: 'Molho de tomate, frango desfiado, cheddar' },
+        { codigo: 'T017', nome: 'Frango c/ Mussarela (G)', preco: 36.00, desc: 'Molho de tomate, frango desfiado, mussarela' },
+        { codigo: 'T018', nome: 'Italiana (G)', preco: 37.00, desc: 'Mussarela, salame italiano, molho de tomate' },
+        { codigo: 'T019', nome: 'Marguerita (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, parmesão, tomate e manjericão' },
+        { codigo: 'T020', nome: 'Mussarela (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, tomate, orégano' },
+        { codigo: 'T021', nome: 'Mussa Palha (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, tomate, batata palha' },
+        { codigo: 'T022', nome: 'Napolitana (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, parmesão, presunto, tomate, orégano' },
+        { codigo: 'T023', nome: 'Palmito (G)', preco: 37.00, desc: 'Presunto, palmito, mussarela, orégano' },
+        { codigo: 'T024', nome: 'Paulista (G)', preco: 37.00, desc: 'Molho de tomate, mussarela, presunto, palmito, bacon, tomate' },
+        { codigo: 'T025', nome: 'Pepperoni (G)', preco: 35.00, desc: 'Molho de tomate, mussarela, salame, pepperoni, orégano' },
+        { codigo: 'T026', nome: 'Portuguesa (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, presunto, ovos, cebola, orégano' },
+        { codigo: 'T027', nome: 'Salame (G)', preco: 35.00, desc: 'Molho de tomate, mussarela, tomate, salame, azeitona' },
+        { codigo: 'T028', nome: 'Toscana (G)', preco: 36.00, desc: 'Molho de tomate, calabresa, mussarela' },
+        { codigo: 'T029', nome: 'Vegetariana (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, palmito, azeitona, cebola, tomate' },
+        { codigo: 'T030', nome: 'Vegetariana 3 Queijos (G)', preco: 40.00, desc: 'Molho de tomate, mussarela, catupiry, cheddar, parmesão' }
       ],
       'Doces': [
-        { codigo: '100', nome: 'Chocolate', preco: 36.00, desc: 'Chocolate ao leite, granulados e muçarela' },
-        { codigo: '102', nome: 'Romeu e Julieta', preco: 35.00, desc: 'Goiabada e muçarela' }
+        { codigo: 'D001', nome: 'Prestígio (G)', preco: 36.00, desc: 'Chocolate, coco ralado' },
+        { codigo: 'D002', nome: 'Morango (G)', preco: 36.00, desc: 'Chocolate, morango, leite condensado' },
+        { codigo: 'D003', nome: 'Romeu e Julieta (G)', preco: 36.00, desc: 'Queijo mussarela, goiabada' },
+        { codigo: 'D004', nome: 'Brigadeiro (G)', preco: 36.00, desc: 'Chocolate, granulado' },
+        { codigo: 'D005', nome: 'Cartola (G)', preco: 36.00, desc: 'Leite condensado, banana, canela, açúcar' }
       ],
       'Especiais': [
-        { codigo: '200', nome: 'Camarão Especial', preco: 55.00, desc: 'Molho, muçarela, camarão, catupiry, alho e orégano' }
+        { codigo: 'DP001', nome: 'Banana Nevada (G)', preco: 50.00, desc: 'Creme de leite, banana, chocolate branco, canela, açúcar' },
+        { codigo: 'DP002', nome: 'Kit Kat (G)', preco: 45.00, desc: 'Creme de leite, chocolate, kit kat' },
+        { codigo: 'DP003', nome: 'M&M (G)', preco: 38.00, desc: 'Creme de leite, chocolate, M&M' },
+        { codigo: 'DP004', nome: 'Chocobom (G)', preco: 45.00, desc: 'Creme de leite, chocolate, bombom' },
+        { codigo: 'DP005', nome: 'Óreo (G)', preco: 45.00, desc: 'Creme de leite, chocolate branco, mini óreo' },
+        { codigo: 'DP006', nome: 'Contemplação (G)', preco: 45.00, desc: 'Creme de leite, chocolate, morango, banana, coco ralado, leite condensado' },
+        { codigo: 'DP007', nome: 'Formigueiro em Chocolate Branco (G)', preco: 45.00, desc: 'Creme de leite, chocolate branco, brigadeiro' },
+        { codigo: 'DP008', nome: 'Pizza Sorvete (G)', preco: 45.00, desc: 'Creme de leite, chocolate, sorvete' }
       ],
       'Premium': [
-        { codigo: '300', nome: 'Trufada', preco: 60.00, desc: 'Molho, muçarela especial, creme trufado e orégano' }
+        { codigo: 'PR001', nome: 'A Moda Lamundo dos Sabores (G)', preco: 53.00, desc: 'Mussarela, molho lombo, cream cheese, milho, barbecue, orégano, bacon' },
+        { codigo: 'PR002', nome: 'Bacon 4 Queijos (G)', preco: 45.00, desc: 'Molho, mussarela, bacon, cheddar, catupiry, parmesão, orégano' },
+        { codigo: 'PR003', nome: 'Super Portuguesa (G)', preco: 55.00, desc: 'Mussarela, molho, presunto, milho, ovo, tomate, cebola, pimentão, catupiry, bacon, orégano' },
+        { codigo: 'PR004', nome: 'Calabresa Cheese (G)', preco: 40.00, desc: 'Mussarela, molho, cebola, cream cheese' },
+        { codigo: 'PR005', nome: 'Tropical – 5 Queijos (G)', preco: 43.00, desc: 'Mussarela, molho, cheddar, catupiry, cream cheese, parmesão' },
+        { codigo: 'PR006', nome: 'Camarão Cheese (G)', preco: 60.00, desc: 'Molho de tomate, orégano, camarão, mussarela, cream cheese' },
+        { codigo: 'PR007', nome: 'O Reino de Frango (G)', preco: 44.00, desc: 'Mussarela, molho, frango desfiado, cebolinha verde, cream cheese, orégano' },
+        { codigo: 'PR008', nome: 'Lombo Creme Cheese (G)', preco: 45.00, desc: 'Mussarela, molho, orégano, lombo, cream cheese, azeitona, cebola' },
+        { codigo: 'PR009', nome: 'Frango 4 Queijos (G)', preco: 42.00, desc: 'Mussarela, molho, frango desfiado, catupiry, queijo parmesão, cheddar, orégano' },
+        { codigo: 'PR010', nome: 'Super Fritas (G)', preco: 45.00, desc: 'Mussarela, molho, batata frita' },
+        { codigo: 'PR011', nome: 'Camarão (G)', preco: 55.00, desc: 'Molho de tomate, mussarela, orégano, camarão' },
+        { codigo: 'PR012', nome: 'Lombo Especial (G)', preco: 50.00, desc: 'Mussarela, molho, ovo, cream cheese, lombo, cebola, orégano, barbecue' },
+        { codigo: 'PR013', nome: 'Do Neves para o Mundo (G)', preco: 50.00, desc: 'Molho de tomate, mussarela, calabresa, cream cheese, tomate, cebola, ovo, barbecue, orégano' },
+        { codigo: 'PR014', nome: 'Primavera (G)', preco: 38.00, desc: 'Mussarela, palmito, milho, ervilha, batata palha, orégano' },
+        { codigo: 'PR015', nome: 'Frango Bacon c/ Cheddar (G)', preco: 43.00, desc: 'Mussarela, molho, frango desfiado, bacon, cheddar, orégano' },
+        { codigo: 'PR016', nome: 'Lombo a Moda (G)', preco: 42.00, desc: 'Lombo, molho, cebola, molho, orégano, barbecue' },
+        { codigo: 'PR017', nome: 'Churrasco Gratinado (G)', preco: 50.00, desc: 'Mussarela, calabresa, cream cheese, molho, barbecue, cebolinha verde, cebola, azeitona, orégano' },
+        { codigo: 'PR018', nome: 'Super Frango (G)', preco: 44.00, desc: 'Mussarela, frango desfiado, bacon, ovo, milho, cheddar, catupiry, orégano' },
+        { codigo: 'PR019', nome: 'Filadélfia (G)', preco: 44.00, desc: 'Mussarela, ovo, frango, barbecue, tomate, molho, cebola' },
+        { codigo: 'PR020', nome: 'Nordestina (G)', preco: 45.00, desc: 'Mussarela, molho, charque, catupiry, cheddar, milho, ervilha, cebola, tomate' }
+      ]
+    };
+
+    // Pizzas Pequenas (separadas por subcategorias)
+    const pizzasPequenas = {
+      'Salgadas': [
+        { codigo: 'P001', nome: 'A Moda do Chefe (P)', preco: 25.00, desc: 'Frango desfiado, palmito, ovos, bacon, catupiry' },
+        { codigo: 'P002', nome: 'Atum (P)', preco: 25.00, desc: 'Atum, mussarela, cebola, orégano' },
+        { codigo: 'P003', nome: 'Bacon (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, bacon, ovos, tomate' },
+        { codigo: 'P004', nome: 'Baiana (P)', preco: 25.00, desc: 'Molho de tomate, calabresa, ovos, cebola, mussarela, pimenta' },
+        { codigo: 'P005', nome: 'Brasileira Pizza (P)', preco: 25.00, desc: 'Mussarela, presunto, milho, ervilha, tomate' },
+        { codigo: 'P006', nome: 'Calabresa (P)', preco: 25.00, desc: 'Molho de tomate, calabresa, cebola' },
+        { codigo: 'P007', nome: 'Calabresa 3 Queijos (P)', preco: 25.00, desc: 'Molho de tomate, calabresa, mussarela, catupiry, cheddar' },
+        { codigo: 'P008', nome: 'Caipira (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, frango desfiado, cebola, milho, tomate, bacon' },
+        { codigo: 'P009', nome: 'Charque (P)', preco: 26.00, desc: 'Molho de tomate, mussarela, charque, tomate, azeitona' },
+        { codigo: 'P010', nome: 'Dois Queijos (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, catupiry' },
+        { codigo: 'P011', nome: 'Três Queijos (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, catupiry, parmesão' },
+        { codigo: 'P012', nome: 'Quatro Queijos (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, catupiry, cheddar, parmesão, orégano' },
+        { codigo: 'P013', nome: 'Do Pizzaiolo (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, calabresa, bacon, palmito, queijo provolone, milho, ovos' },
+        { codigo: 'P014', nome: 'Favorita (P)', preco: 25.00, desc: 'Molho de tomate, calabresa, ovos, calabresa, palmito, azeitona' },
+        { codigo: 'P015', nome: 'Frango c/ Catupiry (P)', preco: 25.00, desc: 'Molho de tomate, frango desfiado e catupiry' },
+        { codigo: 'P016', nome: 'Frango c/ Cheddar (P)', preco: 25.00, desc: 'Molho de tomate, frango desfiado, cheddar' },
+        { codigo: 'P017', nome: 'Frango c/ Mussarela (P)', preco: 25.00, desc: 'Molho de tomate, frango desfiado, mussarela' },
+        { codigo: 'P018', nome: 'Italiana (P)', preco: 25.00, desc: 'Mussarela, salame italiano, molho de tomate' },
+        { codigo: 'P019', nome: 'Marguerita (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, parmesão, tomate e manjericão' },
+        { codigo: 'P020', nome: 'Mussarela (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, tomate, orégano' },
+        { codigo: 'P021', nome: 'Mussa Palha (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, tomate, batata palha' },
+        { codigo: 'P022', nome: 'Napolitana (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, parmesão, presunto, tomate, orégano' },
+        { codigo: 'P023', nome: 'Palmito (P)', preco: 25.00, desc: 'Presunto, palmito, mussarela, orégano' },
+        { codigo: 'P024', nome: 'Paulista (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, presunto, palmito, bacon, tomate' },
+        { codigo: 'P025', nome: 'Pepperoni (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, salame, pepperoni, orégano' },
+        { codigo: 'P026', nome: 'Portuguesa (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, presunto, ovos, cebola, orégano' },
+        { codigo: 'P027', nome: 'Salame (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, tomate, salame, azeitona' },
+        { codigo: 'P028', nome: 'Toscana (P)', preco: 25.00, desc: 'Molho de tomate, calabresa, mussarela' },
+        { codigo: 'P029', nome: 'Vegetariana (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, palmito, azeitona, cebola, tomate' },
+        { codigo: 'P030', nome: 'Vegetariana 3 Queijos (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, catupiry, cheddar, parmesão' }
       ],
-      // Outras
+      'Doces': [
+        { codigo: 'DP001', nome: 'Prestígio (P)', preco: 25.00, desc: 'Chocolate, coco ralado' },
+        { codigo: 'DP002', nome: 'Morango (P)', preco: 25.00, desc: 'Chocolate, morango, leite condensado' },
+        { codigo: 'DP003', nome: 'Romeu e Julieta (P)', preco: 25.00, desc: 'Queijo mussarela, goiabada' },
+        { codigo: 'DP004', nome: 'Brigadeiro (P)', preco: 25.00, desc: 'Chocolate, granulado' },
+        { codigo: 'DP005', nome: 'Cartola (P)', preco: 25.00, desc: 'Leite condensado, banana, canela, açúcar' }
+      ],
+      'Especiais': [
+        { codigo: 'DPP001', nome: 'Banana Nevada (P)', preco: 50.00, desc: 'Creme de leite, banana, chocolate branco, canela, açúcar' },
+        { codigo: 'DPP002', nome: 'Kit Kat (P)', preco: 45.00, desc: 'Creme de leite, chocolate, kit kat' },
+        { codigo: 'DPP003', nome: 'M&M (P)', preco: 38.00, desc: 'Creme de leite, chocolate, M&M' },
+        { codigo: 'DPP004', nome: 'Chocobom (P)', preco: 45.00, desc: 'Creme de leite, chocolate, bombom' },
+        { codigo: 'DPP005', nome: 'Óreo (P)', preco: 45.00, desc: 'Creme de leite, chocolate branco, mini óreo' },
+        { codigo: 'DPP006', nome: 'Contemplação (P)', preco: 45.00, desc: 'Creme de leite, chocolate, morango, banana, coco ralado, leite condensado' },
+        { codigo: 'DPP007', nome: 'Formigueiro em Chocolate Branco (P)', preco: 45.00, desc: 'Creme de leite, chocolate branco, brigadeiro' },
+        { codigo: 'DPP008', nome: 'Pizza Sorvete (P)', preco: 45.00, desc: 'Creme de leite, chocolate, sorvete' }
+      ],
+      'Premium': [
+        { codigo: 'PP001', nome: 'A Moda Lamundo dos Sabores (P)', preco: 53.00, desc: 'Mussarela, molho lombo, cream cheese, milho, barbecue, orégano, bacon' },
+        { codigo: 'PP002', nome: 'Bacon 4 Queijos (P)', preco: 45.00, desc: 'Molho, mussarela, bacon, cheddar, catupiry, parmesão, orégano' },
+        { codigo: 'PP003', nome: 'Super Portuguesa (P)', preco: 55.00, desc: 'Mussarela, molho, presunto, milho, ovo, tomate, cebola, pimentão, catupiry, bacon, orégano' },
+        { codigo: 'PP004', nome: 'Calabresa Cheese (P)', preco: 40.00, desc: 'Mussarela, molho, cebola, cream cheese' },
+        { codigo: 'PP005', nome: 'Tropical – 5 Queijos (P)', preco: 43.00, desc: 'Mussarela, molho, cheddar, catupiry, cream cheese, parmesão' },
+        { codigo: 'PP006', nome: 'Camarão Cheese (P)', preco: 60.00, desc: 'Molho de tomate, orégano, camarão, mussarela, cream cheese' },
+        { codigo: 'PP007', nome: 'O Reino de Frango (P)', preco: 44.00, desc: 'Mussarela, molho, frango desfiado, cebolinha verde, cream cheese, orégano' },
+        { codigo: 'PP008', nome: 'Lombo Creme Cheese (P)', preco: 45.00, desc: 'Mussarela, molho, orégano, lombo, cream cheese, azeitona, cebola' },
+        { codigo: 'PP009', nome: 'Frango 4 Queijos (P)', preco: 42.00, desc: 'Mussarela, molho, frango desfiado, catupiry, queijo parmesão, cheddar, orégano' },
+        { codigo: 'PP010', nome: 'Super Fritas (P)', preco: 45.00, desc: 'Mussarela, molho, batata frita' },
+        { codigo: 'PP011', nome: 'Camarão (P)', preco: 55.00, desc: 'Molho de tomate, mussarela, orégano, camarão' },
+        { codigo: 'PP012', nome: 'Lombo Especial (P)', preco: 50.00, desc: 'Mussarela, molho, ovo, cream cheese, lombo, cebola, orégano, barbecue' },
+        { codigo: 'PP013', nome: 'Do Neves para o Mundo (P)', preco: 50.00, desc: 'Molho de tomate, mussarela, calabresa, cream cheese, tomate, cebola, ovo, barbecue, orégano' },
+        { codigo: 'PP014', nome: 'Primavera (P)', preco: 38.00, desc: 'Mussarela, palmito, milho, ervilha, batata palha, orégano' },
+        { codigo: 'PP015', nome: 'Frango Bacon c/ Cheddar (P)', preco: 43.00, desc: 'Mussarela, molho, frango desfiado, bacon, cheddar, orégano' },
+        { codigo: 'PP016', nome: 'Lombo a Moda (P)', preco: 42.00, desc: 'Lombo, molho, cebola, molho, orégano, barbecue' },
+        { codigo: 'PP017', nome: 'Churrasco Gratinado (P)', preco: 50.00, desc: 'Mussarela, calabresa, cream cheese, molho, barbecue, cebolinha verde, cebola, azeitona, orégano' },
+        { codigo: 'PP018', nome: 'Super Frango (P)', preco: 44.00, desc: 'Mussarela, frango desfiado, bacon, ovo, milho, cheddar, catupiry, orégano' },
+        { codigo: 'PP019', nome: 'Filadélfia (P)', preco: 44.00, desc: 'Mussarela, ovo, frango, barbecue, tomate, molho, cebola' },
+        { codigo: 'PP020', nome: 'Nordestina (P)', preco: 45.00, desc: 'Mussarela, molho, charque, catupiry, cheddar, milho, ervilha, cebola, tomate' }
+      ]
+    };
+
+    // Outras categorias
+    const produtosOutros = {
       'Hambúrgueres': [
-        { codigo: 'HB01', nome: 'Cheese Burger', preco: 18.00, desc: 'Hambúrguer bovino, queijo, alface, tomate e molho especial' },
-        { codigo: 'HB02', nome: 'Bacon Burger', preco: 20.00, desc: 'Hambúrguer bovino, queijo, bacon e molho especial' }
+        { codigo: 'H001', nome: 'Classic Burger', preco: 13.99, desc: 'Carne artesanal, queijo cheddar, alface, tomate, cebola e molho especial' },
+        { codigo: 'H002', nome: 'Bacon Burger', preco: 17.00, desc: 'Carne artesanal, bacon crocante, queijo cheddar, cebola, tomate, alface, molhos da casa' },
+        { codigo: 'H003', nome: 'Ssmash Duplo', preco: 20.00, desc: '2 carnes artesanais, salada, milho, ervilha, queijo mussarela, molhos da casa' },
+        { codigo: 'H004', nome: 'Mexicano', preco: 19.00, desc: 'Carne artesanal, salada, bacon, cheddar, ovo, batata palha, molhos da casa' },
+        { codigo: 'H005', nome: 'X-Tudão', preco: 35.00, desc: 'Carne artesanal, frango desfiado, ovo, presunto, mussarela, calabresa, batata palha, bacon, molhos da casa' },
+        { codigo: 'H006', nome: 'Churrasco Bresa', preco: 19.00, desc: 'Carne artesanal, ovo, calabresa, batata palha, molhos da casa' },
+        { codigo: 'H007', nome: 'Salsichão Burger', preco: 14.00, desc: 'Carne artesanal, salsicha, ovo, salada, molhos da casa' },
+        { codigo: 'H008', nome: 'Triplo do Cheff', preco: 33.00, desc: '3 carnes artesanais, bacon, ovo, salada, molhos da casa' }
       ],
       'Pastéis': [
-        { codigo: 'PT01', nome: 'Pastel de Carne', preco: 8.00, desc: 'Pastel recheado com carne moída' },
-        { codigo: 'PT02', nome: 'Pastel de Queijo', preco: 8.00, desc: 'Pastel recheado com queijo muçarela' }
+        { codigo: 'PA001', nome: 'Frango Catupiry', preco: 6.00, desc: 'Pastel de frango com catupiry' },
+        { codigo: 'PA002', nome: 'Frango Cheddar', preco: 6.00, desc: 'Pastel de frango com cheddar' },
+        { codigo: 'PA003', nome: 'Calabresa', preco: 6.00, desc: 'Pastel de calabresa' },
+        { codigo: 'PA004', nome: 'Presunto', preco: 6.00, desc: 'Pastel de presunto' },
+        { codigo: 'PA005', nome: 'Mussarela', preco: 6.00, desc: 'Pastel de mussarela' },
+        { codigo: 'PA006', nome: '4 Sabores', preco: 8.00, desc: 'Frango Catupiry, Frango Cheddar, Mussarela, 4 Queijos, Presunto, Milho e Ervilha, Cebola e Tomate' }
       ],
-      'Esfihas': [
+      'Esfirras': [
         { codigo: 'EF01', nome: 'Esfiha de Carne', preco: 5.00, desc: 'Esfiha recheada com carne moída' },
         { codigo: 'EF02', nome: 'Esfiha de Frango', preco: 6.00, desc: 'Esfiha recheada com frango desfiado' }
       ],
@@ -587,6 +807,20 @@
       ]
     };
 
+    // Quando clica em "Pizzas Grandes" ou "Pizzas Pequenas"
+    function mostrarSubcategorias(categoria) {
+      document.getElementById('tituloSubcategoria').innerText = categoria + ' - Subcategorias';
+
+      if (categoria === 'Pizzas Grandes') {
+        tipoPizzaAtual = 'grande';
+      } else {
+        tipoPizzaAtual = 'pequena';
+      }
+
+      mostrarTela('subcategorias');
+    }
+
+    // Quando escolhe a subcategoria (Salgadas, Doces, etc.)
     function mostrarProdutosPizzas(subcat) {
       subcategoriaAtual = subcat;
       document.getElementById('tituloCategoria').innerText = 'Pizzas ' + subcat;
@@ -595,7 +829,9 @@
       mostrarTela('produtos');
     }
 
+    // Quando escolhe categorias que não são pizza
     function mostrarProdutosGenerico(cat) {
+      tipoPizzaAtual = 'outros';
       subcategoriaAtual = cat;
       document.getElementById('tituloCategoria').innerText = cat;
       document.getElementById('busca').value = '';
@@ -603,6 +839,7 @@
       mostrarTela('produtos');
     }
 
+    // Campo de busca
     function filtrarProdutos() {
       atualizarListaProdutos();
     }
@@ -613,7 +850,20 @@
       const lista = document.getElementById('listaProdutos');
       lista.innerHTML = '';
 
-      let listaSubcat = produtosPizzas[subcategoriaAtual] || [];
+      let listaSubcat = [];
+
+      if (tipoPizzaAtual === 'grande') {
+        // Buscamos em pizzasGrandes
+        listaSubcat = pizzasGrandes[subcategoriaAtual] || [];
+      }
+      else if (tipoPizzaAtual === 'pequena') {
+        // Buscamos em pizzasPequenas
+        listaSubcat = pizzasPequenas[subcategoriaAtual] || [];
+      }
+      else {
+        // Categorias diversas
+        listaSubcat = produtosOutros[subcategoriaAtual] || [];
+      }
 
       if (busca !== '') {
         const matched = [];
@@ -639,16 +889,17 @@
     }
 
     function produtoClicado(prod) {
+      // Verifica se é pizza (subcategoria nas 4 subcats de pizza) ou item genérico
       const pizzaCats = ['Salgadas','Doces','Especiais','Premium'];
       if (pizzaCats.includes(subcategoriaAtual)) {
-        // Pizza
+        // É pizza
         if (isSelecionandoSegundaMetade) {
           montarMeioAMeio(primeiraMetade, prod);
         } else {
           mostrarDetalhesPizza(prod);
         }
       } else {
-        // Item genérico
+        // É item genérico
         mostrarDetalhesGenerico(prod);
       }
     }
@@ -663,7 +914,7 @@
       document.getElementById('quantidadeValor').innerText = '1';
       document.getElementById('observacao').value = '';
 
-      // Mostra opcoes (inteira / meio a meio)
+      // Mostra opções (inteira / meio a meio)
       document.querySelector('.opcoes').style.display = 'block';
       const radios = document.getElementsByName('opcaoPizza');
       radios.forEach(r => r.checked = (r.value === 'Inteira'));
@@ -784,14 +1035,14 @@
 
       let nomeFinal;
       if (produtoSelecionado.codigo.includes('+')) {
-        nomeFinal = produtoSelecionado.codigo;
+        nomeFinal = produtoSelecionado.codigo; // meio a meio
       } else {
         nomeFinal = `${produtoSelecionado.codigo} ${produtoSelecionado.nome}`;
       }
 
       const itemPedido = {
         nome: nomeFinal,
-        quantidade: quantidadeSelecionada, // fix
+        quantidade: quantidadeSelecionada,
         tipo: tipoPizza,
         observacao: obs,
         precoFinal: precoFinal
@@ -809,7 +1060,7 @@
 
       const itemPedido = {
         nome: nomeFinal,
-        quantidade: quantidadeSelecionada, // fix
+        quantidade: quantidadeSelecionada,
         tipo: 'Normal',
         observacao: obs,
         precoFinal: precoFinal
@@ -902,11 +1153,8 @@
       });
 
       mensagem += `Valor Total: R$ ${valorTotal.toFixed(2)}\n\n`;
-
-      // Info de entrega
       mensagem += `Entrega em: ${localEntrega}\n`;
       mensagem += `Endereço: ${enderecoEntrega}\n\n`;
-
       mensagem += 'Obrigado!';
 
       const telefoneWhatsApp = '5587920008169'; // Ajuste p/ seu número
