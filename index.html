@@ -114,6 +114,7 @@
     }
     .categorias button, .subcategorias button {
       background-color: #f70000;
+      color: rgb(255, 255, 255);
     }
 
     /* Tela de Produtos */
@@ -320,7 +321,7 @@
       <button onclick="mostrarSubcategorias('Pizzas Pequenas')">Pizzas Pequenas</button>
       <button onclick="mostrarProdutosGenerico('Hambúrgueres')">Hambúrgueres</button>
       <button onclick="mostrarProdutosGenerico('Pastéis')">Pastéis</button>
-      <button onclick="mostrarProdutosGenerico('Esfihas')">Esfihas</button>
+      <button onclick="mostrarProdutosGenerico('Esfihas')">Esfirras</button>
       <button onclick="mostrarProdutosGenerico('Açaí')">Açaí</button>
       <button onclick="mostrarProdutosGenerico('Gelados')">Gelados</button>
       <button onclick="mostrarProdutosGenerico('Refrigerantes')">Refrigerantes</button>
@@ -349,10 +350,10 @@
   <div id="subcategorias" class="tela">
     <div class="subcategorias">
       <h2 id="tituloSubcategoria"></h2>
-      <button onclick="mostrarProdutosPizzas('Salgadas')">Salgadas</button>
+      <button onclick="mostrarProdutosPizzas('Tradicionais')">Tradicionais</button>
       <button onclick="mostrarProdutosPizzas('Doces')">Doces</button>
-      <button onclick="mostrarProdutosPizzas('Especiais')">Especiais</button>
-      <button onclick="mostrarProdutosPizzas('Premium')">Premium</button>
+      <button onclick="mostrarProdutosPizzas('Premium Doces')">Premium Doces</button>
+      <button onclick="mostrarProdutosPizzas('Premium Salgadas')">Premium Salgadas</button>
       <button onclick="mostrarTela('cardapio')">Voltar</button>
     </div>
   </div>
@@ -617,7 +618,7 @@
 
     // Pizzas Grandes (separadas por subcategorias)
     const pizzasGrandes = {
-      'Salgadas': [
+      'Tradicionais': [
         { codigo: 'T001', nome: 'A Moda do Chefe (G)', preco: 38.00, desc: 'Frango desfiado, palmito, ovos, bacon, catupiry' },
         { codigo: 'T002', nome: 'Atum (G)', preco: 36.00, desc: 'Atum, mussarela, cebola, orégano' },
         { codigo: 'T003', nome: 'Bacon (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, bacon, ovos, tomate' },
@@ -656,7 +657,7 @@
         { codigo: 'D004', nome: 'Brigadeiro (G)', preco: 36.00, desc: 'Chocolate, granulado' },
         { codigo: 'D005', nome: 'Cartola (G)', preco: 36.00, desc: 'Leite condensado, banana, canela, açúcar' }
       ],
-      'Especiais': [
+      'Premium Doces': [
         { codigo: 'DP001', nome: 'Banana Nevada (G)', preco: 50.00, desc: 'Creme de leite, banana, chocolate branco, canela, açúcar' },
         { codigo: 'DP002', nome: 'Kit Kat (G)', preco: 45.00, desc: 'Creme de leite, chocolate, kit kat' },
         { codigo: 'DP003', nome: 'M&M (G)', preco: 38.00, desc: 'Creme de leite, chocolate, M&M' },
@@ -666,7 +667,7 @@
         { codigo: 'DP007', nome: 'Formigueiro em Chocolate Branco (G)', preco: 45.00, desc: 'Creme de leite, chocolate branco, brigadeiro' },
         { codigo: 'DP008', nome: 'Pizza Sorvete (G)', preco: 45.00, desc: 'Creme de leite, chocolate, sorvete' }
       ],
-      'Premium': [
+      'Premium Salgadas': [
         { codigo: 'PR001', nome: 'A Moda Lamundo dos Sabores (G)', preco: 53.00, desc: 'Mussarela, molho lombo, cream cheese, milho, barbecue, orégano, bacon' },
         { codigo: 'PR002', nome: 'Bacon 4 Queijos (G)', preco: 45.00, desc: 'Molho, mussarela, bacon, cheddar, catupiry, parmesão, orégano' },
         { codigo: 'PR003', nome: 'Super Portuguesa (G)', preco: 55.00, desc: 'Mussarela, molho, presunto, milho, ovo, tomate, cebola, pimentão, catupiry, bacon, orégano' },
@@ -692,7 +693,7 @@
 
     // Pizzas Pequenas (separadas por subcategorias)
     const pizzasPequenas = {
-      'Salgadas': [
+      'Tradicionais': [
         { codigo: 'P001', nome: 'A Moda do Chefe (P)', preco: 25.00, desc: 'Frango desfiado, palmito, ovos, bacon, catupiry' },
         { codigo: 'P002', nome: 'Atum (P)', preco: 25.00, desc: 'Atum, mussarela, cebola, orégano' },
         { codigo: 'P003', nome: 'Bacon (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, bacon, ovos, tomate' },
@@ -731,7 +732,7 @@
         { codigo: 'DP004', nome: 'Brigadeiro (P)', preco: 25.00, desc: 'Chocolate, granulado' },
         { codigo: 'DP005', nome: 'Cartola (P)', preco: 25.00, desc: 'Leite condensado, banana, canela, açúcar' }
       ],
-      'Especiais': [
+      'Premium Doces': [
         { codigo: 'DPP001', nome: 'Banana Nevada (P)', preco: 50.00, desc: 'Creme de leite, banana, chocolate branco, canela, açúcar' },
         { codigo: 'DPP002', nome: 'Kit Kat (P)', preco: 45.00, desc: 'Creme de leite, chocolate, kit kat' },
         { codigo: 'DPP003', nome: 'M&M (P)', preco: 38.00, desc: 'Creme de leite, chocolate, M&M' },
@@ -741,7 +742,7 @@
         { codigo: 'DPP007', nome: 'Formigueiro em Chocolate Branco (P)', preco: 45.00, desc: 'Creme de leite, chocolate branco, brigadeiro' },
         { codigo: 'DPP008', nome: 'Pizza Sorvete (P)', preco: 45.00, desc: 'Creme de leite, chocolate, sorvete' }
       ],
-      'Premium': [
+      'Premium Salgadas': [
         { codigo: 'PP001', nome: 'A Moda Lamundo dos Sabores (P)', preco: 53.00, desc: 'Mussarela, molho lombo, cream cheese, milho, barbecue, orégano, bacon' },
         { codigo: 'PP002', nome: 'Bacon 4 Queijos (P)', preco: 45.00, desc: 'Molho, mussarela, bacon, cheddar, catupiry, parmesão, orégano' },
         { codigo: 'PP003', nome: 'Super Portuguesa (P)', preco: 55.00, desc: 'Mussarela, molho, presunto, milho, ovo, tomate, cebola, pimentão, catupiry, bacon, orégano' },
