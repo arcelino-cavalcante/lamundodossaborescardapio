@@ -404,7 +404,7 @@
 
     <!-- Opções de local de entrega + endereço -->
     <div class="entrega-opcoes">
-      <p><strong>Entrega em:</strong></p>
+      <p><strong>Endereço:</strong></p>
       <label>
         <input type="radio" name="localEntrega" value="Vila Neves" onchange="atualizarEntrega()"/>
         Vila Neves
@@ -414,7 +414,7 @@
         Sitio
       </label>
       <br><br>
-      <label for="enderecoEntrega">Endereço / Local:</label>
+      <label for="enderecoEntrega">Local:</label>
       <br>
       <input type="text" id="enderecoEntrega" oninput="atualizarEntrega()" placeholder="Digite aqui..."/>
     </div>
@@ -1150,7 +1150,7 @@
         return;
       }
       if (!enderecoEntrega) {
-        alert('Digite o endereço/local de entrega.');
+        alert('Digite o local de entrega.');
         return;
       }
 
@@ -1170,8 +1170,8 @@
       });
 
       mensagem += `*Valor Total:* R$ ${valorTotal.toFixed(2)}\n\n`;
-      mensagem += `*Entrega em:* ${localEntrega}\n`;
-      mensagem += `*Endereço:* ${enderecoEntrega}\n\n`;
+      mensagem += `*Endereço:* ${localEntrega}\n`;
+      mensagem += `*Local:* ${enderecoEntrega}\n\n`;
       mensagem += "*Obrigado!*";
 
       const telefoneWhatsApp = '5587920008169'; // Ajuste para o seu número
