@@ -138,7 +138,7 @@
       padding: 15px;
       margin: 10px 0;
       text-align: left;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.555);
+      box-shadow: 0 0 8px rgb(255, 255, 255);
       cursor: pointer;
     }
     .produto h3 {
@@ -165,7 +165,7 @@
       border-radius: 10px;
       padding: 15px;
       margin: 10px 0;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.445);
+      box-shadow: 0 0 8px rgb(255, 255, 255);
       text-align: left;
       cursor: pointer;
     }
@@ -524,9 +524,9 @@
     const promocoesNoite = [
       {
         codigo: 'PR01',
-        nome: 'Promoção 1',
-        preco: 29.90,
-        desc: 'Pizza Pequena + 1 Refri Lata',
+        nome: 'Pizza G',
+        preco: 33.00,
+        desc: 'Coloque o sabor na Observaçao',
         imagem: 'imagens_promocao/promo1.jpg'
       },
       {
@@ -776,7 +776,15 @@
         { codigo: 'H005', nome: 'X-Tudão', preco: 35.00, desc: 'Carne artesanal, frango desfiado, ovo, presunto, mussarela, calabresa, batata palha, bacon, molhos da casa' },
         { codigo: 'H006', nome: 'Churrasco Bresa', preco: 19.00, desc: 'Carne artesanal, ovo, calabresa, batata palha, molhos da casa' },
         { codigo: 'H007', nome: 'Salsichão Burger', preco: 14.00, desc: 'Carne artesanal, salsicha, ovo, salada, molhos da casa' },
-        { codigo: 'H008', nome: 'Triplo do Cheff', preco: 33.00, desc: '3 carnes artesanais, bacon, ovo, salada, molhos da casa' }
+        { codigo: 'H008', nome: 'Triplo do Cheff', preco: 33.00, desc: '3 carnes artesanais, bacon, ovo, salada, molhos da casa' },
+        { codigo: 'H009', nome: 'Burger Cheff', preco: 8.00, desc: 'Pão especial, carne, tomate, cebola, alface, fusão de queijo (mussarela e cheddar), molho especial' },
+        { codigo: 'H010', nome: 'Burger Nordestino', preco: 15.99, desc: 'Pão especial, hambúrguer bovino, queijo coalho, tomate, alface, queijo, cebola, calabresa ao ponto, ovo, molho especial' },
+        { codigo: 'H011', nome: 'Drácula Bacon', preco: 12.99, desc: 'Pão especial, hambúrguer, queijo cheddar, mussarela, cebola caramelizada, ovo, bacon crocante, molho especial' },
+        { codigo: 'H012', nome: 'Goodzila Bresa', preco: 12.99, desc: 'Pão especial, hambúrguer bovino, ovo, calabresa, fusão de dois queijos, cebola caramelizada ou crua, salada, molho especial' },
+        { codigo: 'H013', nome: 'Rei Cheddar', preco: 12.00, desc: 'Pão especial, hambúrguer bovino, cheddar derretido, bacon crocante, frango desfiado, cebola caramelizada' },
+        { codigo: 'H014', nome: 'King – Kong', preco: 16.00, desc: 'Pão especial, 2 carnes, 2 camadas de queijo cheddar e mussarela, presunto, alface, tomate, cebola, molho especial' },
+        { codigo: 'H015', nome: 'Monster King X – Tudo', preco: 16.00, desc: 'Pão especial, hambúrguer, salada, bacon, presunto, ovo, calabresa, frango desfiado, molho especial' },
+        { codigo: 'H016', nome: 'Amistoso Palha', preco: 12.00, desc: 'Pão especial, hambúrguer, presunto, fusão de queijos (mussarela + cheddar), batata palha, molho especial' }
       ],
       'Pastéis': [
         { codigo: 'PA001', nome: 'Frango Catupiry', preco: 6.00, desc: 'Pastel de frango com catupiry' },
@@ -787,24 +795,32 @@
         { codigo: 'PA006', nome: '4 Sabores', preco: 8.00, desc: 'Frango Catupiry, Frango Cheddar, Mussarela, 4 Queijos, Presunto, Milho e Ervilha, Cebola e Tomate' }
       ],
       'Esfirras': [
-        { codigo: 'EF01', nome: 'Esfirra de Carne', preco: 5.00, desc: 'Esfirra recheada com carne moída' },
-        { codigo: 'EF02', nome: 'Esfirra de Frango', preco: 6.00, desc: 'Esfirra recheada com frango desfiado' }
+        { codigo: 'E001', nome: 'Frango c/ Catupiry', preco: 3.00, desc: 'Esfirra de frango com catupiry' },
+        { codigo: 'E002', nome: 'Mussarela', preco: 3.00, desc: 'Esfirra recheada com mussarela' },
+        { codigo: 'E003', nome: 'Bacon', preco: 5.00, desc: 'Esfirra recheada com bacon' },
+        { codigo: 'E004', nome: 'Frango c/ Mussarela', preco: 3.00, desc: 'Esfirra de frango com mussarela' },
+        { codigo: 'E005', nome: 'Calabresa', preco: 3.00, desc: 'Esfirra de calabresa' },
+        { codigo: 'E006', nome: 'Toscana', preco: 3.00, desc: 'Esfirra de linguiça toscana' },
+        { codigo: 'E007', nome: 'Dois Queijos', preco: 3.00, desc: 'Esfirra de mussarela e catupiry' },
+        { codigo: 'E008', nome: 'Frango c/ Cheddar', preco: 3.00, desc: 'Esfirra de frango com cheddar' }
       ],
       'Açaí': [
-        { codigo: 'AC01', nome: 'Açaí 300ml', preco: 12.00, desc: 'Açaí puro com acompanhamentos a escolher' },
-        { codigo: 'AC02', nome: 'Açaí 500ml', preco: 18.00, desc: 'Açaí puro com acompanhamentos a escolher' }
+        { codigo: 'AC02', nome: 'Açaí 500ml', preco: 18.00, desc: 'Mm brigadeiro leite condensado leite pó granola frutas banana morango' }
       ],
       'Gelados': [
         { codigo: 'GL01', nome: 'Sorvete Casquinha', preco: 5.00, desc: 'Casquinha crocante de baunilha' },
         { codigo: 'GL02', nome: 'Milkshake 400ml', preco: 10.00, desc: 'Milkshake de chocolate ou morango' }
       ],
       'Refrigerantes': [
-        { codigo: 'RF01', nome: 'Coca-Cola Lata', preco: 5.00, desc: '350ml' },
-        { codigo: 'RF02', nome: 'Guaraná Antarctica Lata', preco: 5.00, desc: '350ml' }
+        { codigo: 'BE001', nome: 'Refrigerante Lata', preco: 5.00, desc: 'Lata Coca' },
+        { codigo: 'BE001', nome: 'Refrigerante Lata', preco: 5.00, desc: 'Lata Fanta' },
+        { codigo: 'BE002', nome: 'Refrigerante 1LT Guaraná ou Coca', preco: 8.00, desc: 'Refrigerante de 1 litro - Guaraná ou Coca-Cola' },
+        { codigo: 'BE003', nome: 'Refrigerante 2LT Guaraná ou Fanta', preco: 12.00, desc: 'Refrigerante de 2 litros - Guaraná ou Fanta' },
+        { codigo: 'BE004', nome: 'Refrigerante 2LT Coca', preco: 14.00, desc: 'Refrigerante de 2 litros - Coca-Cola' }
       ],
       'Batata Frita': [
-        { codigo: 'BT01', nome: 'Batata Cheddar e Bacon', preco: 15.00, desc: 'Fritas com cheddar e bacon crocante' },
-        { codigo: 'BT02', nome: 'Batata Temperada', preco: 12.00, desc: 'Fritas com toque de especiarias' }
+        { codigo: 'B001', nome: 'Batata Frita', preco: 15.00, desc: 'Porção de batata frita crocante' },
+        { codigo: 'B002', nome: 'Batata Maluca', preco: 35.00, desc: 'Batata com molhos e acompanhamentos especiais' }
       ]
     };
 
