@@ -12,7 +12,8 @@
       - Nova opção “Promoção da Noite” no menu inicial, exibindo uma tela semelhante à de combos.
       - Imagens de promoções vêm da pasta "imagens_promocao".
       - Responsividade permanece inalterada.
-      - MELHORIA: se o cliente selecionar "Sitio", aparece um campo para escolher entre Entupido e Serrinha (cada qual com sua taxa), somando ao total do pedido.
+      - MELHORIA: se o cliente selecionar "Sitio", aparece um campo para escolher entre Entupido, Serrinha, etc., somando a taxa de entrega.
+      - Agora com a LOGO abaixo do botão "Informações".
   -->
 
   <style>
@@ -51,7 +52,7 @@
       overflow: hidden;
     }
 
-    /* Slideshow de fundo (menos zoom) */
+    /* Slideshow de fundo */
     #menuInicialSlideshow {
       position: absolute;
       top: 0;
@@ -59,7 +60,7 @@
       width: 100%;
       height: 100%;
       background-repeat: no-repeat;
-      background-size: cover; /* Alterado para 'cover' */
+      background-size: cover; 
       background-position: center;
       transition: background-image 1s ease-in-out;
       z-index: 1;
@@ -96,6 +97,12 @@
     }
     button:hover {
       background-color: #ffee00;
+    }
+
+    /* Logo abaixo do botão "Informações" */
+    #logoPequena {
+      width: 120px; /* Ajuste conforme necessário */
+      margin-top: 10px;
     }
 
     .tela {
@@ -174,7 +181,6 @@
       width: 100%;
       max-width: 250px;
       display: block;
-      margin-bottom: 10px;
       margin: 0 auto 10px;
       border-radius: 8px;
     }
@@ -295,10 +301,10 @@
       margin-top: 8px;
     }
 
-    /* Select do Sítio (apenas se localEntrega = "Sitio") */
+    /* Select do Sítio (visível somente se localEntrega = "Sitio") */
     #sitioContainer {
       margin-top: 10px;
-      display: none; /* ficará visível somente se o cliente marcar "Sitio" */
+      display: none;
     }
     #selectSitio {
       width: 100%;
@@ -322,10 +328,13 @@
     <nav id="menuInicial">
       <button onclick="mostrarTela('cardapio')">Cardápio</button>
       <button onclick="mostrarCombos()">Combos da Noite</button>
-      <!-- NOVO BOTÃO: Promoção da Noite -->
+      <!-- Promoção da Noite -->
       <button onclick="mostrarPromocoes()">Promoção da Noite</button>
       <button onclick="mostrarTela('pedidos')">Ver Pedidos</button>
       <button onclick="mostrarTela('informacoes')">Informações</button>
+
+      <!-- A LOGO pequena abaixo do botão "Informações" -->
+      <img id="logoPequena" src="imagens_inicial/logo_pizzaria.png" alt="Logo Pizzaria" />
     </nav>
   </div>
 
@@ -354,7 +363,7 @@
     <button onclick="voltarMenu()">Voltar</button>
   </div>
 
-  <!-- NOVA TELA: Promoções da Noite -->
+  <!-- Tela de Promoções da Noite -->
   <div id="promocoes" class="tela">
     <h2>Promoção da Noite</h2>
     <div id="promocoesLista"></div>
@@ -515,7 +524,7 @@
       document.getElementById('menuInicialContainer').style.display = 'block';
     }
 
-    /* =========== V A R I Á V E I S  /  C A R R I N H O  /  L Ó G I C A ========== */
+    /* =========== V A R I Á V E I S / C A R R I N H O / L Ó G I C A ========== */
     let carrinho = [];
     let produtoSelecionado = null;
     let quantidadeSelecionada = 1;
@@ -567,7 +576,6 @@
       }
     ];
 
-    /* Exibir combos */
     function mostrarCombos() {
       mostrarTela('combos');
       const combosLista = document.getElementById('combosLista');
@@ -606,7 +614,6 @@
       mostrarTela('detalhes');
     }
 
-    /* Exibir promoções */
     function mostrarPromocoes() {
       mostrarTela('promocoes');
       const promocoesLista = document.getElementById('promocoesLista');
@@ -837,8 +844,7 @@
         { codigo: 'AC02', nome: 'Açaí 500ml', preco: 18.00, desc: 'Mm brigadeiro leite condensado leite pó granola frutas banana morango' }
       ],
       'Gelados': [
-        { codigo: 'GL01', nome: 'Sorvete Casquinha', preco: 5.00, desc: 'Casquinha crocante de baunilha' },
-        { codigo: 'GL02', nome: 'Milkshake 400ml', preco: 10.00, desc: 'Milkshake de chocolate ou morango' }
+        
       ],
       'Refrigerantes': [
         { codigo: 'BE001', nome: 'Refrigerante Lata', preco: 5.00, desc: 'Lata Coca' },
@@ -855,6 +861,7 @@
 
     function mostrarSubcategorias(categoria) {
       document.getElementById('tituloSubcategoria').innerText = categoria + ' - Subcategorias';
+
       if (categoria === 'Pizzas Grandes') {
         tipoPizzaAtual = 'grande';
       } else {
@@ -949,7 +956,7 @@
       document.getElementById('quantidadeValor').innerText = '1';
       document.getElementById('observacao').value = '';
 
-      // Mostra opções (inteira / meio a meio)
+      // Mostra opções (Inteira / Meio a Meio)
       document.querySelector('.opcoes').style.display = 'block';
       const radios = document.getElementsByName('opcaoPizza');
       radios.forEach(r => r.checked = (r.value === 'Inteira'));
@@ -1069,7 +1076,8 @@
 
       let nomeFinal;
       if (produtoSelecionado.codigo.includes('+')) {
-        nomeFinal = produtoSelecionado.codigo; // meio a meio
+        // meio a meio
+        nomeFinal = produtoSelecionado.codigo;
       } else {
         nomeFinal = `${produtoSelecionado.codigo} ${produtoSelecionado.nome}`;
       }
@@ -1129,7 +1137,6 @@
 
         const div = document.createElement('div');
         div.classList.add('pedido-item');
-
         div.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div style="flex: 1;">
@@ -1140,17 +1147,19 @@
               <p>Total: R$ ${item.precoFinal.toFixed(2)}</p>
             </div>
             <div style="margin-left: 10px;">
-              <button onclick="removerPedido(${index})" style="background-color: #ffee00; color: #000; border: none; border-radius: 8px; padding: 8px 10px; font-size: 1em; cursor: pointer;">🗑️</button>
+              <button onclick="removerPedido(${index})" style="background-color: #ffee00; color: #000; border: none; border-radius: 8px; padding: 8px 10px; font-size: 1em; cursor: pointer;">
+                🗑️
+              </button>
             </div>
           </div>
         `;
         container.appendChild(div);
       });
 
-      // SOMA DA TAXA DE ENTREGA, CASO SITIO
+      // SOMA DA TAXA DE ENTREGA, CASO SEJA SITIO
       const totalComTaxa = somaTotal + taxaEntrega;
-
       document.getElementById('pedidoTotal').innerText = `Valor Total: R$ ${totalComTaxa.toFixed(2)}`;
+
       verificarEnvioHabilitado();
     }
 
@@ -1226,10 +1235,8 @@
       if (localEntrega === 'Vila Neves') {
         botaoEnviar.disabled = (enderecoEntrega === '');
       } else if (localEntrega === 'Sitio') {
-        // precisa de sitioSelecionado e endereço
         botaoEnviar.disabled = (sitioSelecionado === '' || enderecoEntrega === '');
       } else {
-        // não selecionou nada, então desabilitado
         botaoEnviar.disabled = true;
       }
     }
