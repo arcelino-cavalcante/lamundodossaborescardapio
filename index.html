@@ -11,7 +11,8 @@
       - Campo de busca funciona em todas as categorias.
       - Nova opção “Promoção da Noite” no menu inicial, exibindo uma tela semelhante à de combos.
       - Imagens de promoções vêm da pasta "imagens_promocao".
-      - Responsividade para dispositivos móveis permanece inalterada.
+      - Responsividade permanece inalterada.
+      - MELHORIA: se o cliente selecionar "Sitio", aparece um campo para escolher entre Entupido e Serrinha (cada qual com sua taxa), somando ao total do pedido.
   -->
 
   <style>
@@ -58,7 +59,7 @@
       width: 100%;
       height: 100%;
       background-repeat: no-repeat;
-      background-size: cover; /* Alterado de 'contain' para 'cover' */
+      background-size: cover; /* Alterado para 'cover' */
       background-position: center;
       transition: background-image 1s ease-in-out;
       z-index: 1;
@@ -293,6 +294,21 @@
       border-radius: 8px;
       margin-top: 8px;
     }
+
+    /* Select do Sítio (apenas se localEntrega = "Sitio") */
+    #sitioContainer {
+      margin-top: 10px;
+      display: none; /* ficará visível somente se o cliente marcar "Sitio" */
+    }
+    #selectSitio {
+      width: 100%;
+      max-width: 400px;
+      padding: 8px;
+      font-size: 1em;
+      border: 2px solid #000000;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
@@ -413,8 +429,25 @@
         <input type="radio" name="localEntrega" value="Sitio" onchange="atualizarEntrega()"/>
         Sitio
       </label>
+
+      <!-- Se for SITIO, escolhe qual é e soma a taxa de entrega -->
+      <div id="sitioContainer">
+        <label for="selectSitio">Selecione o sítio:</label>
+        <select id="selectSitio" onchange="atualizarSitio()">
+          <option value="">-- Escolha um sítio --</option>
+          <option value="Entupido">Entupido - R$ 8,00</option>
+          <option value="Serrinha">Serrinha - R$ 5,00</option>
+          <option value="Vieira">Vieira - R$ 10,00</option>
+          <option value="Catonho">Catonho - R$ 12,00</option>
+          <option value="Cachoeira">Cachoeira - R$ 6,00</option>
+          <option value="Fama">Fama - R$ 6,00</option>
+          <option value="Capoeira de pedra">Capoeira de pedra - R$ 5,00</option>
+          <option value="Batinga">Batinga - R$ 5,00</option>
+        </select>
+      </div>
+
       <br><br>
-      <label for="enderecoEntrega">Local:</label>
+      <label for="enderecoEntrega">Local/Ponto de Referência:</label>
       <br>
       <input type="text" id="enderecoEntrega" oninput="atualizarEntrega()" placeholder="Digite aqui..."/>
     </div>
@@ -482,11 +515,7 @@
       document.getElementById('menuInicialContainer').style.display = 'block';
     }
 
-    function voltarParaProdutos() {
-      mostrarTela('produtos');
-    }
-
-    /* =========== L Ó G I C A  /  C A R R I N H O ========== */
+    /* =========== V A R I Á V E I S  /  C A R R I N H O  /  L Ó G I C A ========== */
     let carrinho = [];
     let produtoSelecionado = null;
     let quantidadeSelecionada = 1;
@@ -496,9 +525,11 @@
     let isSelecionandoSegundaMetade = false;
     let primeiraMetade = null;
 
-    // Entrega
+    // Controle de entrega
     let localEntrega = '';
     let enderecoEntrega = '';
+    let sitioSelecionado = '';
+    let taxaEntrega = 0;
 
     // ====================== COMBOS =========================
     const combosNoite = [
@@ -519,8 +550,6 @@
     ];
 
     // ================== PROMOÇÕES DA NOITE =================
-    /* Exemplo de array com promoções e suas imagens
-       (pasta "imagens_promocao") */
     const promocoesNoite = [
       {
         codigo: 'PR01',
@@ -538,7 +567,7 @@
       }
     ];
 
-    /* Função para exibir combos */
+    /* Exibir combos */
     function mostrarCombos() {
       mostrarTela('combos');
       const combosLista = document.getElementById('combosLista');
@@ -577,7 +606,7 @@
       mostrarTela('detalhes');
     }
 
-    /* Função para exibir promoções */
+    /* Exibir promoções */
     function mostrarPromocoes() {
       mostrarTela('promocoes');
       const promocoesLista = document.getElementById('promocoesLista');
@@ -616,7 +645,7 @@
       mostrarTela('detalhes');
     }
 
-    // Pizzas Grandes (separadas por subcategorias)
+    // Pizzas Grandes
     const pizzasGrandes = {
       'Tradicionais': [
         { codigo: 'T001', nome: 'A Moda do Chefe (G)', preco: 38.00, desc: 'Frango desfiado, palmito, ovos, bacon, catupiry' },
@@ -691,7 +720,7 @@
       ]
     };
 
-    // Pizzas Pequenas (separadas por subcategorias)
+    // Pizzas Pequenas
     const pizzasPequenas = {
       'Tradicionais': [
         { codigo: 'P001', nome: 'A Moda do Chefe (P)', preco: 25.00, desc: 'Frango desfiado, palmito, ovos, bacon, catupiry' },
@@ -824,20 +853,16 @@
       ]
     };
 
-    // Quando clica em "Pizzas Grandes" ou "Pizzas Pequenas"
     function mostrarSubcategorias(categoria) {
       document.getElementById('tituloSubcategoria').innerText = categoria + ' - Subcategorias';
-
       if (categoria === 'Pizzas Grandes') {
         tipoPizzaAtual = 'grande';
       } else {
         tipoPizzaAtual = 'pequena';
       }
-
       mostrarTela('subcategorias');
     }
 
-    // Quando escolhe a subcategoria (Salgadas, Doces, etc.)
     function mostrarProdutosPizzas(subcat) {
       subcategoriaAtual = subcat;
       document.getElementById('tituloCategoria').innerText = 'Pizzas ' + subcat;
@@ -846,7 +871,6 @@
       mostrarTela('produtos');
     }
 
-    // Quando escolhe categorias que não são pizza
     function mostrarProdutosGenerico(cat) {
       tipoPizzaAtual = 'outros';
       subcategoriaAtual = cat;
@@ -861,7 +885,6 @@
       atualizarListaProdutos();
     }
 
-    // Renderiza a lista de produtos
     function atualizarListaProdutos() {
       const busca = document.getElementById('busca').value.toLowerCase().trim();
       const lista = document.getElementById('listaProdutos');
@@ -870,15 +893,12 @@
       let listaSubcat = [];
 
       if (tipoPizzaAtual === 'grande') {
-        // Buscamos em pizzasGrandes
         listaSubcat = pizzasGrandes[subcategoriaAtual] || [];
       }
       else if (tipoPizzaAtual === 'pequena') {
-        // Buscamos em pizzasPequenas
         listaSubcat = pizzasPequenas[subcategoriaAtual] || [];
       }
       else {
-        // Categorias diversas
         listaSubcat = produtosOutros[subcategoriaAtual] || [];
       }
 
@@ -906,17 +926,15 @@
     }
 
     function produtoClicado(prod) {
-      // Verifica se é pizza (subcategoria nas 4 subcats de pizza) ou item genérico
+      // Verifica se é pizza
       const pizzaCats = ['Tradicionais','Doces','Premium Doces','Premium Salgadas'];
       if (pizzaCats.includes(subcategoriaAtual)) {
-        // É pizza
         if (isSelecionandoSegundaMetade) {
           montarMeioAMeio(primeiraMetade, prod);
         } else {
           mostrarDetalhesPizza(prod);
         }
       } else {
-        // É item genérico
         mostrarDetalhesGenerico(prod);
       }
     }
@@ -991,12 +1009,12 @@
     function acaoDetalhes() {
       const pizzaCats = ['Tradicionais','Doces','Premium Doces','Premium Salgadas'];
       if (!pizzaCats.includes(subcategoriaAtual)) {
-        // genérico
+        // Item não é pizza
         adicionarAoPedidoGenerico();
         return;
       }
 
-      // pizza
+      // É pizza
       const radios = document.getElementsByName('opcaoPizza');
       let tipoPizza = 'Inteira';
       radios.forEach(r => {
@@ -1013,7 +1031,6 @@
       }
     }
 
-    // Montar pizza meio a meio => valor da mais cara
     function montarMeioAMeio(m1, m2) {
       const displayNome = `${m1.codigo} ${m1.nome} + ${m2.codigo} ${m2.nome}`;
       const valorMaisCara = Math.max(m1.preco, m2.preco);
@@ -1087,21 +1104,22 @@
       mostrarTela('pedidos');
       atualizarListaPedidos();
     }
+
     function removerPedido(index) {
       if (confirm("Tem certeza que deseja remover este item do pedido?")) {
         carrinho.splice(index, 1);
         atualizarListaPedidos();
       }
     }
+
     function atualizarListaPedidos() {
       const container = document.getElementById('listaPedidos');
       container.innerHTML = '';
 
-      verificarEnvioHabilitado();
-
       if (carrinho.length === 0) {
         container.innerHTML = '<p>Nenhum pedido até agora.</p>';
         document.getElementById('pedidoTotal').innerText = '';
+        verificarEnvioHabilitado();
         return;
       }
 
@@ -1126,11 +1144,13 @@
             </div>
           </div>
         `;
-
         container.appendChild(div);
       });
 
-      document.getElementById('pedidoTotal').innerText = `Valor Total: R$ ${somaTotal.toFixed(2)}`;
+      // SOMA DA TAXA DE ENTREGA, CASO SITIO
+      const totalComTaxa = somaTotal + taxaEntrega;
+
+      document.getElementById('pedidoTotal').innerText = `Valor Total: R$ ${totalComTaxa.toFixed(2)}`;
       verificarEnvioHabilitado();
     }
 
@@ -1138,24 +1158,78 @@
       mostrarTela('cardapio');
     }
 
-    // Controle de entrega
     function atualizarEntrega() {
       const radios = document.getElementsByName('localEntrega');
       localEntrega = '';
       radios.forEach(r => {
-        if (r.checked) localEntrega = r.value;
+        if (r.checked) {
+          localEntrega = r.value;
+        }
       });
 
       enderecoEntrega = document.getElementById('enderecoEntrega').value.trim();
-      verificarEnvioHabilitado();
+
+      // Se for SITIO, mostra container para escolher o sítio
+      const sitioDiv = document.getElementById('sitioContainer');
+      if (localEntrega === 'Sitio') {
+        sitioDiv.style.display = 'block';
+      } else {
+        sitioDiv.style.display = 'none';
+        // Reseta seleção se não for sítio
+        sitioSelecionado = '';
+        taxaEntrega = 0;
+      }
+
+      atualizarListaPedidos();
+    }
+
+    function atualizarSitio() {
+      const select = document.getElementById('selectSitio');
+      sitioSelecionado = select.value;
+
+      // Define a taxa de entrega de acordo com o sítio
+      if (sitioSelecionado === 'Entupido') {
+        taxaEntrega = 8;
+      } else if (sitioSelecionado === 'Serrinha') {
+        taxaEntrega = 5;
+      } else if (sitioSelecionado === 'Vieira') {
+        taxaEntrega = 10;
+      } else if (sitioSelecionado === 'Catonho') {
+        taxaEntrega = 12;
+      } else if (sitioSelecionado === 'Cachoeira') {
+        taxaEntrega = 6;
+      } else if (sitioSelecionado === 'Fama') {
+        taxaEntrega = 6;
+      } else if (sitioSelecionado === 'Capoeira de pedra') {
+        taxaEntrega = 5;
+      } else if (sitioSelecionado === 'Batinga') {
+        taxaEntrega = 5;
+      } else {
+        taxaEntrega = 0;
+      }
+
+      atualizarListaPedidos();
     }
 
     function verificarEnvioHabilitado() {
       const botaoEnviar = document.getElementById('botaoEnviar');
-      // Habilita se houver itens e endereço não vazio
-      if (carrinho.length > 0 && enderecoEntrega !== '') {
-        botaoEnviar.disabled = false;
+
+      // Condições para habilitar envio:
+      // 1) carrinho não vazio
+      // 2) se localEntrega for 'Vila Neves', basta endereço != ''
+      // 3) se localEntrega for 'Sitio', precisa escolher um sítio e endereço != ''
+      if (carrinho.length === 0) {
+        botaoEnviar.disabled = true;
+        return;
+      }
+
+      if (localEntrega === 'Vila Neves') {
+        botaoEnviar.disabled = (enderecoEntrega === '');
+      } else if (localEntrega === 'Sitio') {
+        // precisa de sitioSelecionado e endereço
+        botaoEnviar.disabled = (sitioSelecionado === '' || enderecoEntrega === '');
       } else {
+        // não selecionou nada, então desabilitado
         botaoEnviar.disabled = true;
       }
     }
@@ -1165,8 +1239,16 @@
         alert('Nenhum pedido para enviar.');
         return;
       }
+      if (!localEntrega) {
+        alert('Selecione o local de entrega.');
+        return;
+      }
       if (!enderecoEntrega) {
-        alert('Digite o local de entrega.');
+        alert('Digite o local/ponto de referência.');
+        return;
+      }
+      if (localEntrega === 'Sitio' && !sitioSelecionado) {
+        alert('Selecione qual sítio.');
         return;
       }
 
@@ -1185,9 +1267,20 @@
         valorTotal += item.precoFinal;
       });
 
-      mensagem += `*Valor Total:* R$ ${valorTotal.toFixed(2)}\n\n`;
+      // Adiciona taxa de entrega se for sítio
+      let totalComTaxa = valorTotal;
+      if (localEntrega === 'Sitio' && taxaEntrega > 0) {
+        mensagem += `Taxa de entrega (${sitioSelecionado}): R$ ${taxaEntrega.toFixed(2)}\n`;
+        totalComTaxa += taxaEntrega;
+      }
+
+      mensagem += `*Valor Total:* R$ ${totalComTaxa.toFixed(2)}\n\n`;
+
       mensagem += `*Endereço:* ${localEntrega}\n`;
-      mensagem += `*Local:* ${enderecoEntrega}\n\n`;
+      if (localEntrega === 'Sitio') {
+        mensagem += `*Sítio:* ${sitioSelecionado}\n`;
+      }
+      mensagem += `*Local/Ponto de Referência:* ${enderecoEntrega}\n\n`;
       mensagem += "*Obrigado!*";
 
       const telefoneWhatsApp = '5587920008169'; // Ajuste para o seu número
