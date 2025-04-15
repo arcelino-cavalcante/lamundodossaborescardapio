@@ -7,13 +7,14 @@
 
   <!--
     Destaques:
-      - Mantidas todas as funcionalidades existentes (pizzas meio a meio, combos, carrinho, etc.).
-      - Campo de busca funciona em todas as categorias.
-      - Nova opção “Promoção da Noite” no menu inicial, exibindo uma tela semelhante à de combos.
-      - Imagens de promoções vêm da pasta "imagens_promocao".
-      - Responsividade permanece inalterada.
-      - MELHORIA: se o cliente selecionar "Sitio", aparece um campo para escolher entre Entupido, Serrinha, etc., somando a taxa de entrega.
-      - Agora com a LOGO abaixo do botão "Informações".
+      - Mantém todas as funcionalidades existentes (pizzas meio a meio, combos, carrinho, etc.).
+      - Campo de busca em todas as categorias.
+      - Tela de "Promoção da Noite".
+      - Responsividade inalterada.
+      - Sitio => taxa de entrega adicional.
+      - Logo abaixo do botão "Informações".
+      - Borda em pizzas inteiras (por padrão sempre “Sem borda”).
+      - A borda escolhida aparece abaixo do botão “Bordas” e, no pedido, em linha separada de "Obs".
   -->
 
   <style>
@@ -60,7 +61,7 @@
       width: 100%;
       height: 100%;
       background-repeat: no-repeat;
-      background-size: cover; 
+      background-size: cover;
       background-position: center;
       transition: background-image 1s ease-in-out;
       z-index: 1;
@@ -122,7 +123,7 @@
     }
     .categorias button, .subcategorias button {
       background-color: #f70000;
-      color: rgb(255, 255, 255);
+      color: #fff;
     }
 
     /* Tela de Produtos */
@@ -150,11 +151,11 @@
       cursor: pointer;
     }
     .produto h3 {
-      color: #000000;
+      color: #000;
       margin-bottom: 5px;
     }
     .produto p {
-      color: #000000;
+      color: #000;
       margin-bottom: 5px;
     }
     .produto .preco {
@@ -163,7 +164,7 @@
       float: right;
     }
 
-    /* Tela de Combos/Promoções (layout similar) */
+    /* Tela de Combos/Promoções */
     #combosLista, #promocoesLista {
       max-width: 500px;
       margin: 0 auto;
@@ -185,7 +186,7 @@
       border-radius: 8px;
     }
     .combo-item h3 {
-      color: #000000;
+      color: #000;
       margin-bottom: 5px;
     }
     .combo-item p {
@@ -206,14 +207,13 @@
     }
     #detalhes h2 {
       margin-bottom: 10px;
-      color: #000000;
+      color: #000;
       text-align: center;
     }
     .quantidade {
       display: flex;
       align-items: center;
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin: 10px 0;
     }
     .quantidade button {
       background-color: #ffee00;
@@ -226,8 +226,7 @@
       text-align: center;
     }
     .opcoes {
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin: 10px 0;
     }
     .opcoes label {
       margin-right: 10px;
@@ -238,7 +237,7 @@
       resize: none;
       margin-bottom: 10px;
       border-radius: 8px;
-      border: 2px solid #000000;
+      border: 2px solid #000;
       padding: 8px;
       font-size: 1em;
     }
@@ -248,6 +247,32 @@
       font-weight: bold;
       text-align: right;
       margin-bottom: 15px;
+    }
+
+    /* Painel p/ bordas (vertical) */
+    #bordaPanel {
+      display: none;
+      margin-bottom: 10px;
+    }
+    .opcoes-borda {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+      margin-left: 10px;
+      margin-top: 5px;
+    }
+    #btnBorda {
+      display: none; 
+      margin: 10px 0;
+    }
+
+    /* Exibição da borda selecionada */
+    #bordaSelecionada {
+      margin-bottom: 10px;
+      color: #000;
+      font-style: italic;
+      display: none; /* só aparece se for Inteira */
     }
 
     /* Tela de Pedidos */
@@ -265,7 +290,7 @@
       position: relative;
     }
     .pedido-item h4 {
-      color: #000000;
+      color: #000;
       margin-bottom: 5px;
     }
     .pedido-total {
@@ -283,7 +308,7 @@
       margin-top: 20px;
     }
 
-    /* Entrega: local e endereço */
+    /* Entrega */
     .entrega-opcoes {
       margin-top: 15px;
       text-align: left;
@@ -296,12 +321,12 @@
       max-width: 400px;
       padding: 8px;
       font-size: 1em;
-      border: 2px solid #000000;
+      border: 2px solid #000;
       border-radius: 8px;
       margin-top: 8px;
     }
 
-    /* Select do Sítio (visível somente se localEntrega = "Sitio") */
+    /* Se for SITIO */
     #sitioContainer {
       margin-top: 10px;
       display: none;
@@ -311,7 +336,7 @@
       max-width: 400px;
       padding: 8px;
       font-size: 1em;
-      border: 2px solid #000000;
+      border: 2px solid #000;
       border-radius: 8px;
       margin-top: 8px;
     }
@@ -328,12 +353,11 @@
     <nav id="menuInicial">
       <button onclick="mostrarTela('cardapio')">Cardápio</button>
       <button onclick="mostrarCombos()">Combos da Noite</button>
-      <!-- Promoção da Noite -->
       <button onclick="mostrarPromocoes()">Promoção da Noite</button>
       <button onclick="mostrarTela('pedidos')">Ver Pedidos</button>
       <button onclick="mostrarTela('informacoes')">Informações</button>
 
-      <!-- A LOGO pequena abaixo do botão "Informações" -->
+      <!-- Logo pequena -->
       <img id="logoPequena" src="imagens_inicial/logo_pizzaria.png" alt="Logo Pizzaria" />
     </nav>
   </div>
@@ -397,12 +421,14 @@
     <div class="detalhes-container">
       <h2 id="detalhesTitulo"></h2>
       <p id="detalhesDescricao"></p>
+
       <div class="quantidade">
         <label>Quantidade:</label>
         <button onclick="alterarQuantidade(-1)">-</button>
         <span id="quantidadeValor">1</span>
         <button onclick="alterarQuantidade(1)">+</button>
       </div>
+
       <div class="opcoes">
         <label>
           <input type="radio" name="opcaoPizza" value="Inteira" checked onchange="mudarTipoPizza()"/>
@@ -413,12 +439,51 @@
           Meio a Meio
         </label>
       </div>
+
+      <!-- Botão p/ bordas -->
+      <button id="btnBorda" type="button" onclick="toggleBorda()">Bordas</button>
+
+      <!-- Exibe borda selecionada abaixo do botão -->
+      <p id="bordaSelecionada"></p>
+
+      <!-- Painel que expande as opções de bordas (vertical) -->
+      <div id="bordaPanel">
+        <p>Escolha sua borda (fechará automaticamente):</p>
+        <div class="opcoes-borda">
+          <label>
+            <input type="radio" name="bordaSabor" value="Nenhuma" checked onchange="selecionarBorda()" />
+            Sem borda
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="Catupiry" onchange="selecionarBorda()" />
+            Catupiry (3,00)
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="Cheddar" onchange="selecionarBorda()" />
+            Cheddar (3,00)
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="Catupiry + Cheddar" onchange="selecionarBorda()" />
+            Catupiry + Cheddar (3,00)
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="Chocolate" onchange="selecionarBorda()" />
+            Chocolate (5,00)
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="Doce de Leite" onchange="selecionarBorda()" />
+            Doce de Leite (5,00)
+          </label>
+        </div>
+      </div>
+
       <textarea class="observacao" id="observacao" placeholder="Alguma observação?"></textarea>
       <div class="total" id="precoTotal"></div>
       <button id="botaoAcao" onclick="acaoDetalhes()">Adicionar ao Pedido</button>
     </div>
+
     <br>
-    <button onclick="mostrarTela('produtos')">Voltar</button>
+    <button onclick="voltarMenu()">Voltar</button>
   </div>
 
   <!-- Tela de Pedidos -->
@@ -439,7 +504,6 @@
         Sitio
       </label>
 
-      <!-- Se for SITIO, escolhe qual é e soma a taxa de entrega -->
       <div id="sitioContainer">
         <label for="selectSitio">Selecione o sítio:</label>
         <select id="selectSitio" onchange="atualizarSitio()">
@@ -477,19 +541,17 @@
     <p>Telefone: (87) 98129-5167</p>
     <br>
     <h2>Horário de funcionamento: </h2>
-      <br>
-      <p>Segunda à Sexta 18h as 23h 
-      <br>
-      <br>
-      Final de semana 18h às 00:00h</p>
-      <br>
+    <br>
+    <p>Segunda à Sexta 18h as 23h</p>
+    <p>Final de semana 18h às 00:00h</p>
+    <br>
     <p>Fazemos entregas nos Sítios Vizinhos</p>
     <br>
     <button onclick="voltarMenu()">Voltar</button>
   </div>
 
   <script>
-    /* ============= S L I D E S H O W ============= */
+    /* ==================== S L I D E S H O W ==================== */
     const imagensFundo = [
       'imagens_inicial/pizza1.jpg',
       'imagens_inicial/pizza2.jpg',
@@ -524,7 +586,7 @@
       document.getElementById('menuInicialContainer').style.display = 'block';
     }
 
-    /* =========== V A R I Á V E I S / C A R R I N H O / L Ó G I C A ========== */
+    /* =============== VARIÁVEIS / CARRINHO / LÓGICA =============== */
     let carrinho = [];
     let produtoSelecionado = null;
     let quantidadeSelecionada = 1;
@@ -534,13 +596,18 @@
     let isSelecionandoSegundaMetade = false;
     let primeiraMetade = null;
 
-    // Controle de entrega
+    // Borda
+    let mostraPainelBorda = false; // se o painel de bordas está aberto
+    let saborBorda = 'Nenhuma';
+    let valorBorda = 0;
+
+    // Entrega
     let localEntrega = '';
     let enderecoEntrega = '';
     let sitioSelecionado = '';
     let taxaEntrega = 0;
 
-    // ====================== COMBOS =========================
+    // ====================== COMBOS / PROMOÇÕES ======================
     const combosNoite = [
       {
         codigo: 'CB01',
@@ -558,7 +625,6 @@
       }
     ];
 
-    // ================== PROMOÇÕES DA NOITE =================
     const promocoesNoite = [
       {
         codigo: 'PR01',
@@ -604,10 +670,14 @@
       document.getElementById('detalhesTitulo').innerText = `${combo.codigo} ${combo.nome}`;
       document.getElementById('detalhesDescricao').innerText = combo.desc;
       document.getElementById('quantidadeValor').innerText = '1';
-      document.getElementById('observacao').value = '';
 
-      // Oculta opções de pizza
       document.querySelector('.opcoes').style.display = 'none';
+      saborBorda = 'Nenhuma';
+      valorBorda = 0;
+      document.getElementById('bordaPanel').style.display = 'none';
+      document.getElementById('btnBorda').style.display = 'none';
+
+      document.getElementById('observacao').value = '';
       atualizarTotal();
 
       document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
@@ -642,10 +712,14 @@
       document.getElementById('detalhesTitulo').innerText = `${promo.codigo} ${promo.nome}`;
       document.getElementById('detalhesDescricao').innerText = promo.desc;
       document.getElementById('quantidadeValor').innerText = '1';
-      document.getElementById('observacao').value = '';
 
-      // Oculta opções de pizza
       document.querySelector('.opcoes').style.display = 'none';
+      saborBorda = 'Nenhuma';
+      valorBorda = 0;
+      document.getElementById('bordaPanel').style.display = 'none';
+      document.getElementById('btnBorda').style.display = 'none';
+
+      document.getElementById('observacao').value = '';
       atualizarTotal();
 
       document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
@@ -859,9 +933,9 @@
       ]
     };
 
+
     function mostrarSubcategorias(categoria) {
       document.getElementById('tituloSubcategoria').innerText = categoria + ' - Subcategorias';
-
       if (categoria === 'Pizzas Grandes') {
         tipoPizzaAtual = 'grande';
       } else {
@@ -886,8 +960,7 @@
       atualizarListaProdutos();
       mostrarTela('produtos');
     }
-
-    // Campo de busca
+    // Filtro de busca
     function filtrarProdutos() {
       atualizarListaProdutos();
     }
@@ -932,8 +1005,8 @@
       });
     }
 
+    /* ============= DETALHES DO PRODUTO ============= */
     function produtoClicado(prod) {
-      // Verifica se é pizza
       const pizzaCats = ['Tradicionais','Doces','Premium Doces','Premium Salgadas'];
       if (pizzaCats.includes(subcategoriaAtual)) {
         if (isSelecionandoSegundaMetade) {
@@ -945,7 +1018,6 @@
         mostrarDetalhesGenerico(prod);
       }
     }
-
     function mostrarDetalhesPizza(prod) {
       produtoSelecionado = prod;
       quantidadeSelecionada = 1;
@@ -959,7 +1031,20 @@
       // Mostra opções (Inteira / Meio a Meio)
       document.querySelector('.opcoes').style.display = 'block';
       const radios = document.getElementsByName('opcaoPizza');
+      // Padrão = "Inteira"
       radios.forEach(r => r.checked = (r.value === 'Inteira'));
+
+      // Borda: reset p/ "Sem borda" e oculta painel
+      saborBorda = 'Nenhuma';
+      valorBorda = 0;
+      mostraPainelBorda = false;
+      document.getElementById('bordaPanel').style.display = 'none'; 
+      document.getElementById('btnBorda').style.display = 'block'; 
+
+      // Exibe "Sem borda"
+      const bordaSel = document.getElementById('bordaSelecionada');
+      bordaSel.innerText = 'Borda Selecionada: Nenhuma';
+      bordaSel.style.display = 'block';
 
       isSelecionandoSegundaMetade = false;
       primeiraMetade = null;
@@ -979,7 +1064,17 @@
       document.getElementById('quantidadeValor').innerText = '1';
       document.getElementById('observacao').value = '';
 
+      // Oculta opções de pizza e bordas
       document.querySelector('.opcoes').style.display = 'none';
+      saborBorda = 'Nenhuma';
+      valorBorda = 0;
+      mostraPainelBorda = false;
+      document.getElementById('bordaPanel').style.display = 'none'; 
+      document.getElementById('btnBorda').style.display = 'none'; 
+
+      // Oculta texto de "borda selecionada"
+      const bordaSel = document.getElementById('bordaSelecionada');
+      bordaSel.style.display = 'none';
 
       atualizarTotal();
       document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
@@ -993,6 +1088,45 @@
       atualizarTotal();
     }
 
+    /* ============ BORDAS ============ */
+    function toggleBorda() {
+      mostraPainelBorda = !mostraPainelBorda;
+      const bordaDiv = document.getElementById('bordaPanel');
+      bordaDiv.style.display = mostraPainelBorda ? 'block' : 'none';
+    }
+
+    function selecionarBorda() {
+      const opcoes = document.getElementsByName('bordaSabor');
+      saborBorda = 'Nenhuma';
+      valorBorda = 0;
+
+      opcoes.forEach(r => {
+        if (r.checked) {
+          // Define borda e valor
+          if (r.value === 'Catupiry' || r.value === 'Cheddar' || r.value === 'Catupiry + Cheddar') {
+            saborBorda = r.value;
+            valorBorda = 3.00;
+          }
+          else if (r.value === 'Chocolate' || r.value === 'Doce de Leite') {
+            saborBorda = r.value;
+            valorBorda = 5.00;
+          }
+        }
+      });
+
+      // Atualiza exibição da borda abaixo do botão
+      const bordaSel = document.getElementById('bordaSelecionada');
+      bordaSel.innerText = `Borda Selecionada: ${saborBorda}`;
+      bordaSel.style.display = 'block';
+
+      // Atualiza total
+      atualizarTotal();
+
+      // Fecha automaticamente o painel de bordas
+      mostraPainelBorda = false;
+      document.getElementById('bordaPanel').style.display = 'none';
+    }
+
     function mudarTipoPizza() {
       const radios = document.getElementsByName('opcaoPizza');
       let tipo = 'Inteira';
@@ -1000,6 +1134,24 @@
         if (r.checked) tipo = r.value;
       });
 
+      // Se for "Meio a Meio", ocultar botões e resetar
+      if (tipo === 'Meio a Meio') {
+        document.getElementById('btnBorda').style.display = 'none';
+        document.getElementById('bordaPanel').style.display = 'none';
+        const bordaSel = document.getElementById('bordaSelecionada');
+        bordaSel.style.display = 'none';
+
+        saborBorda = 'Nenhuma';
+        valorBorda = 0;
+      } else {
+        // Inteira -> exibe botão Borda e texto
+        document.getElementById('btnBorda').style.display = 'block';
+        const bordaSel = document.getElementById('bordaSelecionada');
+        bordaSel.innerText = `Borda Selecionada: ${saborBorda}`;
+        bordaSel.style.display = 'block';
+      }
+
+      // Altera texto do botão principal
       if (tipo === 'Meio a Meio' && !produtoSelecionado.codigo.includes('+')) {
         document.getElementById('botaoAcao').textContent = 'Escolher outra metade';
       } else {
@@ -1008,15 +1160,22 @@
       atualizarTotal();
     }
 
+    /* =========== ATUALIZAR TOTAL =========== */
     function atualizarTotal() {
-      const total = precoBase * quantidadeSelecionada;
-      document.getElementById('precoTotal').innerText = `Total: R$ ${total.toFixed(2)}`;
+      const radios = document.getElementsByName('opcaoPizza');
+      let tipoPizza = 'Inteira';
+      radios.forEach(r => {
+        if (r.checked) tipoPizza = r.value;
+      });
+
+      const totalItem = (precoBase + (tipoPizza === 'Inteira' ? valorBorda : 0)) * quantidadeSelecionada;
+      document.getElementById('precoTotal').innerText = `Total: R$ ${totalItem.toFixed(2)}`;
     }
 
+    /* =========== ADIÇÃO AO PEDIDO =========== */
     function acaoDetalhes() {
       const pizzaCats = ['Tradicionais','Doces','Premium Doces','Premium Salgadas'];
       if (!pizzaCats.includes(subcategoriaAtual)) {
-        // Item não é pizza
         adicionarAoPedidoGenerico();
         return;
       }
@@ -1028,8 +1187,8 @@
         if (r.checked) tipoPizza = r.value;
       });
 
+      // Se esperando segunda metade
       if (tipoPizza === 'Meio a Meio' && !produtoSelecionado.codigo.includes('+')) {
-        // Escolher a segunda metade
         primeiraMetade = produtoSelecionado;
         isSelecionandoSegundaMetade = true;
         mostrarTela('produtos');
@@ -1050,17 +1209,23 @@
       };
       precoBase = valorMaisCara;
 
+      // Força "Meio a Meio" + sem borda
+      saborBorda = 'Nenhuma';
+      valorBorda = 0;
+      document.getElementById('bordaPanel').style.display = 'none';
+      document.getElementById('btnBorda').style.display = 'none';
+      document.getElementById('bordaSelecionada').style.display = 'none';
+
       mostrarTela('detalhes');
       document.getElementById('detalhesTitulo').innerText = produtoSelecionado.codigo;
       document.getElementById('detalhesDescricao').innerText = produtoSelecionado.desc;
 
       const radios = document.getElementsByName('opcaoPizza');
-      radios.forEach(r => r.checked = (r.value === 'Meio a Meio'));
+      radios.forEach(r => (r.checked = r.value === 'Meio a Meio'));
 
       atualizarTotal();
       isSelecionandoSegundaMetade = false;
       primeiraMetade = null;
-
       document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
     }
 
@@ -1072,22 +1237,31 @@
       });
 
       const obs = document.getElementById('observacao').value;
-      const precoFinal = precoBase * quantidadeSelecionada;
+      const totalItem = (precoBase + (tipoPizza === 'Inteira' ? valorBorda : 0)) * quantidadeSelecionada;
 
+      // Monta nome final
       let nomeFinal;
       if (produtoSelecionado.codigo.includes('+')) {
-        // meio a meio
-        nomeFinal = produtoSelecionado.codigo;
+        nomeFinal = produtoSelecionado.codigo; // meio a meio
       } else {
         nomeFinal = `${produtoSelecionado.codigo} ${produtoSelecionado.nome}`;
       }
 
+      // Separar obs e borda
+      let extraObs = obs || "";
+      let bordaLinha = "";
+      if (tipoPizza === 'Inteira' && saborBorda !== 'Nenhuma') {
+        bordaLinha = saborBorda;
+      }
+
+      // Monta itemPedido e guardamos a borda separada
       const itemPedido = {
         nome: nomeFinal,
         quantidade: quantidadeSelecionada,
         tipo: tipoPizza,
-        observacao: obs,
-        precoFinal: precoFinal
+        observacao: extraObs,       // obs normal
+        borda: bordaLinha,         // iremos exibir em linha separada
+        precoFinal: totalItem
       };
 
       carrinho.push(itemPedido);
@@ -1097,7 +1271,7 @@
 
     function adicionarAoPedidoGenerico() {
       const obs = document.getElementById('observacao').value;
-      const precoFinal = precoBase * quantidadeSelecionada;
+      const totalItem = precoBase * quantidadeSelecionada;
       const nomeFinal = `${produtoSelecionado.codigo} ${produtoSelecionado.nome}`;
 
       const itemPedido = {
@@ -1105,7 +1279,8 @@
         quantidade: quantidadeSelecionada,
         tipo: 'Normal',
         observacao: obs,
-        precoFinal: precoFinal
+        borda: '',       // genérico não tem borda
+        precoFinal: totalItem
       };
 
       carrinho.push(itemPedido);
@@ -1113,6 +1288,7 @@
       atualizarListaPedidos();
     }
 
+    /* =========== LISTAGEM / REMOÇÃO / TOTAL =========== */
     function removerPedido(index) {
       if (confirm("Tem certeza que deseja remover este item do pedido?")) {
         carrinho.splice(index, 1);
@@ -1135,19 +1311,37 @@
       carrinho.forEach((item, index) => {
         somaTotal += item.precoFinal;
 
+        // Exibe "Obs" e "Borda" separadamente
+        // Exemplo:
+        // Quantidade: X
+        // Tipo: X
+        // Obs: ...
+        // Borda: ...
+        // Total: R$ ...
+        let obsHtml = '';
+        if (item.observacao) {
+          obsHtml += `<p>Obs: ${item.observacao}</p>`;
+        }
+        if (item.borda && item.borda !== 'Nenhuma') {
+          obsHtml += `<p>Borda: ${item.borda}</p>`;
+        }
+
         const div = document.createElement('div');
         div.classList.add('pedido-item');
+
         div.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div style="flex: 1;">
               <h4>(${index + 1}) ${item.nome}</h4>
               <p>Quantidade: ${item.quantidade}</p>
               <p>Tipo: ${item.tipo}</p>
-              ${item.observacao ? `<p>Obs: ${item.observacao}</p>` : ''}
+              ${obsHtml}
               <p>Total: R$ ${item.precoFinal.toFixed(2)}</p>
             </div>
             <div style="margin-left: 10px;">
-              <button onclick="removerPedido(${index})" style="background-color: #ffee00; color: #000; border: none; border-radius: 8px; padding: 8px 10px; font-size: 1em; cursor: pointer;">
+              <button onclick="removerPedido(${index})"
+                style="background-color: #ffee00; color: #000; border: none; border-radius: 8px;
+                       padding: 8px 10px; font-size: 1em; cursor: pointer;">
                 🗑️
               </button>
             </div>
@@ -1156,7 +1350,7 @@
         container.appendChild(div);
       });
 
-      // SOMA DA TAXA DE ENTREGA, CASO SEJA SITIO
+      // Soma da taxa de entrega (se SITIO)
       const totalComTaxa = somaTotal + taxaEntrega;
       document.getElementById('pedidoTotal').innerText = `Valor Total: R$ ${totalComTaxa.toFixed(2)}`;
 
@@ -1167,6 +1361,7 @@
       mostrarTela('cardapio');
     }
 
+    /* ============= ENTREGA (LOCAL / ENDEREÇO) ============= */
     function atualizarEntrega() {
       const radios = document.getElementsByName('localEntrega');
       localEntrega = '';
@@ -1178,17 +1373,14 @@
 
       enderecoEntrega = document.getElementById('enderecoEntrega').value.trim();
 
-      // Se for SITIO, mostra container para escolher o sítio
       const sitioDiv = document.getElementById('sitioContainer');
       if (localEntrega === 'Sitio') {
         sitioDiv.style.display = 'block';
       } else {
         sitioDiv.style.display = 'none';
-        // Reseta seleção se não for sítio
         sitioSelecionado = '';
         taxaEntrega = 0;
       }
-
       atualizarListaPedidos();
     }
 
@@ -1196,37 +1388,22 @@
       const select = document.getElementById('selectSitio');
       sitioSelecionado = select.value;
 
-      // Define a taxa de entrega de acordo com o sítio
-      if (sitioSelecionado === 'Entupido') {
-        taxaEntrega = 8;
-      } else if (sitioSelecionado === 'Serrinha') {
-        taxaEntrega = 5;
-      } else if (sitioSelecionado === 'Vieira') {
-        taxaEntrega = 10;
-      } else if (sitioSelecionado === 'Catonho') {
-        taxaEntrega = 12;
-      } else if (sitioSelecionado === 'Cachoeira') {
-        taxaEntrega = 6;
-      } else if (sitioSelecionado === 'Fama') {
-        taxaEntrega = 6;
-      } else if (sitioSelecionado === 'Capoeira de pedra') {
-        taxaEntrega = 5;
-      } else if (sitioSelecionado === 'Batinga') {
-        taxaEntrega = 5;
-      } else {
-        taxaEntrega = 0;
+      switch(sitioSelecionado) {
+        case 'Entupido': taxaEntrega = 8; break;
+        case 'Serrinha': taxaEntrega = 5; break;
+        case 'Vieira': taxaEntrega = 10; break;
+        case 'Catonho': taxaEntrega = 12; break;
+        case 'Cachoeira': taxaEntrega = 6; break;
+        case 'Fama': taxaEntrega = 6; break;
+        case 'Capoeira de pedra': taxaEntrega = 5; break;
+        case 'Batinga': taxaEntrega = 5; break;
+        default: taxaEntrega = 0; break;
       }
-
       atualizarListaPedidos();
     }
 
     function verificarEnvioHabilitado() {
       const botaoEnviar = document.getElementById('botaoEnviar');
-
-      // Condições para habilitar envio:
-      // 1) carrinho não vazio
-      // 2) se localEntrega for 'Vila Neves', basta endereço != ''
-      // 3) se localEntrega for 'Sitio', precisa escolher um sítio e endereço != ''
       if (carrinho.length === 0) {
         botaoEnviar.disabled = true;
         return;
@@ -1241,6 +1418,7 @@
       }
     }
 
+    /* ============= ENVIAR PEDIDO (WHATSAPP) ============= */
     function enviarPedido() {
       if (carrinho.length === 0) {
         alert('Nenhum pedido para enviar.');
@@ -1267,14 +1445,19 @@
         mensagem += `*(${index+1}) ${item.nome} - ${item.tipo}*\n`;
         mensagem += `Quantidade: ${item.quantidade}\n`;
         mensagem += `Total: R$ ${item.precoFinal.toFixed(2)}\n`;
+
         if (item.observacao) {
           mensagem += `Observação: ${item.observacao}\n`;
         }
+        if (item.borda && item.borda !== 'Nenhuma') {
+          mensagem += `Borda: ${item.borda}\n`;
+        }
         mensagem += "\n";
+
         valorTotal += item.precoFinal;
       });
 
-      // Adiciona taxa de entrega se for sítio
+      // Adiciona taxa de entrega se SITIO
       let totalComTaxa = valorTotal;
       if (localEntrega === 'Sitio' && taxaEntrega > 0) {
         mensagem += `Taxa de entrega (${sitioSelecionado}): R$ ${taxaEntrega.toFixed(2)}\n`;
@@ -1282,7 +1465,6 @@
       }
 
       mensagem += `*Valor Total:* R$ ${totalComTaxa.toFixed(2)}\n\n`;
-
       mensagem += `*Endereço:* ${localEntrega}\n`;
       if (localEntrega === 'Sitio') {
         mensagem += `*Sítio:* ${sitioSelecionado}\n`;
@@ -1290,7 +1472,7 @@
       mensagem += `*Local/Ponto de Referência:* ${enderecoEntrega}\n\n`;
       mensagem += "*Obrigado!*";
 
-      const telefoneWhatsApp = '5587920008169'; // Ajuste para o seu número
+      const telefoneWhatsApp = '5587920008169'; // Ajuste para seu número
       const textoEncoded = encodeURIComponent(mensagem);
       const url = `https://wa.me/${telefoneWhatsApp}?text=${textoEncoded}`;
       window.open(url, '_blank');
