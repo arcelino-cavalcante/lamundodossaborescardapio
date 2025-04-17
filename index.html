@@ -478,6 +478,10 @@
             <input type="radio" name="bordaSabor" value="Chocolate" onchange="selecionarBorda()" />
             Chocolate (7,00)
           </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="cream cheese" onchange="selecionarBorda()" />
+            cream cheese (16,00)
+          </label>
         </div>
       </div>
 
@@ -1100,36 +1104,38 @@
     }
 
     function selecionarBorda() {
-      const opcoes = document.getElementsByName('bordaSabor');
-      saborBorda = 'Nenhuma';
-      valorBorda = 0;
+  const precosBorda = {
+    'Sem borda':               0.00,
+    'Catupiry':                3.00,
+    'Cheddar':                 3.00,
+    'Catupiry + Cheddar':      3.00,
+    'Chocolate':               7.00,
+    'Doce de Leite':           5.00,
+    'Paozinho misto':          9.00,
+    'Paozinho Frango + Mussarela': 12.00,
+    'Camarão':                 9.00,
+    'cream cheese':                   16.00
+  };
 
-      opcoes.forEach(r => {
-        if (r.checked) {
-          // Define borda e valor
-          if (r.value === 'Catupiry' || r.value === 'Cheddar' || r.value === 'Catupiry + Cheddar') {
-            saborBorda = r.value;
-            valorBorda = 3.00;
-          }
-          else if (r.value === 'Chocolate' || r.value === 'Doce de Leite') {
-            saborBorda = r.value;
-            valorBorda = 5.00;
-          }
-        }
-      });
-
-      // Atualiza exibição da borda abaixo do botão
-      const bordaSel = document.getElementById('bordaSelecionada');
-      bordaSel.innerText = `Borda Selecionada: ${saborBorda}`;
-      bordaSel.style.display = 'block';
-
-      // Atualiza total
-      atualizarTotal();
-
-      // Fecha automaticamente o painel de bordas
-      mostraPainelBorda = false;
-      document.getElementById('bordaPanel').style.display = 'none';
+  const opcoes = document.getElementsByName('bordaSabor');
+  opcoes.forEach(radio => {
+    if (radio.checked) {
+      saborBorda = radio.value;                 // guarda o sabor exato escolhido
+      valorBorda = precosBorda[saborBorda] ?? 0;// procura o preço na tabela
     }
+  });
+
+  // Atualiza a linha que mostra a escolha
+  const bordaSel = document.getElementById('bordaSelecionada');
+  bordaSel.textContent = `Borda Selecionada: ${saborBorda}`;
+  bordaSel.style.display = 'block';
+
+  atualizarTotal();
+
+  // fecha o painel
+  mostraPainelBorda = false;
+  document.getElementById('bordaPanel').style.display = 'none';
+}
 
     function mudarTipoPizza() {
       const radios = document.getElementsByName('opcaoPizza');
