@@ -340,6 +340,71 @@
       border-radius: 8px;
       margin-top: 8px;
     }
+    /* ---------- MONTE SUA PIZZA ---------- */
+    #montePizza .detalhes-container{
+      max-width:500px;           /* mesmo limite da tela Detalhes */
+      margin:0 auto;
+      background:#fff;
+      border-radius:10px;
+      padding:15px;
+      box-shadow:0 0 8px rgba(0,0,0,.1);
+      text-align:left;
+    }
+
+    /* usa o mesmo cartão para cada ingrediente                         */
+    #montePizza .produto{
+      width:100%;                /* garante largura igual às pizzas   */
+      margin:8px 0;
+      cursor:pointer;
+    }
+
+    /* caixas com rolagem – ingredientes escolhidos + lista à escolha  */
+    .caixa‑scroll{
+      max-height:38vh;           /* ocupa a metade da tela em celulares */
+      overflow-y:auto;
+      border:2px solid #f0f0f0;
+      border-radius:8px;
+      padding:8px;
+    }
+
+    /* cor diferente quando ainda não há seleção                       */
+    .selecao-vazia{color:#555; font-style:italic}
+
+    /* borda escolhida (texto pequeno)                                 */
+    .txt-borda{margin-bottom:10px; font-style:italic; color:#000}
+
+    /* painel de borda fechado por padrão                              */
+    .painel-borda{display:none; margin-bottom:10px}
+
+    /* botão principal amarelo igual aos outros                        */
+    .btn-pedido{
+      width:100%;
+      max-width:300px;
+      background:#ffee00;
+      display:block;
+      margin:12px auto 0;
+      padding:15px 25px;
+      border:none;
+      border-radius:10px;
+      font-size:1.1em;
+      cursor:pointer;
+    }
+
+    /* --------- grade responsiva de ingredientes --------- */
+    #listaIngredientes{
+      display:grid;
+      grid-template-columns:1fr;   /* 1 coluna em telas pequenas */
+      gap:10px;
+    }
+
+    @media (min-width:600px){
+      #listaIngredientes{          /* 2 colunas a partir de 600 px  */
+        grid-template-columns:1fr 1fr;
+      }
+    }
+    #montePizza .produto.selecionado{
+  background:#fff8b7;
+}
   </style>
 </head>
 <body>
@@ -354,6 +419,7 @@
       <button onclick="mostrarTela('cardapio')">Cardápio</button>
       <button onclick="mostrarCombos()">Combos da Noite</button>
       <button onclick="mostrarPromocoes()">Promoção da Noite</button>
+      <button onclick="iniciarMontePizza()">Monte sua Pizza</button>
       <button onclick="mostrarTela('pedidos')">Ver Pedidos</button>
       <button onclick="mostrarTela('informacoes')">Informações</button>
 
@@ -439,7 +505,7 @@
           Meio a Meio
         </label>
       </div>
-
+      
       <!-- Botão p/ bordas -->
       <button id="btnBorda" type="button" onclick="toggleBorda()">Bordas</button>
 
@@ -447,7 +513,7 @@
       <p id="bordaSelecionada"></p>
 
       <!-- Painel que expande as opções de bordas (vertical) -->
-      <div id="bordaPanel">
+      <div id="bordaPanel" class="painel-borda">
         <p>Escolha sua borda (fechará automaticamente):</p>
         <div class="opcoes-borda">
           <label>
@@ -484,6 +550,7 @@
           </label>
         </div>
       </div>
+      
 
       <textarea class="observacao" id="observacao" placeholder="Alguma observação?"></textarea>
       <div class="total" id="precoTotal"></div>
@@ -491,9 +558,81 @@
     </div>
 
     <br>
+    <button onclick="mostrarTela('produtos')">Voltar</button>
+  </div>
+  <!-- Tela MONTE SUA PIZZA -->
+  <div id="montePizza" class="tela">
+    <div class="detalhes-container">
+      <h2>MINHA PIZZA</h2>
+  
+      <!-- quantidade -->
+      <div class="quantidade">
+        <label>Quantidade:</label>
+        <button onclick="alterarQuantidadeCustom(-1)">-</button>
+        <span id="quantidadeValorCustom">1</span>
+        <button onclick="alterarQuantidadeCustom(1)">+</button>
+      </div>
+  
+      <!-- borda -->
+      <button id="btnBordaCustom" type="button" onclick="toggleBorda()">Bordas</button>
+      <p id="bordaSelecionadaCustom" class="txt-borda">Borda Selecionada: Nenhuma</p>
+      <div id="bordaPanelCustom" class="painel-borda">
+        <p>Escolha sua borda (fechará automaticamente):</p>
+        <div class="opcoes-borda">
+          <label>
+            <input type="radio" name="bordaSabor" value="Nenhuma" checked onchange="selecionarBorda()" />
+            Sem borda
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="Catupiry" onchange="selecionarBorda()" />
+            Catupiry (3,00)
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="Cheddar" onchange="selecionarBorda()" />
+            Cheddar (3,00)
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="Paozinho misto" onchange="selecionarBorda()" />
+            Paozinho misto (9,00)
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="Paozinho Frango + Mussarela" onchange="selecionarBorda()" />
+            Paozinho Frango + Mussarela (12,00)
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="Camarão" onchange="selecionarBorda()" />
+            Camarão (9,00)
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="Chocolate" onchange="selecionarBorda()" />
+            Chocolate (7,00)
+          </label>
+          <label>
+            <input type="radio" name="bordaSabor" value="cream cheese" onchange="selecionarBorda()" />
+            cream cheese (16,00)
+          </label>
+        </div>
+      </div>
+    
+  
+      <!-- ingredientes escolhidos -->
+      <h3>Itens escolhidos:</h3>
+      <div id="ingredientesEscolhidos" class="caixa‑scroll selecao-vazia">
+        <em>Nenhum ingrediente ainda</em>
+      </div>
+  
+      <!-- lista de ingredientes -->
+      <h3 style="margin-top:18px">Escolha seus ingredientes:</h3>
+      <div id="listaIngredientes" class="caixa‑scroll"></div>
+  
+      <!-- total + botão -->
+      <div class="total" id="precoTotalCustom"></div>
+      <button class="btn-pedido" onclick="adicionarCustomPizza()">Adicionar ao Pedido</button>
+    </div>
+  
+    <br>
     <button onclick="voltarMenu()">Voltar</button>
   </div>
-
   <!-- Tela de Pedidos -->
   <div id="pedidos" class="tela">
     <h2>Seus pedidos</h2>
@@ -524,6 +663,7 @@
           <option value="Fama">Fama - R$ 6,00</option>
           <option value="Capoeira de pedra">Capoeira de pedra - R$ 5,00</option>
           <option value="Batinga">Batinga - R$ 5,00</option>
+          <option value="Lagoa">Batinga - R$ 7,00</option>
         </select>
       </div>
 
@@ -614,10 +754,31 @@
     let enderecoEntrega = '';
     let sitioSelecionado = '';
     let taxaEntrega = 0;
-
+    // ---- MONTE SUA PIZZA ----
+    const BASE_CUSTOM_PIZZA = 20.00;            // massa + molho padrão
+    const ingredientesBase = [
+      {nome:'Mussarela',      preco:6.00},
+      {nome:'Catupiry',       preco:3.00},
+      {nome:'Cheddar',        preco:3.00},
+      {nome:'Bacon',          preco:5.00},
+      {nome:'Calabresa',      preco:6.00},
+      {nome:'Frango Desfiado',preco:6.00},
+      {nome:'Milho',          preco:2.00},
+      {nome:'Palmito',        preco:3.00},
+      {nome:'Tomate',         preco:2.00},
+      {nome:'Cebola',         preco:3.00},
+      {nome:'Ovos',           preco:2.00},
+      {nome:'Presunto',       preco:5.00},
+      {nome:'Lombo',          preco:10.00},
+      {nome:'Cream Cheese',   preco:15.00},
+      {nome:'Azeitona',       preco:2.00},
+      {nome:'Camarão',        preco:20.00}
+    ];
+    let ingredientesSelecionados = [];
+    let valorIngredientes = 0;
     // ====================== COMBOS / PROMOÇÕES ======================
     const combosNoite = [
-      {
+     {
         codigo: 'CB01',
         nome: 'Combo Casal',
         preco: 30.00,
@@ -634,7 +795,7 @@
     ];
 
     const promocoesNoite = [
-      {
+     {
         codigo: 'PR01',
         nome: 'Clone de Hamburguês',
         preco: 15.00,
@@ -647,6 +808,13 @@
         preco: 36.00,
         desc: '3 Carnes, 3 Ovos, Presunto, Calabresa, Queijo, Salada, Batata frita, cheddar e molho especial ',
         imagem: 'imagens_promocao/promo2.jpg'
+      },
+      {
+        codigo: 'PR03',
+        nome: 'Mega Hamburgão',
+        preco: 65.00,
+        desc: '6 carnes + 6 ovos + presunto + calabresa + Queijo + Salada + Molho + batatas Fritas',
+        imagem: 'imagens_promocao/promo3.jpg'
       }
     ];
 
@@ -732,6 +900,37 @@
 
       document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
       mostrarTela('detalhes');
+    }
+    /* ============ MONTE SUA PIZZA ============ */
+    function iniciarMontePizza () {
+  /* --- zera variáveis --- */
+      produtoSelecionado       = {codigo:'CUSTOM', nome:'MINHA PIZZA'};
+      quantidadeSelecionada    = 1;
+      precoBase                = BASE_CUSTOM_PIZZA;
+
+      ingredientesSelecionados = [];
+      valorIngredientes        = 0;
+      exibirEscolhidos();                // limpa o painel “Itens escolhidos”
+
+      /* --- reseta borda --- */
+      const radioNenhuma = document.querySelector(
+            '#bordaPanelCustom input[value="Nenhuma"]');
+      if (radioNenhuma) radioNenhuma.checked = true;
+
+      saborBorda        = 'Nenhuma';
+      valorBorda        = 0;
+      mostraPainelBorda = false;
+      document.getElementById('bordaPanelCustom').style.display = 'none';
+      document.getElementById('bordaSelecionadaCustom').innerText =
+            'Borda Selecionada: Nenhuma';
+
+      /* --- quantidade & listas --- */
+      document.getElementById('quantidadeValorCustom').innerText = '1';
+      listarIngredientes();              // redesenha a lista sem “selecionado”
+      atualizarTotalCustom();            // total volta ao valor da massa
+
+      /* --- exibe a tela --- */
+      mostrarTela('montePizza');
     }
 
     // Pizzas Grandes
@@ -941,7 +1140,6 @@
       ]
     };
 
-
     function mostrarSubcategorias(categoria) {
       document.getElementById('tituloSubcategoria').innerText = categoria + ' - Subcategorias';
       if (categoria === 'Pizzas Grandes') {
@@ -968,6 +1166,7 @@
       atualizarListaProdutos();
       mostrarTela('produtos');
     }
+
     // Filtro de busca
     function filtrarProdutos() {
       atualizarListaProdutos();
@@ -1013,6 +1212,71 @@
       });
     }
 
+    function listarIngredientes() {
+      let busca = '';
+      const campoBusca = document.getElementById('buscaIngrediente'); // pode nem existir
+      if (campoBusca) busca = campoBusca.value.toLowerCase().trim();
+      const lista = document.getElementById('listaIngredientes');
+      lista.innerHTML = '';
+
+      let itens = ingredientesBase;
+      if (busca !== '') {
+        itens = itens.filter(i => i.nome.toLowerCase().includes(busca));
+      }
+
+      itens.forEach((ing,idx) => {
+        const div = document.createElement('div');
+        div.classList.add('produto');
+        const jaEscolhido = ingredientesSelecionados.find(x => x.nome === ing.nome);
+        if (jaEscolhido) {
+        div.classList.add('selecionado');
+    }
+
+        div.innerHTML = `<h3>${ing.nome} <span class="preco">R$ ${ing.preco.toFixed(2)}</span></h3>`;
+        div.onclick = () => toggleIngrediente(ing);
+        lista.appendChild(div);
+      });
+    }
+
+    function toggleIngrediente(ing) {
+      const pos = ingredientesSelecionados.findIndex(x => x.nome === ing.nome);
+      if (pos === -1) {
+        ingredientesSelecionados.push(ing);
+        valorIngredientes += ing.preco;
+      } else {
+        ingredientesSelecionados.splice(pos,1);
+        valorIngredientes -= ing.preco;
+      }
+      exibirEscolhidos();
+      listarIngredientes();        // para atualizar a cor das caixinhas
+      atualizarTotalCustom();
+    }
+
+    function exibirEscolhidos(){
+      const div = document.getElementById('ingredientesEscolhidos');
+      div.classList.remove('selecao-vazia');
+
+      if(ingredientesSelecionados.length===0){
+        div.innerHTML='<em>Nenhum ingrediente ainda</em>';
+        div.classList.add('selecao-vazia');
+        return;
+      }
+      div.innerHTML = ingredientesSelecionados
+          .map(i=>`${i.nome} – R$ ${i.preco.toFixed(2)}`)
+          .join('<br>');
+    }
+
+    function alterarQuantidadeCustom(v) {
+      quantidadeSelecionada += v;
+      if (quantidadeSelecionada < 1) quantidadeSelecionada = 1;
+      document.getElementById('quantidadeValorCustom').innerText = quantidadeSelecionada;
+      atualizarTotalCustom();
+    }
+
+    function atualizarTotalCustom() {
+      const total = (BASE_CUSTOM_PIZZA + valorIngredientes + valorBorda) * quantidadeSelecionada;
+      document.getElementById('precoTotalCustom').innerText = `Total: R$ ${total.toFixed(2)}`;
+    }
     /* ============= DETALHES DO PRODUTO ============= */
     function produtoClicado(prod) {
       const pizzaCats = ['Tradicionais','Doces','Premium Doces','Premium Salgadas'];
@@ -1026,63 +1290,38 @@
         mostrarDetalhesGenerico(prod);
       }
     }
+
     function mostrarDetalhesPizza(prod) {
-      produtoSelecionado = prod;
+  /* ---------- dados básicos ---------- */
+      produtoSelecionado    = prod;
       quantidadeSelecionada = 1;
-      precoBase = prod.preco;
+      precoBase             = prod.preco;
 
       document.getElementById('detalhesTitulo').innerText = `${prod.codigo} ${prod.nome}`;
       document.getElementById('detalhesDescricao').innerText = prod.desc;
       document.getElementById('quantidadeValor').innerText = '1';
       document.getElementById('observacao').value = '';
 
-      // Mostra opções (Inteira / Meio a Meio)
+      /* ---------- opções Inteira / Meio a Meio ---------- */
       document.querySelector('.opcoes').style.display = 'block';
       const radios = document.getElementsByName('opcaoPizza');
-      // Padrão = "Inteira"
       radios.forEach(r => r.checked = (r.value === 'Inteira'));
 
-      // Borda: reset p/ "Sem borda" e oculta painel
-      saborBorda = 'Nenhuma';
-      valorBorda = 0;
+      /* ---------- Zera borda ---------- */
+      saborBorda        = 'Nenhuma';
+      valorBorda        = 0;
       mostraPainelBorda = false;
-      document.getElementById('bordaPanel').style.display = 'none'; 
-      document.getElementById('btnBorda').style.display = 'block'; 
+      document.getElementById('bordaPanel').style.display = 'none';
+      document.getElementById('btnBorda').style.display = 'block';
 
-      // Exibe "Sem borda"
+      /* ---------- NOVO: exibe linha da borda já com “Nenhuma” ---------- */
       const bordaSel = document.getElementById('bordaSelecionada');
-      bordaSel.innerText = 'Borda Selecionada: Nenhuma';
+      bordaSel.innerText  = 'Borda Selecionada: Nenhuma';
       bordaSel.style.display = 'block';
 
+      /* ---------- controle de meio‑a‑meio ---------- */
       isSelecionandoSegundaMetade = false;
-      primeiraMetade = null;
-
-      atualizarTotal();
-      document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
-      mostrarTela('detalhes');
-    }
-
-    function mostrarDetalhesGenerico(prod) {
-      produtoSelecionado = prod;
-      quantidadeSelecionada = 1;
-      precoBase = prod.preco;
-
-      document.getElementById('detalhesTitulo').innerText = `${prod.codigo} ${prod.nome}`;
-      document.getElementById('detalhesDescricao').innerText = prod.desc;
-      document.getElementById('quantidadeValor').innerText = '1';
-      document.getElementById('observacao').value = '';
-
-      // Oculta opções de pizza e bordas
-      document.querySelector('.opcoes').style.display = 'none';
-      saborBorda = 'Nenhuma';
-      valorBorda = 0;
-      mostraPainelBorda = false;
-      document.getElementById('bordaPanel').style.display = 'none'; 
-      document.getElementById('btnBorda').style.display = 'none'; 
-
-      // Oculta texto de "borda selecionada"
-      const bordaSel = document.getElementById('bordaSelecionada');
-      bordaSel.style.display = 'none';
+      primeiraMetade              = null;
 
       atualizarTotal();
       document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
@@ -1095,46 +1334,79 @@
       document.getElementById('quantidadeValor').innerText = quantidadeSelecionada;
       atualizarTotal();
     }
+    /* ============= DETALHES DO PRODUTO ============= */
 
-    /* ============ BORDAS ============ */
-    function toggleBorda() {
-      mostraPainelBorda = !mostraPainelBorda;
-      const bordaDiv = document.getElementById('bordaPanel');
-      bordaDiv.style.display = mostraPainelBorda ? 'block' : 'none';
+
+    function alterarQuantidade(v) {
+      quantidadeSelecionada += v;
+      if (quantidadeSelecionada < 1) quantidadeSelecionada = 1;
+      document.getElementById('quantidadeValor').innerText = quantidadeSelecionada;
+      atualizarTotal();
     }
 
-    function selecionarBorda() {
+    /* ============ BORDAS ============ */
+    function toggleBorda () {
+  // 1. Descobre em qual tela estamos
+  const estaNoCustom = document
+        .getElementById('montePizza')
+        .classList.contains('active');
+
+  // 2. Seleciona o painel correto
+  const painel = estaNoCustom
+        ? document.getElementById('bordaPanelCustom')  // tela Monte Pizza
+        : document.getElementById('bordaPanel');       // tela Detalhes
+
+  // 3. Abre/fecha
+  mostraPainelBorda = !mostraPainelBorda;
+  painel.style.display = mostraPainelBorda ? 'block' : 'none';
+}
+
+function selecionarBorda () {
+  /* ---------- preços ---------- */
   const precosBorda = {
-    'Sem borda':               0.00,
-    'Catupiry':                3.00,
-    'Cheddar':                 3.00,
-    'Catupiry + Cheddar':      3.00,
-    'Chocolate':               7.00,
-    'Doce de Leite':           5.00,
-    'Paozinho misto':          9.00,
-    'Paozinho Frango + Mussarela': 12.00,
-    'Camarão':                 9.00,
-    'cream cheese':                   16.00
+    'Nenhuma':                       0.00,
+    'Sem borda':                     0.00,   // para compatibilidade
+    'Catupiry':                      3.00,
+    'Cheddar':                       3.00,
+    'Catupiry + Cheddar':            3.00,
+    'Chocolate':                     7.00,
+    'Doce de Leite':                 5.00,
+    'Paozinho misto':                9.00,
+    'Paozinho Frango + Mussarela':  12.00,
+    'Camarão':                       9.00,
+    'cream cheese':                 16.00
   };
 
-  const opcoes = document.getElementsByName('bordaSabor');
-  opcoes.forEach(radio => {
+  /* ---------- qual painel está aberto? ---------- */
+  const estaNoCustom = document
+        .getElementById('montePizza')
+        .classList.contains('active');
+  const seletor = estaNoCustom
+        ? '#bordaPanelCustom input[name="bordaSabor"]'
+        : '#bordaPanel input[name="bordaSabor"]';
+  const radios = document.querySelectorAll(seletor);
+
+  /* ---------- sabor + preço ---------- */
+  radios.forEach(radio => {
     if (radio.checked) {
-      saborBorda = radio.value;                 // guarda o sabor exato escolhido
-      valorBorda = precosBorda[saborBorda] ?? 0;// procura o preço na tabela
+      saborBorda = radio.value;
+      valorBorda = precosBorda[saborBorda] ?? 0;
     }
   });
 
-  // Atualiza a linha que mostra a escolha
-  const bordaSel = document.getElementById('bordaSelecionada');
-  bordaSel.textContent = `Borda Selecionada: ${saborBorda}`;
-  bordaSel.style.display = 'block';
-
-  atualizarTotal();
-
-  // fecha o painel
+  /* ---------- mostra escolha & fecha painel ---------- */
+  if (estaNoCustom) {
+    document.getElementById('bordaSelecionadaCustom').innerText =
+          `Borda Selecionada: ${saborBorda}`;
+    atualizarTotalCustom();
+    document.getElementById('bordaPanelCustom').style.display = 'none';
+  } else {
+    document.getElementById('bordaSelecionada').innerText =
+          `Borda Selecionada: ${saborBorda}`;
+    atualizarTotal();
+    document.getElementById('bordaPanel').style.display = 'none';
+  }
   mostraPainelBorda = false;
-  document.getElementById('bordaPanel').style.display = 'none';
 }
 
     function mudarTipoPizza() {
@@ -1297,7 +1569,29 @@
       mostrarTela('pedidos');
       atualizarListaPedidos();
     }
+    function adicionarCustomPizza() {
+      if (ingredientesSelecionados.length === 0) {
+        alert('Selecione ao menos um ingrediente.');
+        return;
+      }
 
+      const itensTxt = ingredientesSelecionados.map(i => i.nome).join(', ');
+      const precoItens = valorIngredientes;
+      const totalItem  = (BASE_CUSTOM_PIZZA + precoItens + valorBorda) * quantidadeSelecionada;
+
+      const itemPedido = {
+        nome: 'MINHA PIZZA',
+        quantidade: quantidadeSelecionada,
+        tipo: 'Personalizada',
+        observacao: itensTxt,           // lista completa vai como descrição
+        borda: (saborBorda !== 'Nenhuma' ? saborBorda : ''),
+        precoFinal: totalItem
+      };
+
+      carrinho.push(itemPedido);
+      mostrarTela('pedidos');
+      atualizarListaPedidos();
+    }
     /* =========== LISTAGEM / REMOÇÃO / TOTAL =========== */
     function removerPedido(index) {
       if (confirm("Tem certeza que deseja remover este item do pedido?")) {
@@ -1482,7 +1776,7 @@
       mensagem += `*Local/Ponto de Referência:* ${enderecoEntrega}\n\n`;
       mensagem += "*Obrigado!*";
 
-      const telefoneWhatsApp = '5587981295167'; // Ajuste para seu número
+      const telefoneWhatsApp = '5587920008169'; // Ajuste para seu número
       const textoEncoded = encodeURIComponent(mensagem);
       const url = `https://wa.me/${telefoneWhatsApp}?text=${textoEncoded}`;
       window.open(url, '_blank');
