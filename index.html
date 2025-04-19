@@ -325,7 +325,15 @@
       border-radius: 8px;
       margin-top: 8px;
     }
-
+    #nomeCliente {
+      width: 100%;
+      max-width: 400px;
+      padding: 8px;
+      font-size: 1em;
+      border: 2px solid #000;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
     /* Se for SITIO */
     #sitioContainer {
       margin-top: 10px;
@@ -671,6 +679,12 @@
       <label for="enderecoEntrega">Local/Ponto de Referência:</label>
       <br>
       <input type="text" id="enderecoEntrega" oninput="atualizarEntrega()" placeholder="Digite aqui..."/>
+      <br><br>
+      <label for="nomeCliente"><strong>Nome do Cliente:</strong></label><br>
+      <input type="text"
+             id="nomeCliente"
+             placeholder="Digite seu nome..."
+             oninput="verificarEnvioHabilitado()"/>
     </div>
 
     <div class="botoes-pedidos">
@@ -936,36 +950,36 @@
     // Pizzas Grandes
     const pizzasGrandes = {
       'Tradicionais': [
-        { codigo: 'T001', nome: 'A Moda do Chefe (G)', preco: 38.00, desc: 'Frango desfiado, palmito, ovos, bacon, catupiry' },
-        { codigo: 'T002', nome: 'Atum (G)', preco: 36.00, desc: 'Atum, mussarela, cebola, orégano' },
-        { codigo: 'T003', nome: 'Bacon (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, bacon, ovos, tomate' },
-        { codigo: 'T004', nome: 'Baiana (G)', preco: 35.00, desc: 'Molho de tomate, calabresa, ovos, cebola, mussarela, pimenta' },
-        { codigo: 'T005', nome: 'Brasileira Pizza (G)', preco: 36.00, desc: 'Mussarela, presunto, milho, ervilha, tomate' },
-        { codigo: 'T006', nome: 'Calabresa (G)', preco: 35.00, desc: 'Molho de tomate, calabresa, cebola' },
-        { codigo: 'T007', nome: 'Calabresa 3 Queijos (G)', preco: 40.00, desc: 'Molho de tomate, calabresa, mussarela, catupiry, cheddar' },
-        { codigo: 'T008', nome: 'Caipira (G)', preco: 38.00, desc: 'Molho de tomate, mussarela, frango desfiado, cebola, milho, tomate, bacon' },
-        { codigo: 'T009', nome: 'Charque (G)', preco: 40.00, desc: 'Molho de tomate, mussarela, charque, tomate, azeitona' },
-        { codigo: 'T010', nome: 'Dois Queijos (G)', preco: 35.00, desc: 'Molho de tomate, mussarela, catupiry' },
-        { codigo: 'T011', nome: 'Três Queijos (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, catupiry, parmesão' },
-        { codigo: 'T012', nome: 'Quatro Queijos (G)', preco: 37.00, desc: 'Molho de tomate, mussarela, catupiry, cheddar, parmesão, orégano' },
-        { codigo: 'T013', nome: 'Do Pizzaiolo (G)', preco: 39.00, desc: 'Molho de tomate, mussarela, calabresa, bacon, palmito, queijo provolone, milho, ovos' },
-        { codigo: 'T014', nome: 'Favorita (G)', preco: 37.00, desc: 'Molho de tomate, calabresa, ovos, calabresa, palmito, azeitona' },
-        { codigo: 'T015', nome: 'Frango c/ Catupiry (G)', preco: 35.00, desc: 'Molho de tomate, frango desfiado e catupiry' },
-        { codigo: 'T016', nome: 'Frango c/ Cheddar (G)', preco: 35.00, desc: 'Molho de tomate, frango desfiado, cheddar' },
-        { codigo: 'T017', nome: 'Frango c/ Mussarela (G)', preco: 36.00, desc: 'Molho de tomate, frango desfiado, mussarela' },
-        { codigo: 'T018', nome: 'Italiana (G)', preco: 37.00, desc: 'Mussarela, salame italiano, molho de tomate' },
-        { codigo: 'T019', nome: 'Marguerita (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, parmesão, tomate e manjericão' },
-        { codigo: 'T020', nome: 'Mussarela (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, tomate, orégano' },
-        { codigo: 'T021', nome: 'Mussa Palha (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, tomate, batata palha' },
-        { codigo: 'T022', nome: 'Napolitana (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, parmesão, presunto, tomate, orégano' },
-        { codigo: 'T023', nome: 'Palmito (G)', preco: 37.00, desc: 'Presunto, palmito, mussarela, orégano' },
-        { codigo: 'T024', nome: 'Paulista (G)', preco: 37.00, desc: 'Molho de tomate, mussarela, presunto, palmito, bacon, tomate' },
-        { codigo: 'T025', nome: 'Pepperoni (G)', preco: 35.00, desc: 'Molho de tomate, mussarela, salame, pepperoni, orégano' },
-        { codigo: 'T026', nome: 'Portuguesa (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, presunto, ovos, cebola, orégano' },
-        { codigo: 'T027', nome: 'Salame (G)', preco: 35.00, desc: 'Molho de tomate, mussarela, tomate, salame, azeitona' },
-        { codigo: 'T028', nome: 'Toscana (G)', preco: 36.00, desc: 'Molho de tomate, calabresa, mussarela' },
-        { codigo: 'T029', nome: 'Vegetariana (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, palmito, azeitona, cebola, tomate' },
-        { codigo: 'T030', nome: 'Vegetariana 3 Queijos (G)', preco: 40.00, desc: 'Molho de tomate, mussarela, catupiry, cheddar, parmesão' }
+        { codigo: 'PIZZA-', nome: 'A Moda do Chefe (G)', preco: 38.00, desc: 'Frango desfiado, palmito, ovos, bacon, catupiry' },
+        { codigo: 'PIZZA-', nome: 'Atum (G)', preco: 36.00, desc: 'Atum, mussarela, cebola, orégano' },
+        { codigo: 'PIZZA-', nome: 'Bacon (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, bacon, ovos, tomate' },
+        { codigo: 'PIZZA-', nome: 'Baiana (G)', preco: 35.00, desc: 'Molho de tomate, calabresa, ovos, cebola, mussarela, pimenta' },
+        { codigo: 'PIZZA-', nome: 'Brasileira Pizza (G)', preco: 36.00, desc: 'Mussarela, presunto, milho, ervilha, tomate' },
+        { codigo: 'PIZZA-', nome: 'Calabresa (G)', preco: 35.00, desc: 'Molho de tomate, calabresa, cebola' },
+        { codigo: 'PIZZA-', nome: 'Calabresa 3 Queijos (G)', preco: 40.00, desc: 'Molho de tomate, calabresa, mussarela, catupiry, cheddar' },
+        { codigo: 'PIZZA-', nome: 'Caipira (G)', preco: 38.00, desc: 'Molho de tomate, mussarela, frango desfiado, cebola, milho, tomate, bacon' },
+        { codigo: 'PIZZA-', nome: 'Charque (G)', preco: 40.00, desc: 'Molho de tomate, mussarela, charque, tomate, azeitona' },
+        { codigo: 'PIZZA-', nome: 'Dois Queijos (G)', preco: 35.00, desc: 'Molho de tomate, mussarela, catupiry' },
+        { codigo: 'PIZZA-', nome: 'Três Queijos (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, catupiry, parmesão' },
+        { codigo: 'PIZZA-', nome: 'Quatro Queijos (G)', preco: 37.00, desc: 'Molho de tomate, mussarela, catupiry, cheddar, parmesão, orégano' },
+        { codigo: 'PIZZA-', nome: 'Do Pizzaiolo (G)', preco: 39.00, desc: 'Molho de tomate, mussarela, calabresa, bacon, palmito, queijo provolone, milho, ovos' },
+        { codigo: 'PIZZA-', nome: 'Favorita (G)', preco: 37.00, desc: 'Molho de tomate, calabresa, ovos, calabresa, palmito, azeitona' },
+        { codigo: 'PIZZA-', nome: 'Frango c/ Catupiry (G)', preco: 35.00, desc: 'Molho de tomate, frango desfiado e catupiry' },
+        { codigo: 'PIZZA-', nome: 'Frango c/ Cheddar (G)', preco: 35.00, desc: 'Molho de tomate, frango desfiado, cheddar' },
+        { codigo: 'PIZZA-', nome: 'Frango c/ Mussarela (G)', preco: 36.00, desc: 'Molho de tomate, frango desfiado, mussarela' },
+        { codigo: 'PIZZA-', nome: 'Italiana (G)', preco: 37.00, desc: 'Mussarela, salame italiano, molho de tomate' },
+        { codigo: 'PIZZA-', nome: 'Marguerita (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, parmesão, tomate e manjericão' },
+        { codigo: 'PIZZA-', nome: 'Mussarela (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, tomate, orégano' },
+        { codigo: 'PIZZA-', nome: 'Mussa Palha (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, tomate, batata palha' },
+        { codigo: 'PIZZA-', nome: 'Napolitana (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, parmesão, presunto, tomate, orégano' },
+        { codigo: 'PIZZA-', nome: 'Palmito (G)', preco: 37.00, desc: 'Presunto, palmito, mussarela, orégano' },
+        { codigo: 'PIZZA-', nome: 'Paulista (G)', preco: 37.00, desc: 'Molho de tomate, mussarela, presunto, palmito, bacon, tomate' },
+        { codigo: 'PIZZA-', nome: 'Pepperoni (G)', preco: 35.00, desc: 'Molho de tomate, mussarela, salame, pepperoni, orégano' },
+        { codigo: 'PIZZA-', nome: 'Portuguesa (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, presunto, ovos, cebola, orégano' },
+        { codigo: 'PIZZA-', nome: 'Salame (G)', preco: 35.00, desc: 'Molho de tomate, mussarela, tomate, salame, azeitona' },
+        { codigo: 'PIZZA-', nome: 'Toscana (G)', preco: 36.00, desc: 'Molho de tomate, calabresa, mussarela' },
+        { codigo: 'PIZZA-', nome: 'Vegetariana (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, palmito, azeitona, cebola, tomate' },
+        { codigo: 'PIZZA-', nome: 'Vegetariana 3 Queijos (G)', preco: 40.00, desc: 'Molho de tomate, mussarela, catupiry, cheddar, parmesão' }
       ],
       'Doces': [
         { codigo: 'D001', nome: 'Prestígio (G)', preco: 36.00, desc: 'Chocolate, coco ralado' },
@@ -1736,7 +1750,13 @@ function selecionarBorda () {
 
     function verificarEnvioHabilitado() {
       const botaoEnviar = document.getElementById('botaoEnviar');
+      const nome = document.getElementById('nomeCliente').value.trim();
+
       if (carrinho.length === 0) {
+        botaoEnviar.disabled = true;
+        return;
+      }
+      if (!nome) {
         botaoEnviar.disabled = true;
         return;
       }
@@ -1752,25 +1772,31 @@ function selecionarBorda () {
 
     /* ============= ENVIAR PEDIDO (WHATSAPP) ============= */
     function enviarPedido() {
-      if (carrinho.length === 0) {
-        alert('Nenhum pedido para enviar.');
-        return;
-      }
-      if (!localEntrega) {
-        alert('Selecione o local de entrega.');
-        return;
-      }
-      if (!enderecoEntrega) {
-        alert('Digite o local/ponto de referência.');
-        return;
-      }
-      if (localEntrega === 'Sitio' && !sitioSelecionado) {
-        alert('Selecione qual sítio.');
-        return;
-      }
+  const nome = document.getElementById('nomeCliente').value.trim();
+  if (!nome) {
+    alert('Por favor, digite seu nome.');
+    return;
+  }
+  if (carrinho.length === 0) {
+    alert('Nenhum pedido para enviar.');
+    return;
+  }
+  if (!localEntrega) {
+    alert('Selecione o local de entrega.');
+    return;
+  }
+  if (!enderecoEntrega) {
+    alert('Digite o local/ponto de referência.');
+    return;
+  }
+  if (localEntrega === 'Sitio' && !sitioSelecionado) {
+    alert('Selecione qual sítio.');
+    return;
+  }
 
-      let mensagem = "*Olá, gostaria de fazer o seguinte pedido:*\n\n";
-      mensagem += "*Itens do Pedido:*\n";
+  let mensagem = "*Olá, gostaria de fazer o seguinte pedido:*\n\n";
+  mensagem += `*Nome do Cliente:* ${nome}\n\n`;
+  mensagem += "*Itens do Pedido:*\n";
       let valorTotal = 0;
 
       carrinho.forEach((item, index) => {
