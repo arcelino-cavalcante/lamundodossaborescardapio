@@ -772,7 +772,7 @@
     let sitioSelecionado = '';
     let taxaEntrega = 0;
     // ---- MONTE SUA PIZZA ----
-    const BASE_CUSTOM_PIZZA = 20.00;            // massa + molho padrão
+    const BASE_CUSTOM_PIZZA = 30.00;            // massa + molho padrão
     const ingredientesBase = [
       {nome:'Mussarela',      preco:6.00},
       {nome:'Catupiry',       preco:3.00},
@@ -1108,7 +1108,6 @@
         { codigo: 'H002', nome: 'Bacon Burger', preco: 17.00, desc: 'Carne artesanal, bacon crocante, queijo cheddar, cebola, tomate, alface, molhos da casa' },
         { codigo: 'H003', nome: 'Ssmash Duplo', preco: 20.00, desc: '2 carnes artesanais, salada, milho, ervilha, queijo mussarela, molhos da casa' },
         { codigo: 'H004', nome: 'Mexicano', preco: 19.00, desc: 'Carne artesanal, salada, bacon, cheddar, ovo, batata palha, molhos da casa' },
-        { codigo: 'H005', nome: 'X-Tudão', preco: 35.00, desc: 'Carne artesanal, frango desfiado, ovo, presunto, mussarela, calabresa, batata palha, bacon, molhos da casa' },
         { codigo: 'H006', nome: 'Churrasco Bresa', preco: 19.00, desc: 'Carne artesanal, ovo, calabresa, batata palha, molhos da casa' },
         { codigo: 'H007', nome: 'Salsichão Burger', preco: 14.00, desc: 'Carne artesanal, salsicha, ovo, salada, molhos da casa' },
         { codigo: 'H008', nome: 'Triplo do Cheff', preco: 33.00, desc: '3 carnes artesanais, bacon, ovo, salada, molhos da casa' },
@@ -1464,22 +1463,10 @@ function selecionarBorda () {
         if (r.checked) tipo = r.value;
       });
 
-      // Se for "Meio a Meio", ocultar botões e resetar
-      if (tipo === 'Meio a Meio') {
-        document.getElementById('btnBorda').style.display = 'none';
-        document.getElementById('bordaPanel').style.display = 'none';
-        const bordaSel = document.getElementById('bordaSelecionada');
-        bordaSel.style.display = 'none';
-
-        saborBorda = 'Nenhuma';
-        valorBorda = 0;
-      } else {
-        // Inteira -> exibe botão Borda e texto
-        document.getElementById('btnBorda').style.display = 'block';
-        const bordaSel = document.getElementById('bordaSelecionada');
-        bordaSel.innerText = `Borda Selecionada: ${saborBorda}`;
-        bordaSel.style.display = 'block';
-      }
+      // Exibe SEMPRE o botão de bordas e o texto abaixo
+    document.getElementById('btnBorda').style.display        = 'block';
+    document.getElementById('bordaSelecionada').style.display = 'block';
+    document.getElementById('bordaSelecionada').innerText     = `Borda Selecionada: ${saborBorda}`;
 
       // Altera texto do botão principal
       if (tipo === 'Meio a Meio' && !produtoSelecionado.codigo.includes('+')) {
@@ -1498,7 +1485,7 @@ function selecionarBorda () {
         if (r.checked) tipoPizza = r.value;
       });
 
-      const totalItem = (precoBase + (tipoPizza === 'Inteira' ? valorBorda : 0)) * quantidadeSelecionada;
+      const totalItem = (precoBase + valorBorda) * quantidadeSelecionada;
       document.getElementById('precoTotal').innerText = `Total: R$ ${totalItem.toFixed(2)}`;
     }
 
@@ -1539,12 +1526,16 @@ function selecionarBorda () {
       };
       precoBase = valorMaisCara;
 
-      // Força "Meio a Meio" + sem borda
-      saborBorda = 'Nenhuma';
-      valorBorda = 0;
-      document.getElementById('bordaPanel').style.display = 'none';
-      document.getElementById('btnBorda').style.display = 'none';
-      document.getElementById('bordaSelecionada').style.display = 'none';
+      function montarMeioAMeio(m1, m2) {
+  // ... seu código de montagem do nome + preço ...
+
+  // garante que o usuário ainda possa escolher borda
+  document.getElementById('btnBorda').style.display        = 'block';
+  document.getElementById('bordaSelecionada').style.display = 'block';
+  document.getElementById('bordaSelecionada').innerText     = `Borda Selecionada: ${saborBorda || 'Nenhuma'}`;
+
+  // ...
+}
 
       mostrarTela('detalhes');
       document.getElementById('detalhesTitulo').innerText = produtoSelecionado.codigo;
@@ -1580,9 +1571,11 @@ function selecionarBorda () {
       // Separar obs e borda
       let extraObs = obs || "";
       let bordaLinha = "";
-      if (tipoPizza === 'Inteira' && saborBorda !== 'Nenhuma') {
+      // agora inclui borda sempre que houver, seja Inteira ou Meio a Meio
+      if (saborBorda !== 'Nenhuma') {
         bordaLinha = saborBorda;
       }
+
 
       // Monta itemPedido e guardamos a borda separada
       const itemPedido = {
