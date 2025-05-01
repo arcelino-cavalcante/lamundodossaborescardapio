@@ -412,7 +412,48 @@
     }
     #montePizza .produto.selecionado{
   background:#fff8b7;
-}
+ }
+  #listaIngredientesHamburguer {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  @media (min-width:600px){
+    #listaIngredientesHamburguer {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  /* 1) Painel de “Selecionados” com fundo branco e padding */
+  #ingredientesHamburguerEscolhidos {
+    background: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;    /* cria espaço até o textarea */
+  }
+
+  /* 2) Espaço extra acima do textarea de observação */
+  #monteHamburguer .observacao {
+    margin-top: 20px;
+  }
+
+  /* 3) Cartões de ingrediente mais “apertados” verticalmente */
+  #listaIngredientesHamburguer .produto {
+    padding: 8px 10px;
+    margin: 5px 0;
+  }
+
+  /* 4) Ajuste no contêiner de quantidade para alinhar o número entre os botões */
+  #listaIngredientesHamburguer .produto > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;      /* separa botão, número e botão */
+  }
+  #listaIngredientesHamburguer .produto > div span {
+    min-width: 24px;
+    text-align: center;
+  }
+
+
   </style>
 </head>
 <body>
@@ -428,6 +469,7 @@
       <button onclick="mostrarCombos()">Combos da Noite</button>
       <button onclick="mostrarPromocoes()">Promoção da Noite</button>
       <button onclick="iniciarMontePizza()">Monte sua Pizza</button>
+      <button onclick="iniciarMonteHamburguer()">Monte seu Hambúrguer</button>
       <button onclick="mostrarTela('pedidos')">Ver Pedidos</button>
       <button onclick="mostrarTela('informacoes')">Informações</button>
 
@@ -641,6 +683,38 @@
     <br>
     <button onclick="voltarMenu()">Voltar</button>
   </div>
+  <!-- Tela MONTE SEU HAMBÚRGUER -->
+  <div id="monteHamburguer" class="tela">
+    <div class="detalhes-container" style="max-width:500px;margin:0 auto;text-align:left;">
+
+      <h2>MEU HAMBÚRGUER</h2>
+
+      <!-- 1) Selecionados -->
+      <h3>Ingredientes selecionados:</h3>
+      <div id="ingredientesHamburguerEscolhidos" class="caixa-scroll selecao-vazia">
+        <em>Nenhum ingrediente ainda</em>
+      </div>
+
+      <!-- 2) Observação + botão -->
+      <textarea class="observacao" id="observacaoHamburguer"
+                placeholder="Alguma observação?"></textarea>
+      <div class="total" id="precoTotalHamburguer"></div>
+      <button class="btn-pedido" onclick="adicionarCustomHamburguer()">
+        Adicionar ao Pedido
+      </button>
+
+      <!-- 3) Ingredientes disponíveis -->
+      <h3 style="margin-top:20px">Escolha seus ingredientes:</h3>
+      <div id="listaIngredientesHamburguer" class="caixa-scroll">
+        <!-- JS irá preencher -->
+      </div>
+
+    </div>
+    <br>
+    <button onclick="voltarMenu()">Voltar</button>
+  </div>
+
+
   <!-- Tela de Pedidos -->
   <div id="pedidos" class="tela">
     <h2>Seus pedidos</h2>
@@ -793,6 +867,151 @@
     ];
     let ingredientesSelecionados = [];
     let valorIngredientes = 0;
+
+    // --------------- Monte seu Hambúrguer ---------------
+
+// ingredientes disponíveis (você pode ajustar nomes e preços)
+    // preço base de pão + molhos
+    const BASE_HAMBURGUER = 3.00;
+    const ingredientesHamburguer = [
+      { nome: 'Carne Tradicional', preco: 3.00 },
+      { nome: 'Carne Artesanal', preco: 8.00 },
+      { nome: 'Mussarela', preco: 3.00 },
+      { nome: 'Cheddar Tradicional', preco: 1.50 },
+      { nome: 'Cheddar Premium', preco: 3.00 },
+      { nome: 'Cream Cheese', preco: 3.00 },
+      { nome: 'Bacon Crocante', preco: 5.00 },
+      { nome: 'Presunto', preco: 2.00 },
+      { nome: 'Calabresa', preco: 2.00 },
+      { nome: 'Frango', preco: 3.00 },
+      { nome: 'Ovo Frito', preco: 1.50 },
+      { nome: 'Alface', preco: 1.00 },
+      { nome: 'Tomate', preco: 1.00 },
+      { nome: 'Cebola', preco: 0.50 },
+      { nome: 'Molho Especial no hamburguer', preco: 1.00 },
+      { nome: 'Molho Especial Separado', preco: 3.00 }
+    ];
+    // contagem atual de cada ingrediente
+    let contagemIngredientesHamburguer = {};
+
+    // inicializa e abre a tela
+    function iniciarMonteHamburguer() {
+      // zera todas as quantidades
+      contagemIngredientesHamburguer = {};
+      ingredientesHamburguer.forEach(i => {
+        contagemIngredientesHamburguer[i.nome] = 0;
+      });
+      renderizarSelecionadosHamburguer();
+      renderizarIngredientesHamburguer();
+      atualizarTotalHamburguer();
+
+      mostrarTela('monteHamburguer');
+    }
+// mostra lista de selecionados no topo
+    function renderizarSelecionadosHamburguer() {
+      const div = document.getElementById('ingredientesHamburguerEscolhidos');
+      const itens = ingredientesHamburguer
+        .filter(i => contagemIngredientesHamburguer[i.nome] > 0)
+        .map(i => `${i.nome} x${contagemIngredientesHamburguer[i.nome]}`);
+      if (itens.length === 0) {
+        div.innerHTML = '<em>Nenhum ingrediente ainda</em>';
+        div.classList.add('selecao-vazia');
+      } else {
+        div.classList.remove('selecao-vazia');
+        div.innerHTML = itens.join('<br>');
+      }
+    }
+
+    // gera o HTML dos ingredientes com botões + e -
+    function renderizarIngredientesHamburguer() {
+      const lista = document.getElementById('listaIngredientesHamburguer');
+      lista.innerHTML = '';
+      ingredientesHamburguer.forEach(ing => {
+        const count = contagemIngredientesHamburguer[ing.nome] || 0;
+        const div = document.createElement('div');
+        div.classList.add('produto');
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        div.innerHTML = `
+          <span>${ing.nome} – R$ ${ing.preco.toFixed(2)}</span>
+          <div>
+            <button onclick="diminuirIngredienteHamb('${ing.nome}')">–</button>
+            <span id="qtd-${ing.nome.replace(/\s+/g,'')}">${count}</span>
+            <button onclick="aumentarIngredienteHamb('${ing.nome}')">+</button>
+          </div>
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    function aumentarIngredienteHamb(nome) {
+      contagemIngredientesHamburguer[nome]++;
+      document.getElementById(`qtd-${nome.replace(/\s+/g,'')}`)
+              .innerText = contagemIngredientesHamburguer[nome];
+      atualizarTotalHamburguer();
+      renderizarSelecionadosHamburguer();
+
+    }
+
+    function diminuirIngredienteHamb(nome) {
+      if (contagemIngredientesHamburguer[nome] > 0) {
+        contagemIngredientesHamburguer[nome]--;
+        document.getElementById(`qtd-${nome.replace(/\s+/g,'')}`)
+                .innerText = contagemIngredientesHamburguer[nome];
+        atualizarTotalHamburguer();
+        renderizarSelecionadosHamburguer();
+
+      }
+    }
+
+    // recalcula o total do hambúrguer
+    function atualizarTotalHamburguer() {
+      // parte fixa de pão + molhos
+      let total = BASE_HAMBURGUER;
+      ingredientesHamburguer.forEach(ing => {
+        const cnt = contagemIngredientesHamburguer[ing.nome] || 0;
+        total += cnt * ing.preco;
+      });
+      document.getElementById('precoTotalHamburguer')
+              .innerText = `Total: R$ ${total.toFixed(2)}`;
+ }
+
+
+    // adiciona ao carrinho exatamente como no pizza customizada
+    function adicionarCustomHamburguer() {
+      // monta lista de ingredientes que têm quantidade > 0
+      const itens = ingredientesHamburguer
+        .filter(i => contagemIngredientesHamburguer[i.nome] > 0)
+        .map(i => `${i.nome} x${contagemIngredientesHamburguer[i.nome]}`)
+        .join(', ');
+      if (!itens) {
+        alert('Selecione ao menos um ingrediente.');
+        return;
+      }
+
+      const obs = document.getElementById('observacaoHamburguer').value.trim();
+      // soma total
+      // agora inclui o pão + molhos
+      let precoFinal = BASE_HAMBURGUER;
+      ingredientesHamburguer.forEach(i => {
+        precoFinal += (contagemIngredientesHamburguer[i.nome] || 0) * i.preco;
+      });
+
+
+      const itemPedido = {
+        nome: 'MEU HAMBÚRGUER',
+        quantidade: 1,
+        tipo: 'Hambúrguer Personalizado',
+        observacao: itens + (obs ? ' | ' + obs : ''),
+        borda: '',      // não há borda no hambúrguer
+        precoFinal
+      };
+      carrinho.push(itemPedido);
+      mostrarTela('pedidos');
+      atualizarListaPedidos();
+    }
+
     // ====================== COMBOS / PROMOÇÕES ======================
     const combosNoite = [
      {
