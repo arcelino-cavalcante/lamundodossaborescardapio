@@ -483,7 +483,8 @@
     <div class="categorias">
       <h2>Escolha uma categoria:</h2>
       <button onclick="mostrarSubcategorias('Pizzas Grandes')">Pizzas Grandes</button>
-      <button onclick="mostrarSubcategorias('Pizzas Media')">Pizzas Media</button>
+      <button onclick="mostrarSubcategorias('Pizzas Médias')">Pizzas Médias</button>
+      <button onclick="mostrarSubcategorias('Pizzas Pequenas')">Pizzas Pequenas</button>
       <button onclick="mostrarProdutosGenerico('Hambúrgueres')">Hambúrgueres</button>
       <button onclick="mostrarProdutosGenerico('Pastéis')">Pastéis</button>
       <button onclick="mostrarProdutosGenerico('Esfirras')">Esfirras</button>
@@ -1246,7 +1247,7 @@
     };
 
     // Pizzas Pequenas
-    const pizzasMedia = {
+    const pizzasMedias = {
       'Tradicionais': [
         { codigo: 'P001', nome: 'A Moda do Chefe (M)', preco: 30.00, desc: 'Frango desfiado, palmito, ovos, bacon, catupiry' },
         { codigo: 'P002', nome: 'Atum (M)', preco: 30.00, desc: 'Atum, mussarela, cebola, orégano' },
@@ -1293,6 +1294,54 @@
        
       ]
     };
+    const pizzasPequenas = {
+      'Tradicionais': [
+        { codigo: 'P001', nome: 'A Moda do Chefe (P)', preco: 25.00, desc: 'Frango desfiado, palmito, ovos, bacon, catupiry' },
+        { codigo: 'P002', nome: 'Atum (P)', preco: 25.00, desc: 'Atum, mussarela, cebola, orégano' },
+        { codigo: 'P003', nome: 'Bacon (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, bacon, ovos, tomate' },
+        { codigo: 'P004', nome: 'Baiana (P)', preco: 25.00, desc: 'Molho de tomate, calabresa, ovos, cebola, mussarela, pimenta' },
+        { codigo: 'P005', nome: 'Brasileira Pizza (P)', preco: 25.00, desc: 'Mussarela, presunto, milho, ervilha, tomate' },
+        { codigo: 'P006', nome: 'Calabresa (P)', preco: 25.00, desc: 'Molho de tomate, calabresa, cebola' },
+        { codigo: 'P007', nome: 'Calabresa 3 Queijos (P)', preco: 25.00, desc: 'Molho de tomate, calabresa, mussarela, catupiry, cheddar' },
+        { codigo: 'P008', nome: 'Caipira (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, frango desfiado, cebola, milho, tomate, bacon' },
+        { codigo: 'P009', nome: 'Charque (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, charque, tomate, azeitona' },
+        { codigo: 'P010', nome: 'Dois Queijos (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, catupiry' },
+        { codigo: 'P011', nome: 'Três Queijos (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, catupiry, parmesão' },
+        { codigo: 'P012', nome: 'Quatro Queijos (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, catupiry, cheddar, parmesão, orégano' },
+        { codigo: 'P013', nome: 'Do Pizzaiolo (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, calabresa, bacon, palmito, queijo provolone, milho, ovos' },
+        { codigo: 'P014', nome: 'Favorita (P)', preco: 25.00, desc: 'Molho de tomate, calabresa, ovos, calabresa, palmito, azeitona' },
+        { codigo: 'P015', nome: 'Frango c/ Catupiry (P)', preco: 25.00, desc: 'Molho de tomate, frango desfiado e catupiry' },
+        { codigo: 'P016', nome: 'Frango c/ Cheddar (P)', preco: 25.00, desc: 'Molho de tomate, frango desfiado, cheddar' },
+        { codigo: 'P017', nome: 'Frango c/ Mussarela (P)', preco: 25.00, desc: 'Molho de tomate, frango desfiado, mussarela' },
+        { codigo: 'P018', nome: 'Italiana (P)', preco: 25.00, desc: 'Mussarela, salame italiano, molho de tomate' },
+        { codigo: 'P019', nome: 'Marguerita (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, parmesão, tomate e manjericão' },
+        { codigo: 'P020', nome: 'Mussarela (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, tomate, orégano' },
+        { codigo: 'P021', nome: 'Mussa Palha (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, tomate, batata palha' },
+        { codigo: 'P022', nome: 'Napolitana (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, parmesão, presunto, tomate, orégano' },
+        { codigo: 'P023', nome: 'Palmito (P)', preco: 25.00, desc: 'Presunto, palmito, mussarela, orégano' },
+        { codigo: 'P024', nome: 'Paulista (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, presunto, palmito, bacon, tomate' },
+        { codigo: 'P025', nome: 'Pepperoni (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, salame, pepperoni, orégano' },
+        { codigo: 'P026', nome: 'Portuguesa (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, presunto, ovos, cebola, orégano' },
+        { codigo: 'P027', nome: 'Salame (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, tomate, salame, azeitona' },
+        { codigo: 'P028', nome: 'Toscana (P)', preco: 25.00, desc: 'Molho de tomate, calabresa, mussarela' },
+        { codigo: 'P029', nome: 'Vegetariana (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, palmito, azeitona, cebola, tomate' },
+        { codigo: 'P030', nome: 'Vegetariana 3 Queijos (P)', preco: 25.00, desc: 'Molho de tomate, mussarela, catupiry, cheddar, parmesão' }
+      ],
+      'Doces': [
+        { codigo: 'DP001', nome: 'Prestígio (P)', preco: 25.00, desc: 'Chocolate, coco ralado' },
+        { codigo: 'DP002', nome: 'Morango P)', preco: 25.00, desc: 'Chocolate, morango, leite condensado' },
+        { codigo: 'DP003', nome: 'Romeu e Julieta (P)', preco: 25.00, desc: 'Queijo mussarela, goiabada' },
+        { codigo: 'DP004', nome: 'Brigadeiro (P)', preco: 25.00, desc: 'Chocolate, granulado' },
+        { codigo: 'DP005', nome: 'Cartola (P)', preco: 25.00, desc: 'Leite condensado, banana, canela, açúcar' }
+      ],
+      'Premium Doces': [
+
+      ],
+      'Premium Salgadas': [
+        
+      ]
+    };
+
 
     // Outras categorias
     const produtosOutros = {
@@ -1354,14 +1403,29 @@
     };
 
     function mostrarSubcategorias(categoria) {
-      document.getElementById('tituloSubcategoria').innerText = categoria + ' - Subcategorias';
-      if (categoria === 'Pizzas Grandes') {
-        tipoPizzaAtual = 'grande';
-      } else {
-        tipoPizzaAtual = 'media';
-      }
-      mostrarTela('subcategorias');
-    }
+  // normaliza para minúsculas e sem acentos
+  const cat = categoria
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+
+  /* decide o tamanho */
+  if (cat.includes('grandes')) {
+    tipoPizzaAtual = 'grande';
+  } else if (cat.includes('medias') || cat.includes('médias')) {
+    // aceita “medias” e “médias”
+    tipoPizzaAtual = 'media';
+  } else if (cat.includes('pequenas')) {
+    tipoPizzaAtual = 'pequena';
+  } else {
+    tipoPizzaAtual = 'outros';
+  }
+
+  subcategoriaAtual = '';                    // zera qualquer sobra
+  document.getElementById('tituloSubcategoria').innerText =
+        `${categoria} - Subcategorias`;
+  mostrarTela('subcategorias');
+}
 
     function mostrarProdutosPizzas(subcat) {
       subcategoriaAtual = subcat;
@@ -1396,7 +1460,10 @@
         listaSubcat = pizzasGrandes[subcategoriaAtual] || [];
       }
       else if (tipoPizzaAtual === 'media') {
-        listaSubcat = pizzasMedia[subcategoriaAtual] || [];
+        listaSubcat = pizzasMedias[subcategoriaAtual] || [];
+      }
+      else if (tipoPizzaAtual === 'pequena') {
+        listaSubcat = pizzasPequenas[subcategoriaAtual] || [];
       }
       else {
         listaSubcat = produtosOutros[subcategoriaAtual] || [];
