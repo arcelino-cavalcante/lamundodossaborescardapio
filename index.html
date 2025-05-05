@@ -1819,7 +1819,7 @@ function selecionarBorda () {
       });
 
       const obs = document.getElementById('observacao').value;
-      const totalItem = (precoBase + (tipoPizza === 'Inteira' ? valorBorda : 0)) * quantidadeSelecionada;
+      const totalItem = (precoBase + valorBorda) * quantidadeSelecionada;
 
       // Monta nome final
       let nomeFinal;
