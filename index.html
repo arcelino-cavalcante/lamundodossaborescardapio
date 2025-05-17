@@ -2019,8 +2019,24 @@ function selecionarBorda () {
       });
 
       // Soma da taxa de entrega (se SITIO)
-      const totalComTaxa = somaTotal + taxaEntrega;
-      document.getElementById('pedidoTotal').innerText = `Valor Total: R$ ${totalComTaxa.toFixed(2)}`;
+      // Taxa extra para Vila Neves se somaTotal < 10
+  let taxaVilaNeves = 0;
+  if (localEntrega === 'Vila Neves' && somaTotal > 0 && somaTotal < 10) {
+    taxaVilaNeves = 2;
+  }
+
+  const totalComTaxa = somaTotal + taxaEntrega + taxaVilaNeves;
+
+  let msgTaxa = '';
+  if (taxaEntrega > 0) {
+    msgTaxa = ` + Taxa de Entrega: R$ ${taxaEntrega.toFixed(2)}`;
+  } else if (taxaVilaNeves > 0) {
+    msgTaxa = ` + Taxa de Entrega: R$ 2,00`;
+  }
+
+  document.getElementById('pedidoTotal').innerText =
+    `Valor Total: R$ ${totalComTaxa.toFixed(2)}${msgTaxa}`;
+
 
       verificarEnvioHabilitado();
     }
@@ -2147,6 +2163,12 @@ function selecionarBorda () {
         mensagem += `Taxa de entrega (${sitioSelecionado}): R$ ${taxaEntrega.toFixed(2)}\n`;
         totalComTaxa += taxaEntrega;
       }
+      // Taxa de Vila Neves para pedidos abaixo de 10 reais
+      if (localEntrega === 'Vila Neves' && valorTotal > 0 && valorTotal < 10) {
+        mensagem += `Taxa de entrega (Vila Neves): R$ 2,00\n`;
+        totalComTaxa += 2;
+      }
+
 
       mensagem += `*Valor Total:* R$ ${totalComTaxa.toFixed(2)}\n\n`;
       mensagem += `*Endereço:* ${localEntrega}\n`;
