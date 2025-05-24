@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LA MUNDO DOS SABORES 🦁</title>
 
   <!--
@@ -92,17 +93,20 @@
       white-space: nowrap;
       text-align: center;
     }
+
     button:disabled {
       background-color: #969696;
       cursor: not-allowed;
     }
+
     button:hover {
       background-color: #ffee00;
     }
 
     /* Logo abaixo do botão "Informações" */
     #logoPequena {
-      width: 120px; /* Ajuste conforme necessário */
+      width: 120px;
+      /* Ajuste conforme necessário */
       margin-top: 10px;
     }
 
@@ -111,17 +115,21 @@
       padding: 20px;
       text-align: center;
     }
+
     .active {
       display: block;
     }
 
-    .categorias, .subcategorias {
+    .categorias,
+    .subcategorias {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 10px;
     }
-    .categorias button, .subcategorias button {
+
+    .categorias button,
+    .subcategorias button {
       background-color: #f70000;
       color: #fff;
     }
@@ -150,14 +158,17 @@
       box-shadow: 0 0 8px rgb(255, 255, 255);
       cursor: pointer;
     }
+
     .produto h3 {
       color: #000;
       margin-bottom: 5px;
     }
+
     .produto p {
       color: #000;
       margin-bottom: 5px;
     }
+
     .produto .preco {
       color: #ff0000;
       font-weight: bold;
@@ -165,10 +176,12 @@
     }
 
     /* Tela de Combos/Promoções */
-    #combosLista, #promocoesLista {
+    #combosLista,
+    #promocoesLista {
       max-width: 500px;
       margin: 0 auto;
     }
+
     .combo-item {
       background: white;
       border-radius: 10px;
@@ -178,6 +191,7 @@
       text-align: left;
       cursor: pointer;
     }
+
     .combo-item img {
       width: 100%;
       max-width: 250px;
@@ -185,10 +199,12 @@
       margin: 0 auto 10px;
       border-radius: 8px;
     }
+
     .combo-item h3 {
       color: #000;
       margin-bottom: 5px;
     }
+
     .combo-item p {
       margin-bottom: 5px;
     }
@@ -199,38 +215,46 @@
       margin: 0 auto;
       text-align: left;
     }
+
     #detalhes .detalhes-container {
       background: white;
       border-radius: 10px;
       padding: 15px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     }
+
     #detalhes h2 {
       margin-bottom: 10px;
       color: #000;
       text-align: center;
     }
+
     .quantidade {
       display: flex;
       align-items: center;
       margin: 10px 0;
     }
+
     .quantidade button {
       background-color: #ffee00;
       margin: 0 10px;
       width: 40px;
     }
+
     .quantidade span {
       font-size: 1.2em;
       width: 30px;
       text-align: center;
     }
+
     .opcoes {
       margin: 10px 0;
     }
+
     .opcoes label {
       margin-right: 10px;
     }
+
     .observacao {
       width: 100%;
       height: 60px;
@@ -241,6 +265,7 @@
       padding: 8px;
       font-size: 1em;
     }
+
     .total {
       font-size: 1.2em;
       color: #ff0000;
@@ -254,6 +279,7 @@
       display: none;
       margin-bottom: 10px;
     }
+
     .opcoes-borda {
       display: flex;
       flex-direction: column;
@@ -262,8 +288,9 @@
       margin-left: 10px;
       margin-top: 5px;
     }
+
     #btnBorda {
-      display: none; 
+      display: none;
       margin: 10px 0;
     }
 
@@ -272,7 +299,8 @@
       margin-bottom: 10px;
       color: #000;
       font-style: italic;
-      display: none; /* só aparece se for Inteira */
+      display: none;
+      /* só aparece se for Inteira */
     }
 
     /* Tela de Pedidos */
@@ -281,18 +309,21 @@
       margin: 0 auto;
       text-align: left;
     }
+
     .pedido-item {
       background: white;
       border-radius: 10px;
       padding: 15px;
       margin: 10px 0;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
       position: relative;
     }
+
     .pedido-item h4 {
       color: #000;
       margin-bottom: 5px;
     }
+
     .pedido-total {
       margin-top: 15px;
       font-size: 1.2em;
@@ -300,6 +331,7 @@
       text-align: right;
       color: #fbff00;
     }
+
     .botoes-pedidos {
       display: flex;
       flex-wrap: wrap;
@@ -313,9 +345,11 @@
       margin-top: 15px;
       text-align: left;
     }
+
     .entrega-opcoes label {
       margin-right: 10px;
     }
+
     #enderecoEntrega {
       width: 100%;
       max-width: 400px;
@@ -325,6 +359,7 @@
       border-radius: 8px;
       margin-top: 8px;
     }
+
     #nomeCliente {
       width: 100%;
       max-width: 400px;
@@ -334,11 +369,13 @@
       border-radius: 8px;
       margin-top: 8px;
     }
+
     /* Se for SITIO */
     #sitioContainer {
       margin-top: 10px;
       display: none;
     }
+
     #selectSitio {
       width: 100%;
       max-width: 400px;
@@ -348,114 +385,136 @@
       border-radius: 8px;
       margin-top: 8px;
     }
+
     /* ---------- MONTE SUA PIZZA ---------- */
-    #montePizza .detalhes-container{
-      max-width:500px;           /* mesmo limite da tela Detalhes */
-      margin:0 auto;
-      background:#fff;
-      border-radius:10px;
-      padding:15px;
-      box-shadow:0 0 8px rgba(0,0,0,.1);
-      text-align:left;
+    #montePizza .detalhes-container {
+      max-width: 500px;
+      /* mesmo limite da tela Detalhes */
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, .1);
+      text-align: left;
     }
 
     /* usa o mesmo cartão para cada ingrediente                         */
-    #montePizza .produto{
-      width:100%;                /* garante largura igual às pizzas   */
-      margin:8px 0;
-      cursor:pointer;
+    #montePizza .produto {
+      width: 100%;
+      /* garante largura igual às pizzas   */
+      margin: 8px 0;
+      cursor: pointer;
     }
 
     /* caixas com rolagem – ingredientes escolhidos + lista à escolha  */
-    .caixa‑scroll{
-      max-height:38vh;           /* ocupa a metade da tela em celulares */
-      overflow-y:auto;
-      border:2px solid #f0f0f0;
-      border-radius:8px;
-      padding:8px;
+    .caixa‑scroll {
+      max-height: 38vh;
+      /* ocupa a metade da tela em celulares */
+      overflow-y: auto;
+      border: 2px solid #f0f0f0;
+      border-radius: 8px;
+      padding: 8px;
     }
 
     /* cor diferente quando ainda não há seleção                       */
-    .selecao-vazia{color:#555; font-style:italic}
+    .selecao-vazia {
+      color: #555;
+      font-style: italic
+    }
 
     /* borda escolhida (texto pequeno)                                 */
-    .txt-borda{margin-bottom:10px; font-style:italic; color:#000}
+    .txt-borda {
+      margin-bottom: 10px;
+      font-style: italic;
+      color: #000
+    }
 
     /* painel de borda fechado por padrão                              */
-    .painel-borda{display:none; margin-bottom:10px}
+    .painel-borda {
+      display: none;
+      margin-bottom: 10px
+    }
 
     /* botão principal amarelo igual aos outros                        */
-    .btn-pedido{
-      width:100%;
-      max-width:300px;
-      background:#ffee00;
-      display:block;
-      margin:12px auto 0;
-      padding:15px 25px;
-      border:none;
-      border-radius:10px;
-      font-size:1.1em;
-      cursor:pointer;
+    .btn-pedido {
+      width: 100%;
+      max-width: 300px;
+      background: #ffee00;
+      display: block;
+      margin: 12px auto 0;
+      padding: 15px 25px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1em;
+      cursor: pointer;
     }
 
     /* --------- grade responsiva de ingredientes --------- */
-    #listaIngredientes{
-      display:grid;
-      grid-template-columns:1fr;   /* 1 coluna em telas pequenas */
-      gap:10px;
+    #listaIngredientes {
+      display: grid;
+      grid-template-columns: 1fr;
+      /* 1 coluna em telas pequenas */
+      gap: 10px;
     }
 
-    @media (min-width:600px){
-      #listaIngredientes{          /* 2 colunas a partir de 600 px  */
-        grid-template-columns:1fr 1fr;
+    @media (min-width:600px) {
+      #listaIngredientes {
+        /* 2 colunas a partir de 600 px  */
+        grid-template-columns: 1fr 1fr;
       }
     }
-    #montePizza .produto.selecionado{
-  background:#fff8b7;
- }
-  #listaIngredientesHamburguer {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  @media (min-width:600px){
-    #listaIngredientesHamburguer {
-      grid-template-columns: 1fr 1fr;
+
+    #montePizza .produto.selecionado {
+      background: #fff8b7;
     }
-  }
-  /* 1) Painel de “Selecionados” com fundo branco e padding */
-  #ingredientesHamburguerEscolhidos {
-    background: #fff;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 20px;    /* cria espaço até o textarea */
-  }
 
-  /* 2) Espaço extra acima do textarea de observação */
-  #monteHamburguer .observacao {
-    margin-top: 20px;
-  }
+    #listaIngredientesHamburguer {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
 
-  /* 3) Cartões de ingrediente mais “apertados” verticalmente */
-  #listaIngredientesHamburguer .produto {
-    padding: 8px 10px;
-    margin: 5px 0;
-  }
+    @media (min-width:600px) {
+      #listaIngredientesHamburguer {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
 
-  /* 4) Ajuste no contêiner de quantidade para alinhar o número entre os botões */
-  #listaIngredientesHamburguer .produto > div {
-    display: flex;
-    align-items: center;
-    gap: 8px;      /* separa botão, número e botão */
-  }
-  #listaIngredientesHamburguer .produto > div span {
-    min-width: 24px;
-    text-align: center;
-  }
+    /* 1) Painel de “Selecionados” com fundo branco e padding */
+    #ingredientesHamburguerEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      /* cria espaço até o textarea */
+    }
 
+    /* 2) Espaço extra acima do textarea de observação */
+    #monteHamburguer .observacao {
+      margin-top: 20px;
+    }
 
+    /* 3) Cartões de ingrediente mais “apertados” verticalmente */
+    #listaIngredientesHamburguer .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+
+    /* 4) Ajuste no contêiner de quantidade para alinhar o número entre os botões */
+    #listaIngredientesHamburguer .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      /* separa botão, número e botão */
+    }
+
+    #listaIngredientesHamburguer .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
   </style>
 </head>
+
 <body>
   <header>LA MUNDO DOS SABORES 🦁</header>
 
@@ -527,7 +586,7 @@
   <!-- Tela de Produtos -->
   <div id="produtos" class="tela">
     <h2 id="tituloCategoria"></h2>
-    <input type="text" id="busca" placeholder="Buscar por nome..." oninput="filtrarProdutos()"/>
+    <input type="text" id="busca" placeholder="Buscar por nome..." oninput="filtrarProdutos()" />
     <div id="listaProdutos"></div>
     <br>
     <button onclick="mostrarTela('cardapio')">Voltar às Categorias</button>
@@ -548,15 +607,15 @@
 
       <div class="opcoes">
         <label>
-          <input type="radio" name="opcaoPizza" value="Inteira" checked onchange="mudarTipoPizza()"/>
+          <input type="radio" name="opcaoPizza" value="Inteira" checked onchange="mudarTipoPizza()" />
           Inteira
         </label>
         <label>
-          <input type="radio" name="opcaoPizza" value="Meio a Meio" onchange="mudarTipoPizza()"/>
+          <input type="radio" name="opcaoPizza" value="Meio a Meio" onchange="mudarTipoPizza()" />
           Meio a Meio
         </label>
       </div>
-      
+
       <!-- Botão p/ bordas -->
       <button id="btnBorda" type="button" onclick="toggleBorda()">Bordas</button>
 
@@ -601,7 +660,7 @@
           </label>
         </div>
       </div>
-      
+
 
       <textarea class="observacao" id="observacao" placeholder="Alguma observação?"></textarea>
       <div class="total" id="precoTotal"></div>
@@ -615,7 +674,7 @@
   <div id="montePizza" class="tela">
     <div class="detalhes-container">
       <h2>MINHA PIZZA</h2>
-  
+
       <!-- quantidade -->
       <div class="quantidade">
         <label>Quantidade:</label>
@@ -623,7 +682,7 @@
         <span id="quantidadeValorCustom">1</span>
         <button onclick="alterarQuantidadeCustom(1)">+</button>
       </div>
-  
+
       <!-- borda -->
       <button id="btnBordaCustom" type="button" onclick="toggleBorda()">Bordas</button>
       <p id="bordaSelecionadaCustom" class="txt-borda">Borda Selecionada: Nenhuma</p>
@@ -664,23 +723,23 @@
           </label>
         </div>
       </div>
-    
-  
+
+
       <!-- ingredientes escolhidos -->
       <h3>Itens escolhidos:</h3>
       <div id="ingredientesEscolhidos" class="caixa‑scroll selecao-vazia">
         <em>Nenhum ingrediente ainda</em>
       </div>
-  
+
       <!-- lista de ingredientes -->
       <h3 style="margin-top:18px">Escolha seus ingredientes:</h3>
       <div id="listaIngredientes" class="caixa‑scroll"></div>
-  
+
       <!-- total + botão -->
       <div class="total" id="precoTotalCustom"></div>
       <button class="btn-pedido" onclick="adicionarCustomPizza()">Adicionar ao Pedido</button>
     </div>
-  
+
     <br>
     <button onclick="voltarMenu()">Voltar</button>
   </div>
@@ -697,8 +756,7 @@
       </div>
 
       <!-- 2) Observação + botão -->
-      <textarea class="observacao" id="observacaoHamburguer"
-                placeholder="Alguma observação?"></textarea>
+      <textarea class="observacao" id="observacaoHamburguer" placeholder="Alguma observação?"></textarea>
       <div class="total" id="precoTotalHamburguer"></div>
       <button class="btn-pedido" onclick="adicionarCustomHamburguer()">
         Adicionar ao Pedido
@@ -726,11 +784,11 @@
     <div class="entrega-opcoes">
       <p><strong>Endereço:</strong></p>
       <label>
-        <input type="radio" name="localEntrega" value="Vila Neves" onchange="atualizarEntrega()"/>
+        <input type="radio" name="localEntrega" value="Vila Neves" onchange="atualizarEntrega()" />
         Vila Neves
       </label>
       <label>
-        <input type="radio" name="localEntrega" value="Sitio" onchange="atualizarEntrega()"/>
+        <input type="radio" name="localEntrega" value="Sitio" onchange="atualizarEntrega()" />
         Sitio
       </label>
 
@@ -756,13 +814,10 @@
       <br><br>
       <label for="enderecoEntrega">Local/Ponto de Referência:</label>
       <br>
-      <input type="text" id="enderecoEntrega" oninput="atualizarEntrega()" placeholder="Digite aqui..."/>
+      <input type="text" id="enderecoEntrega" oninput="atualizarEntrega()" placeholder="Digite aqui..." />
       <br><br>
       <label for="nomeCliente"><strong>Nome do Cliente:</strong></label><br>
-      <input type="text"
-             id="nomeCliente"
-             placeholder="Digite seu nome..."
-             oninput="verificarEnvioHabilitado()"/>
+      <input type="text" id="nomeCliente" placeholder="Digite seu nome..." oninput="verificarEnvioHabilitado()" />
     </div>
 
     <div class="botoes-pedidos">
@@ -849,29 +904,29 @@
     // ---- MONTE SUA PIZZA ----
     const BASE_CUSTOM_PIZZA = 30.00;            // massa + molho padrão
     const ingredientesBase = [
-      {nome:'Mussarela',      preco:6.00},
-      {nome:'Catupiry',       preco:3.00},
-      {nome:'Cheddar',        preco:3.00},
-      {nome:'Bacon',          preco:5.00},
-      {nome:'Calabresa',      preco:6.00},
-      {nome:'Frango Desfiado',preco:6.00},
-      {nome:'Milho',          preco:2.00},
-      {nome:'Palmito',        preco:3.00},
-      {nome:'Tomate',         preco:2.00},
-      {nome:'Cebola',         preco:3.00},
-      {nome:'Ovos',           preco:2.00},
-      {nome:'Presunto',       preco:5.00},
-      {nome:'Lombo',          preco:10.00},
-      {nome:'Cream Cheese',   preco:15.00},
-      {nome:'Azeitona',       preco:2.00},
-      {nome:'Camarão',        preco:20.00}
+      { nome: 'Mussarela', preco: 6.00 },
+      { nome: 'Catupiry', preco: 3.00 },
+      { nome: 'Cheddar', preco: 3.00 },
+      { nome: 'Bacon', preco: 5.00 },
+      { nome: 'Calabresa', preco: 6.00 },
+      { nome: 'Frango Desfiado', preco: 6.00 },
+      { nome: 'Milho', preco: 2.00 },
+      { nome: 'Palmito', preco: 3.00 },
+      { nome: 'Tomate', preco: 2.00 },
+      { nome: 'Cebola', preco: 3.00 },
+      { nome: 'Ovos', preco: 2.00 },
+      { nome: 'Presunto', preco: 5.00 },
+      { nome: 'Lombo', preco: 10.00 },
+      { nome: 'Cream Cheese', preco: 15.00 },
+      { nome: 'Azeitona', preco: 2.00 },
+      { nome: 'Camarão', preco: 20.00 }
     ];
     let ingredientesSelecionados = [];
     let valorIngredientes = 0;
 
     // --------------- Monte seu Hambúrguer ---------------
 
-// ingredientes disponíveis (você pode ajustar nomes e preços)
+    // ingredientes disponíveis (você pode ajustar nomes e preços)
     // preço base de pão + molhos
     const BASE_HAMBURGUER = 3.00;
     const ingredientesHamburguer = [
@@ -908,7 +963,7 @@
 
       mostrarTela('monteHamburguer');
     }
-// mostra lista de selecionados no topo
+    // mostra lista de selecionados no topo
     function renderizarSelecionadosHamburguer() {
       const div = document.getElementById('ingredientesHamburguerEscolhidos');
       const itens = ingredientesHamburguer
@@ -938,7 +993,7 @@
           <span>${ing.nome} – R$ ${ing.preco.toFixed(2)}</span>
           <div>
             <button onclick="diminuirIngredienteHamb('${ing.nome}')">–</button>
-            <span id="qtd-${ing.nome.replace(/\s+/g,'')}">${count}</span>
+            <span id="qtd-${ing.nome.replace(/\s+/g, '')}">${count}</span>
             <button onclick="aumentarIngredienteHamb('${ing.nome}')">+</button>
           </div>
         `;
@@ -948,8 +1003,8 @@
 
     function aumentarIngredienteHamb(nome) {
       contagemIngredientesHamburguer[nome]++;
-      document.getElementById(`qtd-${nome.replace(/\s+/g,'')}`)
-              .innerText = contagemIngredientesHamburguer[nome];
+      document.getElementById(`qtd-${nome.replace(/\s+/g, '')}`)
+        .innerText = contagemIngredientesHamburguer[nome];
       atualizarTotalHamburguer();
       renderizarSelecionadosHamburguer();
 
@@ -958,8 +1013,8 @@
     function diminuirIngredienteHamb(nome) {
       if (contagemIngredientesHamburguer[nome] > 0) {
         contagemIngredientesHamburguer[nome]--;
-        document.getElementById(`qtd-${nome.replace(/\s+/g,'')}`)
-                .innerText = contagemIngredientesHamburguer[nome];
+        document.getElementById(`qtd-${nome.replace(/\s+/g, '')}`)
+          .innerText = contagemIngredientesHamburguer[nome];
         atualizarTotalHamburguer();
         renderizarSelecionadosHamburguer();
 
@@ -975,8 +1030,8 @@
         total += cnt * ing.preco;
       });
       document.getElementById('precoTotalHamburguer')
-              .innerText = `Total: R$ ${total.toFixed(2)}`;
- }
+        .innerText = `Total: R$ ${total.toFixed(2)}`;
+    }
 
 
     // adiciona ao carrinho exatamente como no pizza customizada
@@ -1015,7 +1070,7 @@
 
     // ====================== COMBOS / PROMOÇÕES ======================
     const combosNoite = [
-     {
+      {
         codigo: 'CB01',
         nome: 'Combo Casal',
         preco: 30.00,
@@ -1067,7 +1122,7 @@
     ];
 
     const promocoesNoite = [
-     {
+      {
         codigo: 'PR01',
         nome: 'Clone de Hamburguês',
         preco: 15.00,
@@ -1088,7 +1143,7 @@
         desc: '6 carnes + 6 ovos + presunto + calabresa + Queijo + Salada + Molho + batatas Fritas',
         imagem: 'imagens_promocao/promo3.jpg'
       }
-    
+
     ];
 
     function mostrarCombos() {
@@ -1175,27 +1230,27 @@
       mostrarTela('detalhes');
     }
     /* ============ MONTE SUA PIZZA ============ */
-    function iniciarMontePizza () {
-  /* --- zera variáveis --- */
-      produtoSelecionado       = {codigo:'CUSTOM', nome:'MINHA PIZZA'};
-      quantidadeSelecionada    = 1;
-      precoBase                = BASE_CUSTOM_PIZZA;
+    function iniciarMontePizza() {
+      /* --- zera variáveis --- */
+      produtoSelecionado = { codigo: 'CUSTOM', nome: 'MINHA PIZZA' };
+      quantidadeSelecionada = 1;
+      precoBase = BASE_CUSTOM_PIZZA;
 
       ingredientesSelecionados = [];
-      valorIngredientes        = 0;
+      valorIngredientes = 0;
       exibirEscolhidos();                // limpa o painel “Itens escolhidos”
 
       /* --- reseta borda --- */
       const radioNenhuma = document.querySelector(
-            '#bordaPanelCustom input[value="Nenhuma"]');
+        '#bordaPanelCustom input[value="Nenhuma"]');
       if (radioNenhuma) radioNenhuma.checked = true;
 
-      saborBorda        = 'Nenhuma';
-      valorBorda        = 0;
+      saborBorda = 'Nenhuma';
+      valorBorda = 0;
       mostraPainelBorda = false;
       document.getElementById('bordaPanelCustom').style.display = 'none';
       document.getElementById('bordaSelecionadaCustom').innerText =
-            'Borda Selecionada: Nenhuma';
+        'Borda Selecionada: Nenhuma';
 
       /* --- quantidade & listas --- */
       document.getElementById('quantidadeValorCustom').innerText = '1';
@@ -1326,10 +1381,10 @@
         { codigo: 'DP005', nome: 'Cartola (M)', preco: 30.00, desc: 'Leite condensado, banana, canela, açúcar' }
       ],
       'Premium Doces': [
-        
+
       ],
       'Premium Salgadas': [
-       
+
       ]
     };
     const pizzasPequenas = {
@@ -1376,7 +1431,7 @@
 
       ],
       'Premium Salgadas': [
-        
+
       ]
     };
 
@@ -1408,6 +1463,7 @@
         { codigo: 'PA003', nome: 'Calabresa', preco: 6.00, desc: 'Pastel de calabresa' },
         { codigo: 'PA004', nome: 'Presunto', preco: 6.00, desc: 'Pastel de presunto' },
         { codigo: 'PA005', nome: 'Mussarela', preco: 6.00, desc: 'Pastel de mussarela' },
+        { codigo: 'PA005', nome: 'Misto', preco: 6.00, desc: 'Presunto e mussarela' },
         { codigo: 'PA006', nome: 'Queijo branco', preco: 6.00, desc: 'Pastel de quijo qualho' },
         { codigo: 'PA007', nome: 'Camarão + Cream Cheese', preco: 13.00, desc: 'Pastel de camarão com cream cheese' },
         { codigo: 'PA008', nome: 'Camarão + Cheddar', preco: 10.00, desc: 'Pastel de camarão com cheddar' },
@@ -1418,7 +1474,8 @@
         { codigo: 'PA013', nome: 'Catubrês', preco: 8.00, desc: 'Pastel de calabresa, e catupiry' },
         { codigo: 'PA014', nome: 'Franrei', preco: 10.00, desc: 'Pastel de frango com requeijão' },
         { codigo: 'PA007', nome: 'Frango + Cream Cheese', preco: 10.00, desc: 'Pastel de camarão com cream cheese' },
-        { codigo: 'PA015', nome: '4 Sabores', preco: 8.00, desc: 'Frango Catupiry, Frango Cheddar, Mussarela, 4 Queijos, Presunto, Milho e Ervilha, Cebola e Tomate' }
+        { codigo: 'PA007', nome: 'Frango + Mussarela', preco: 6.00, desc: 'Pastel de camarão com cream cheese' },
+        { codigo: 'PA015', nome: '4 Sabores', preco: 10.00, desc: 'Frango Catupiry, Frango Cheddar, Mussarela, 4 Queijos, Presunto, Milho e Ervilha, Cebola e Tomate' }
       ],
       'Esfirras': [
         { codigo: 'E001', nome: 'Frango c/ Catupiry', preco: 4.00, desc: 'Esfirra de frango com catupiry' },
@@ -1449,7 +1506,7 @@
         { codigo: 'AC03', nome: 'Açaí Supremo', preco: 35.00, desc: 'Mm brigadeiro leite condensado leite pó granola frutas banana ou morango jujubas chocola' }
       ],
       'Gelados': [
-        
+
       ],
       'Refrigerantes': [
         { codigo: 'BE001', nome: 'Refrigerante Lata', preco: 6.00, desc: 'Lata Coca' },
@@ -1466,29 +1523,29 @@
     };
 
     function mostrarSubcategorias(categoria) {
-  // normaliza para minúsculas e sem acentos
-  const cat = categoria
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
+      // normaliza para minúsculas e sem acentos
+      const cat = categoria
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
 
-  /* decide o tamanho */
-  if (cat.includes('grandes')) {
-    tipoPizzaAtual = 'grande';
-  } else if (cat.includes('medias') || cat.includes('médias')) {
-    // aceita “medias” e “médias”
-    tipoPizzaAtual = 'media';
-  } else if (cat.includes('pequenas')) {
-    tipoPizzaAtual = 'pequena';
-  } else {
-    tipoPizzaAtual = 'outros';
-  }
+      /* decide o tamanho */
+      if (cat.includes('grandes')) {
+        tipoPizzaAtual = 'grande';
+      } else if (cat.includes('medias') || cat.includes('médias')) {
+        // aceita “medias” e “médias”
+        tipoPizzaAtual = 'media';
+      } else if (cat.includes('pequenas')) {
+        tipoPizzaAtual = 'pequena';
+      } else {
+        tipoPizzaAtual = 'outros';
+      }
 
-  subcategoriaAtual = '';                    // zera qualquer sobra
-  document.getElementById('tituloSubcategoria').innerText =
+      subcategoriaAtual = '';                    // zera qualquer sobra
+      document.getElementById('tituloSubcategoria').innerText =
         `${categoria} - Subcategorias`;
-  mostrarTela('subcategorias');
-}
+      mostrarTela('subcategorias');
+    }
 
     function mostrarProdutosPizzas(subcat) {
       subcategoriaAtual = subcat;
@@ -1567,13 +1624,13 @@
         itens = itens.filter(i => i.nome.toLowerCase().includes(busca));
       }
 
-      itens.forEach((ing,idx) => {
+      itens.forEach((ing, idx) => {
         const div = document.createElement('div');
         div.classList.add('produto');
         const jaEscolhido = ingredientesSelecionados.find(x => x.nome === ing.nome);
         if (jaEscolhido) {
-        div.classList.add('selecionado');
-    }
+          div.classList.add('selecionado');
+        }
 
         div.innerHTML = `<h3>${ing.nome} <span class="preco">R$ ${ing.preco.toFixed(2)}</span></h3>`;
         div.onclick = () => toggleIngrediente(ing);
@@ -1587,7 +1644,7 @@
         ingredientesSelecionados.push(ing);
         valorIngredientes += ing.preco;
       } else {
-        ingredientesSelecionados.splice(pos,1);
+        ingredientesSelecionados.splice(pos, 1);
         valorIngredientes -= ing.preco;
       }
       exibirEscolhidos();
@@ -1595,18 +1652,18 @@
       atualizarTotalCustom();
     }
 
-    function exibirEscolhidos(){
+    function exibirEscolhidos() {
       const div = document.getElementById('ingredientesEscolhidos');
       div.classList.remove('selecao-vazia');
 
-      if(ingredientesSelecionados.length===0){
-        div.innerHTML='<em>Nenhum ingrediente ainda</em>';
+      if (ingredientesSelecionados.length === 0) {
+        div.innerHTML = '<em>Nenhum ingrediente ainda</em>';
         div.classList.add('selecao-vazia');
         return;
       }
       div.innerHTML = ingredientesSelecionados
-          .map(i=>`${i.nome} – R$ ${i.preco.toFixed(2)}`)
-          .join('<br>');
+        .map(i => `${i.nome} – R$ ${i.preco.toFixed(2)}`)
+        .join('<br>');
     }
 
     function alterarQuantidadeCustom(v) {
@@ -1622,7 +1679,7 @@
     }
     /* ============= DETALHES DO PRODUTO ============= */
     function produtoClicado(prod) {
-      const pizzaCats = ['Tradicionais','Doces','Premium Doces','Premium Salgadas'];
+      const pizzaCats = ['Tradicionais', 'Doces', 'Premium Doces', 'Premium Salgadas'];
       if (pizzaCats.includes(subcategoriaAtual)) {
         if (isSelecionandoSegundaMetade) {
           montarMeioAMeio(primeiraMetade, prod);
@@ -1635,10 +1692,10 @@
     }
 
     function mostrarDetalhesPizza(prod) {
-  /* ---------- dados básicos ---------- */
-      produtoSelecionado    = prod;
+      /* ---------- dados básicos ---------- */
+      produtoSelecionado = prod;
       quantidadeSelecionada = 1;
-      precoBase             = prod.preco;
+      precoBase = prod.preco;
 
       document.getElementById('detalhesTitulo').innerText = `${prod.codigo} ${prod.nome}`;
       document.getElementById('detalhesDescricao').innerText = prod.desc;
@@ -1651,20 +1708,20 @@
       radios.forEach(r => r.checked = (r.value === 'Inteira'));
 
       /* ---------- Zera borda ---------- */
-      saborBorda        = 'Nenhuma';
-      valorBorda        = 0;
+      saborBorda = 'Nenhuma';
+      valorBorda = 0;
       mostraPainelBorda = false;
       document.getElementById('bordaPanel').style.display = 'none';
       document.getElementById('btnBorda').style.display = 'block';
 
       /* ---------- NOVO: exibe linha da borda já com “Nenhuma” ---------- */
       const bordaSel = document.getElementById('bordaSelecionada');
-      bordaSel.innerText  = 'Borda Selecionada: Nenhuma';
+      bordaSel.innerText = 'Borda Selecionada: Nenhuma';
       bordaSel.style.display = 'block';
 
       /* ---------- controle de meio‑a‑meio ---------- */
       isSelecionandoSegundaMetade = false;
-      primeiraMetade              = null;
+      primeiraMetade = null;
 
       atualizarTotal();
       document.getElementById('botaoAcao').textContent = 'Adicionar ao Pedido';
@@ -1679,22 +1736,22 @@
     }
     /* ============= DETALHES DO PRODUTO ============= */
     /* --------- Detalhes para hambúrguer, pastel, etc. --------- */
-    function mostrarDetalhesGenerico (prod) {
+    function mostrarDetalhesGenerico(prod) {
       /* dados básicos */
-      produtoSelecionado    = prod;
+      produtoSelecionado = prod;
       quantidadeSelecionada = 1;
-      precoBase             = prod.preco;
+      precoBase = prod.preco;
 
       /* preenche a UI */
       document.getElementById('detalhesTitulo').innerText =
-            `${prod.codigo} ${prod.nome}`;
+        `${prod.codigo} ${prod.nome}`;
       document.getElementById('detalhesDescricao').innerText = prod.desc;
-      document.getElementById('quantidadeValor').innerText   = '1';
-      document.getElementById('observacao').value            = '';
+      document.getElementById('quantidadeValor').innerText = '1';
+      document.getElementById('observacao').value = '';
 
       /* esconde controles exclusivos de pizza */
       document.querySelector('.opcoes').style.display = 'none';  // Inteira / Meio
-      document.getElementById('btnBorda').style.display   = 'none';
+      document.getElementById('btnBorda').style.display = 'none';
       document.getElementById('bordaPanel').style.display = 'none';
       document.getElementById('bordaSelecionada').style.display = 'none';
 
@@ -1716,69 +1773,69 @@
     }
 
     /* ============ BORDAS ============ */
-    function toggleBorda () {
-  // 1. Descobre em qual tela estamos
-  const estaNoCustom = document
+    function toggleBorda() {
+      // 1. Descobre em qual tela estamos
+      const estaNoCustom = document
         .getElementById('montePizza')
         .classList.contains('active');
 
-  // 2. Seleciona o painel correto
-  const painel = estaNoCustom
+      // 2. Seleciona o painel correto
+      const painel = estaNoCustom
         ? document.getElementById('bordaPanelCustom')  // tela Monte Pizza
         : document.getElementById('bordaPanel');       // tela Detalhes
 
-  // 3. Abre/fecha
-  mostraPainelBorda = !mostraPainelBorda;
-  painel.style.display = mostraPainelBorda ? 'block' : 'none';
-}
+      // 3. Abre/fecha
+      mostraPainelBorda = !mostraPainelBorda;
+      painel.style.display = mostraPainelBorda ? 'block' : 'none';
+    }
 
-function selecionarBorda () {
-  /* ---------- preços ---------- */
-  const precosBorda = {
-    'Nenhuma':                       0.00,
-    'Sem borda':                     0.00,   // para compatibilidade
-    'Catupiry':                      3.00,
-    'Cheddar':                       3.00,
-    'Catupiry + Cheddar':            3.00,
-    'Chocolate':                     7.00,
-    'Doce de Leite':                 5.00,
-    'Paozinho misto':                9.00,
-    'Paozinho Frango + Mussarela':  12.00,
-    'Camarão':                       9.00,
-    'cream cheese':                 16.00
-  };
+    function selecionarBorda() {
+      /* ---------- preços ---------- */
+      const precosBorda = {
+        'Nenhuma': 0.00,
+        'Sem borda': 0.00,   // para compatibilidade
+        'Catupiry': 3.00,
+        'Cheddar': 3.00,
+        'Catupiry + Cheddar': 3.00,
+        'Chocolate': 7.00,
+        'Doce de Leite': 5.00,
+        'Paozinho misto': 9.00,
+        'Paozinho Frango + Mussarela': 12.00,
+        'Camarão': 9.00,
+        'cream cheese': 16.00
+      };
 
-  /* ---------- qual painel está aberto? ---------- */
-  const estaNoCustom = document
+      /* ---------- qual painel está aberto? ---------- */
+      const estaNoCustom = document
         .getElementById('montePizza')
         .classList.contains('active');
-  const seletor = estaNoCustom
+      const seletor = estaNoCustom
         ? '#bordaPanelCustom input[name="bordaSabor"]'
         : '#bordaPanel input[name="bordaSabor"]';
-  const radios = document.querySelectorAll(seletor);
+      const radios = document.querySelectorAll(seletor);
 
-  /* ---------- sabor + preço ---------- */
-  radios.forEach(radio => {
-    if (radio.checked) {
-      saborBorda = radio.value;
-      valorBorda = precosBorda[saborBorda] ?? 0;
+      /* ---------- sabor + preço ---------- */
+      radios.forEach(radio => {
+        if (radio.checked) {
+          saborBorda = radio.value;
+          valorBorda = precosBorda[saborBorda] ?? 0;
+        }
+      });
+
+      /* ---------- mostra escolha & fecha painel ---------- */
+      if (estaNoCustom) {
+        document.getElementById('bordaSelecionadaCustom').innerText =
+          `Borda Selecionada: ${saborBorda}`;
+        atualizarTotalCustom();
+        document.getElementById('bordaPanelCustom').style.display = 'none';
+      } else {
+        document.getElementById('bordaSelecionada').innerText =
+          `Borda Selecionada: ${saborBorda}`;
+        atualizarTotal();
+        document.getElementById('bordaPanel').style.display = 'none';
+      }
+      mostraPainelBorda = false;
     }
-  });
-
-  /* ---------- mostra escolha & fecha painel ---------- */
-  if (estaNoCustom) {
-    document.getElementById('bordaSelecionadaCustom').innerText =
-          `Borda Selecionada: ${saborBorda}`;
-    atualizarTotalCustom();
-    document.getElementById('bordaPanelCustom').style.display = 'none';
-  } else {
-    document.getElementById('bordaSelecionada').innerText =
-          `Borda Selecionada: ${saborBorda}`;
-    atualizarTotal();
-    document.getElementById('bordaPanel').style.display = 'none';
-  }
-  mostraPainelBorda = false;
-}
 
     function mudarTipoPizza() {
       const radios = document.getElementsByName('opcaoPizza');
@@ -1788,9 +1845,9 @@ function selecionarBorda () {
       });
 
       // Exibe SEMPRE o botão de bordas e o texto abaixo
-    document.getElementById('btnBorda').style.display        = 'block';
-    document.getElementById('bordaSelecionada').style.display = 'block';
-    document.getElementById('bordaSelecionada').innerText     = `Borda Selecionada: ${saborBorda}`;
+      document.getElementById('btnBorda').style.display = 'block';
+      document.getElementById('bordaSelecionada').style.display = 'block';
+      document.getElementById('bordaSelecionada').innerText = `Borda Selecionada: ${saborBorda}`;
 
       // Altera texto do botão principal
       if (tipo === 'Meio a Meio' && !produtoSelecionado.codigo.includes('+')) {
@@ -1815,7 +1872,7 @@ function selecionarBorda () {
 
     /* =========== ADIÇÃO AO PEDIDO =========== */
     function acaoDetalhes() {
-      const pizzaCats = ['Tradicionais','Doces','Premium Doces','Premium Salgadas'];
+      const pizzaCats = ['Tradicionais', 'Doces', 'Premium Doces', 'Premium Salgadas'];
       if (!pizzaCats.includes(subcategoriaAtual)) {
         adicionarAoPedidoGenerico();
         return;
@@ -1851,15 +1908,15 @@ function selecionarBorda () {
       precoBase = valorMaisCara;
 
       function montarMeioAMeio(m1, m2) {
-  // ... seu código de montagem do nome + preço ...
+        // ... seu código de montagem do nome + preço ...
 
-  // garante que o usuário ainda possa escolher borda
-  document.getElementById('btnBorda').style.display        = 'block';
-  document.getElementById('bordaSelecionada').style.display = 'block';
-  document.getElementById('bordaSelecionada').innerText     = `Borda Selecionada: ${saborBorda || 'Nenhuma'}`;
+        // garante que o usuário ainda possa escolher borda
+        document.getElementById('btnBorda').style.display = 'block';
+        document.getElementById('bordaSelecionada').style.display = 'block';
+        document.getElementById('bordaSelecionada').innerText = `Borda Selecionada: ${saborBorda || 'Nenhuma'}`;
 
-  // ...
-}
+        // ...
+      }
 
       mostrarTela('detalhes');
       document.getElementById('detalhesTitulo').innerText = produtoSelecionado.codigo;
@@ -1942,7 +1999,7 @@ function selecionarBorda () {
 
       const itensTxt = ingredientesSelecionados.map(i => i.nome).join(', ');
       const precoItens = valorIngredientes;
-      const totalItem  = (BASE_CUSTOM_PIZZA + precoItens + valorBorda) * quantidadeSelecionada;
+      const totalItem = (BASE_CUSTOM_PIZZA + precoItens + valorBorda) * quantidadeSelecionada;
 
       const itemPedido = {
         nome: 'MINHA PIZZA',
@@ -2019,24 +2076,24 @@ function selecionarBorda () {
         container.appendChild(div);
       });
 
-      // Soma da taxa de entrega (se SITIO)
-      // Taxa extra para Vila Neves se somaTotal < 10
-  let taxaVilaNeves = 0;
-  if (localEntrega === 'Vila Neves' && somaTotal > 0 && somaTotal < 10) {
-    taxaVilaNeves = 2;
-  }
+      // === Taxa de entrega para Vila Neves ===
+      let taxaVilaNeves = 0;
+      if (localEntrega === 'Vila Neves' && somaTotal > 0) {
+        taxaVilaNeves = somaTotal < 10 ? 2 : 1;
+      }
 
-  const totalComTaxa = somaTotal + taxaEntrega + taxaVilaNeves;
+      const totalComTaxa = somaTotal + taxaEntrega + taxaVilaNeves;
 
-  let msgTaxa = '';
-  if (taxaEntrega > 0) {
-    msgTaxa = ` + Taxa de Entrega: R$ ${taxaEntrega.toFixed(2)}`;
-  } else if (taxaVilaNeves > 0) {
-    msgTaxa = ` + Taxa de Entrega: R$ 2,00`;
-  }
+      let msgTaxa = '';
+      if (localEntrega === 'Sitio' && taxaEntrega > 0) {
+        msgTaxa = ` + Taxa de Entrega: R$ ${taxaEntrega.toFixed(2)}`;
+      } else if (localEntrega === 'Vila Neves' && taxaVilaNeves > 0) {
+        msgTaxa = ` + Taxa de Entrega: R$ ${taxaVilaNeves.toFixed(2)}`;
+      }
 
-  document.getElementById('pedidoTotal').innerText =
-    `Valor Total: R$ ${totalComTaxa.toFixed(2)}${msgTaxa}`;
+      document.getElementById('pedidoTotal').innerText =
+        `Valor Total: R$ ${totalComTaxa.toFixed(2)}${msgTaxa}`;
+
 
 
       verificarEnvioHabilitado();
@@ -2073,7 +2130,7 @@ function selecionarBorda () {
       const select = document.getElementById('selectSitio');
       sitioSelecionado = select.value;
 
-      switch(sitioSelecionado) {
+      switch (sitioSelecionado) {
         case 'Entupido': taxaEntrega = 8; break;
         case 'Serrinha': taxaEntrega = 5; break;
         case 'Vieira': taxaEntrega = 10; break;
@@ -2115,35 +2172,35 @@ function selecionarBorda () {
 
     /* ============= ENVIAR PEDIDO (WHATSAPP) ============= */
     function enviarPedido() {
-  const nome = document.getElementById('nomeCliente').value.trim();
-  if (!nome) {
-    alert('Por favor, digite seu nome.');
-    return;
-  }
-  if (carrinho.length === 0) {
-    alert('Nenhum pedido para enviar.');
-    return;
-  }
-  if (!localEntrega) {
-    alert('Selecione o local de entrega.');
-    return;
-  }
-  if (!enderecoEntrega) {
-    alert('Digite o local/ponto de referência.');
-    return;
-  }
-  if (localEntrega === 'Sitio' && !sitioSelecionado) {
-    alert('Selecione qual sítio.');
-    return;
-  }
+      const nome = document.getElementById('nomeCliente').value.trim();
+      if (!nome) {
+        alert('Por favor, digite seu nome.');
+        return;
+      }
+      if (carrinho.length === 0) {
+        alert('Nenhum pedido para enviar.');
+        return;
+      }
+      if (!localEntrega) {
+        alert('Selecione o local de entrega.');
+        return;
+      }
+      if (!enderecoEntrega) {
+        alert('Digite o local/ponto de referência.');
+        return;
+      }
+      if (localEntrega === 'Sitio' && !sitioSelecionado) {
+        alert('Selecione qual sítio.');
+        return;
+      }
 
-  let mensagem = "*Olá, gostaria de fazer o seguinte pedido:*\n\n";
-  mensagem += `*Nome do Cliente:* ${nome}\n\n`;
-  mensagem += "*Itens do Pedido:*\n";
+      let mensagem = "*Olá, gostaria de fazer o seguinte pedido:*\n\n";
+      mensagem += `*Nome do Cliente:* ${nome}\n\n`;
+      mensagem += "*Itens do Pedido:*\n";
       let valorTotal = 0;
 
       carrinho.forEach((item, index) => {
-        mensagem += `*(${index+1}) ${item.nome} - ${item.tipo}*\n`;
+        mensagem += `*(${index + 1}) ${item.nome} - ${item.tipo}*\n`;
         mensagem += `Quantidade: ${item.quantidade}\n`;
         mensagem += `Total: R$ ${item.precoFinal.toFixed(2)}\n`;
 
@@ -2158,20 +2215,24 @@ function selecionarBorda () {
         valorTotal += item.precoFinal;
       });
 
-      // Adiciona taxa de entrega se SITIO
+      // === Calcular total com taxa de entrega ===
       let totalComTaxa = valorTotal;
+
+      // Sitio
       if (localEntrega === 'Sitio' && taxaEntrega > 0) {
         mensagem += `Taxa de entrega (${sitioSelecionado}): R$ ${taxaEntrega.toFixed(2)}\n`;
         totalComTaxa += taxaEntrega;
       }
-      // Taxa de Vila Neves para pedidos abaixo de 10 reais
-      if (localEntrega === 'Vila Neves' && valorTotal > 0 && valorTotal < 10) {
-        mensagem += `Taxa de entrega (Vila Neves): R$ 2,00\n`;
-        totalComTaxa += 2;
+
+      // Vila Neves: R$1 acima de R$10, R$2 abaixo
+      if (localEntrega === 'Vila Neves' && valorTotal > 0) {
+        const taxaVilaNeves = valorTotal < 10 ? 2 : 1;
+        mensagem += `Taxa de entrega (Vila Neves): R$ ${taxaVilaNeves.toFixed(2)}\n`;
+        totalComTaxa += taxaVilaNeves;
       }
 
-
       mensagem += `*Valor Total:* R$ ${totalComTaxa.toFixed(2)}\n\n`;
+
       mensagem += `*Endereço:* ${localEntrega}\n`;
       if (localEntrega === 'Sitio') {
         mensagem += `*Sítio:* ${sitioSelecionado}\n`;
@@ -2186,4 +2247,5 @@ function selecionarBorda () {
     }
   </script>
 </body>
+
 </html>
