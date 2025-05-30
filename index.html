@@ -791,6 +791,11 @@
         <input type="radio" name="localEntrega" value="Sitio" onchange="atualizarEntrega()" />
         Sitio
       </label>
+      <label>
+        <input type="radio" name="localEntrega" value="Retirar" onchange="atualizarEntrega()" />
+        Retirar no Local
+      </label>
+
 
       <div id="sitioContainer">
         <label for="selectSitio">Selecione o sítio:</label>
@@ -2105,26 +2110,34 @@
 
     /* ============= ENTREGA (LOCAL / ENDEREÇO) ============= */
     function atualizarEntrega() {
+      // escolhe localEntrega
       const radios = document.getElementsByName('localEntrega');
       localEntrega = '';
-      radios.forEach(r => {
-        if (r.checked) {
-          localEntrega = r.value;
-        }
-      });
+      radios.forEach(r => { if (r.checked) localEntrega = r.value; });
 
+      // resgata o texto do endereço (caso exista)
       enderecoEntrega = document.getElementById('enderecoEntrega').value.trim();
 
+      // controla exibição do select de sítio
       const sitioDiv = document.getElementById('sitioContainer');
       if (localEntrega === 'Sitio') {
         sitioDiv.style.display = 'block';
       } else {
         sitioDiv.style.display = 'none';
         sitioSelecionado = '';
-        taxaEntrega = 0;
+        taxaEntrega = 0;          // sempre limpa taxa de sítio
       }
+
+      // se for retirar, não há taxa nem endereço
+      if (localEntrega === 'Retirar') {
+        taxaEntrega = 0;
+        enderecoEntrega = '';
+      }
+
       atualizarListaPedidos();
+      verificarEnvioHabilitado();
     }
+
 
     function atualizarSitio() {
       const select = document.getElementById('selectSitio');
@@ -2152,23 +2165,24 @@
       const botaoEnviar = document.getElementById('botaoEnviar');
       const nome = document.getElementById('nomeCliente').value.trim();
 
-      if (carrinho.length === 0) {
-        botaoEnviar.disabled = true;
-        return;
-      }
-      if (!nome) {
+      // precisa de itens, nome e uma opção selecionada
+      if (carrinho.length === 0 || !nome || !localEntrega) {
         botaoEnviar.disabled = true;
         return;
       }
 
       if (localEntrega === 'Vila Neves') {
         botaoEnviar.disabled = (enderecoEntrega === '');
-      } else if (localEntrega === 'Sitio') {
+      }
+      else if (localEntrega === 'Sitio') {
         botaoEnviar.disabled = (sitioSelecionado === '' || enderecoEntrega === '');
-      } else {
-        botaoEnviar.disabled = true;
+      }
+      else {
+        // Retirar no Local
+        botaoEnviar.disabled = false;
       }
     }
+
 
     /* ============= ENVIAR PEDIDO (WHATSAPP) ============= */
     function enviarPedido() {
@@ -2185,14 +2199,22 @@
         alert('Selecione o local de entrega.');
         return;
       }
-      if (!enderecoEntrega) {
+      if (localEntrega === 'Vila Neves' && !enderecoEntrega) {
         alert('Digite o local/ponto de referência.');
         return;
       }
-      if (localEntrega === 'Sitio' && !sitioSelecionado) {
-        alert('Selecione qual sítio.');
-        return;
+      if (localEntrega === 'Sitio') {
+        if (!sitioSelecionado) {
+          alert('Selecione qual sítio.');
+          return;
+        }
+        if (!enderecoEntrega) {
+          alert('Digite o local/ponto de referência.');
+          return;
+        }
       }
+      // Retirar no Local não precisa de endereço nem sítio
+
 
       let mensagem = "*Olá, gostaria de fazer o seguinte pedido:*\n\n";
       mensagem += `*Nome do Cliente:* ${nome}\n\n`;
@@ -2233,11 +2255,16 @@
 
       mensagem += `*Valor Total:* R$ ${totalComTaxa.toFixed(2)}\n\n`;
 
-      mensagem += `*Endereço:* ${localEntrega}\n`;
-      if (localEntrega === 'Sitio') {
-        mensagem += `*Sítio:* ${sitioSelecionado}\n`;
+      if (localEntrega === 'Retirar') {
+        mensagem += '*Retirar no Local*\n\n';
+      } else {
+        mensagem += `*Endereço:* ${localEntrega}\n`;
+        if (localEntrega === 'Sitio') {
+          mensagem += `*Sítio:* ${sitioSelecionado}\n`;
+        }
+        mensagem += `*Local/Ponto de Referência:* ${enderecoEntrega}\n\n`;
       }
-      mensagem += `*Local/Ponto de Referência:* ${enderecoEntrega}\n\n`;
+
       mensagem += "*lA MUNDO DOS SABORES*";
 
       const telefoneWhatsApp = '5587981295167'; // Ajuste para seu número
