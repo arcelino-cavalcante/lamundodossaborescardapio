@@ -24,6 +24,10 @@
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#000000" />
   <link rel="apple-touch-icon" href="/imagens_inicial/logo_pizzaria.png" />
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="LA CARDAPIO">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +43,7 @@
 
     body {
       background-color: #000000;
-      color: #D90429;
+      color: #FF0000;
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -50,8 +54,8 @@
       background-color: #000000;
       padding: 8px 20px; /* Padding vertical reduzido */
       text-align: center;
-      color: #FFC107;
-      font-size: 1.2em; /* Fonte menor */
+      color: #FFD700;
+      font-size: 1.4em; /* Fonte menor */
       font-weight: bold;
       position: relative;
       z-index: 10;
@@ -88,7 +92,7 @@
       position: relative;
       z-index: 2;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); /* Botões um pouco menores */
+      grid-template-columns: repeat(2, 1fr); /* Organiza os botões em duas colunas */
       gap: 10px; /* Espaçamento menor */
       width: 100%;
       max-width: 800px; /* Limita a largura em telas grandes */
@@ -102,10 +106,11 @@
       align-items: center;
       justify-content: center;
       padding: 15px;
-      font-size: 1em; /* Fonte um pouco maior */
+      font-size: 1.15em; /* Texto levemente maior */
+      font-weight: bold; /* Melhora a visualização */
       height: 110px; /* Altura reduzida */
       border-radius: 15px;
-      background-color: #FFC107;
+      background-color: #FFD700;
       color: #2d2d2d;
       cursor: pointer;
       transition: all 0.3s;
@@ -120,7 +125,7 @@
       font-size: 1em;
       border: none;
       border-radius: 8px;
-      background-color: #FFC107;
+      background-color: #FFD700;
       color: #2d2d2d;
       cursor: pointer;
       transition: background 0.3s;
@@ -133,7 +138,7 @@
     }
 
     button:hover {
-      background-color: #ffee00;
+      background-color: #FFEB3B;
     }
 
     /* Logo abaixo do botão "Informações" */
@@ -145,8 +150,18 @@
     #logoPequena {
       width: 120px;
       /* Ajuste conforme necessário */
+      margin: 20px auto 0 auto;
+      display: block;
+      grid-column: 1 / -1;
+      justify-self: center;
+    }
+
+    .credito {
+      font-size: 0.9em;
+      text-align: center;
       margin-top: 10px;
     }
+
 
     .tela {
       display: none;
@@ -168,7 +183,7 @@
 
     .categorias button,
     .subcategorias button {
-      background-color: #D90429;
+      background-color: #FF0000;
       color: #fff;
       width: 100%;
       max-width: 320px; /* Largura máxima para consistência */
@@ -189,7 +204,7 @@
       width: 90%;
       padding: 10px;
       margin-bottom: 15px;
-      border: 2px solid #D90429;
+      border: 2px solid #FF0000;
       border-radius: 8px;
       font-size: 1em;
     }
@@ -226,14 +241,14 @@
     .produto-preco {
       flex-shrink: 0;
       background-color: transparent;
-      color: #D90429;
+      color: #FF0000;
       font-weight: bold;
       padding: 8px 12px;
       border-radius: 8px;
       font-size: 1.2em;
       text-align: center;
       min-width: 90px;
-      border: 2px solid #D90429;
+      border: 2px solid #FF0000;
     }
 
     .precos {
@@ -315,7 +330,7 @@
     }
 
     .quantidade button {
-      background-color: #ffee00;
+      background-color: #FFEB3B;
       margin: 0 10px;
       width: 40px;
     }
@@ -347,7 +362,7 @@
 
     .total {
       font-size: 1.2em;
-      color: #D90429;
+      color: #FF0000;
       font-weight: bold;
       text-align: right;
       margin-bottom: 15px;
@@ -408,7 +423,7 @@
       font-size: 1.2em;
       font-weight: bold;
       text-align: right;
-      color: #FFC107;
+      color: #FFD700;
     }
 
     .botoes-pedidos {
@@ -496,7 +511,7 @@
       width: 100%;
       padding: 10px;
       margin-bottom: 15px;
-      border: 2px solid #D90429;
+      border: 2px solid #FF0000;
       border-radius: 8px;
       font-size: 1em;
     }
@@ -589,7 +604,7 @@
     .btn-pedido {
       width: 100%;
       max-width: 300px;
-      background: #FFC107;
+      background: #FFD700;
       display: block;
       margin: 12px auto 0;
       padding: 15px 25px;
@@ -733,7 +748,7 @@
       gap: 8px;
     }
     .ingrediente-tag {
-      background-color: #FFC107;
+      background-color: #FFD700;
       color: #2d2d2d;
       padding: 5px 10px;
       border-radius: 15px;
@@ -756,7 +771,7 @@
 
     #montePizza .produto.selecionado {
       background: #fff8b7;
-      border: 1px solid #D90429;
+      border: 1px solid #FF0000;
     }
 
     #listaIngredientesHamburguer {
@@ -865,8 +880,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -932,8 +947,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -999,8 +1014,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1066,8 +1081,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1133,8 +1148,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1200,8 +1215,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1267,8 +1282,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1334,8 +1349,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1401,8 +1416,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1468,8 +1483,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1535,8 +1550,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1602,8 +1617,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1669,8 +1684,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1736,8 +1751,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1803,8 +1818,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1870,8 +1885,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -1937,8 +1952,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -2004,8 +2019,8 @@
     }
 
     .lista-tamanhos-acai input[type="radio"]:checked + label {
-      background-color: #FFC107;
-      border-color: #D90429;
+      background-color: #FFD700;
+      border-color: #FF0000;
       font-weight: bold;
     }
 
@@ -2092,6 +2107,22 @@
       visibility: visible;
       opacity: 1;
     }
+
+    /* --- Instruções de Instalação para iOS --- */
+    #instrucoes-ios {
+      background-color: #fff;
+      color: #000;
+      text-align: center;
+      padding: 20px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 150;
+      max-width: 90%;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
   </style>
 </head>
 
@@ -2109,7 +2140,7 @@
       <button onclick="mostrarPromocoes()"><i class="fa-solid fa-tags"></i> Promoção da Noite</button>
       <button onclick="iniciarMontePizza()"><i class="fa-solid fa-pizza-slice"></i> Monte sua Pizza</button>
       <button onclick="iniciarMonteHamburguer()"><i class="fa-solid fa-hamburger"></i> Monte seu Hambúrguer</button>
-      <button onclick="iniciarMontePastel()"><i class="fa-solid fa-stroopwafel"></i> Monte seu Pastel</button>
+      <button onclick="iniciarMontePastel()"><i class="fa-solid fa-hotdog"></i> Monte seu Pastel</button>
       <button id="btnMonteAcai" onclick="iniciarMonteAcai()"><i class="fa-solid fa-bowl-food"></i> Monte seu Açaí</button>
       <button onclick="mostrarTela('pedidos')"><i class="fa-solid fa-shopping-bag"></i> Ver Pedidos</button>
       <button onclick="mostrarTela('informacoes')"><i class="fa-solid fa-info-circle"></i> Informações</button>
@@ -2117,6 +2148,7 @@
 
       <!-- Logo pequena -->
       <img id="logoPequena" src="imagens_inicial/logo_pizzaria.png" alt="Logo Pizzaria" />
+      <p class="credito">Cardápio feito por <a href="https://arcelinocavalcante.dev">arcelinocavalcante.dev</a>. Entre em contato e peça o seu projeto! WhatsApp: <a href="https://wa.me/5587920008169">87920008169</a></p>
     </nav>
   </div>
 
@@ -2487,12 +2519,13 @@
     <p>Final de semana 18h às 00:00h</p>
     <br>
     <p>Fazemos entregas nos Sítios Vizinhos</p>
+    <p class="credito">Cardápio feito por <a href="https://arcelinocavalcante.dev">arcelinocavalcante.dev</a>. Entre em contato e peça o seu projeto! WhatsApp: <a href="https://wa.me/5587920008169">87920008169</a></p>
     <br>
     <button onclick="voltarMenu()">Voltar</button>
   </div>
 
   <!-- Tela de Instalação (iOS) -->
-  <div id="instrucoes-ios" class="tela" style="background-color: #fff; color: #000; text-align: center; padding: 20px;">
+  <div id="instrucoes-ios" class="tela">
     <h2>Instalar Cardápio</h2>
     <p>Para instalar o app, toque no ícone de compartilhamento <i class="fa-solid fa-share-from-square"></i> e depois em "Adicionar à Tela de Início".</p>
     <br>
@@ -2532,6 +2565,12 @@
     let deferredPrompt;
     const btnInstalar = document.getElementById('btnInstalar');
     const instrucoesIos = document.getElementById('instrucoes-ios');
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isInStandaloneMode = ('standalone' in window.navigator) && window.navigator.standalone;
+
+    if (isIOS && !isInStandaloneMode) {
+      btnInstalar.style.display = 'block';
+    }
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -2540,7 +2579,6 @@
     });
 
     btnInstalar.addEventListener('click', (e) => {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
       if (isIOS) {
         instrucoesIos.classList.add('active');
       } else {
@@ -4081,7 +4119,7 @@
             </div>
             <div style="margin-left: 10px;">
               <button onclick="removerPedido(${index})"
-                style="background-color: #ffee00; color: #000; border: none; border-radius: 8px;
+                style="background-color: #FFEB3B; color: #000; border: none; border-radius: 8px;
                        padding: 8px 10px; font-size: 1em; cursor: pointer;">
                 🗑️
               </button>
