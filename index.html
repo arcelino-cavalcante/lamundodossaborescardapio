@@ -6,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LA MUNDO DOS SABORES 🦁</title>
 
+  <!-- Font Awesome (para ícones) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
   <!--
     Destaques:
       - Mantém todas as funcionalidades existentes (pizzas meio a meio, combos, carrinho, etc.).
@@ -18,25 +21,37 @@
       - A borda escolhida aparece abaixo do botão “Bordas” e, no pedido, em linha separada de "Obs".
   -->
 
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="apple-touch-icon" href="/imagens_inicial/logo_pizzaria.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, sans-serif;
+      font-family: 'Lato', sans-serif;
     }
 
     body {
       background-color: #000000;
-      color: #ff0000;
+      color: #D90429;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Montserrat', sans-serif;
     }
 
     header {
       background-color: #000000;
-      padding: 20px;
+      padding: 8px 20px; /* Padding vertical reduzido */
       text-align: center;
-      color: rgb(255, 251, 0);
-      font-size: 1.8em;
+      color: #FFC107;
+      font-size: 1.2em; /* Fonte menor */
       font-weight: bold;
       position: relative;
       z-index: 10;
@@ -46,11 +61,11 @@
     #menuInicialContainer {
       position: relative;
       width: 100%;
-      min-height: 80vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start; /* Alinha os botões ao topo */
+      padding: 20px 0;
       overflow: hidden;
     }
 
@@ -72,25 +87,43 @@
     #menuInicial {
       position: relative;
       z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); /* Botões um pouco menores */
+      gap: 10px; /* Espaçamento menor */
+      width: 100%;
+      max-width: 800px; /* Limita a largura em telas grandes */
+      margin: 20px auto; /* Margem superior reduzida */
+      padding: 0 20px;
+    }
+
+    #menuInicial button {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 15px;
-      margin: 30px 0;
+      justify-content: center;
+      padding: 15px;
+      font-size: 1em; /* Fonte um pouco maior */
+      height: 110px; /* Altura reduzida */
+      border-radius: 15px;
+      background-color: #FFC107;
+      color: #2d2d2d;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: normal; /* Permite quebra de linha no texto */
+      text-align: center;
+      border: none; /* Garante que não haja borda */
     }
 
+    /* Estilo geral para outros botões */
     button {
-      padding: 15px 25px;
-      font-size: 1.1em;
+      padding: 12px 22px;
+      font-size: 1em;
       border: none;
-      border-radius: 10px;
-      background-color: #ffee00;
-      color: #000;
+      border-radius: 8px;
+      background-color: #FFC107;
+      color: #2d2d2d;
       cursor: pointer;
-      width: 100%;
-      max-width: 300px;
       transition: background 0.3s;
-      white-space: nowrap;
       text-align: center;
     }
 
@@ -104,6 +137,11 @@
     }
 
     /* Logo abaixo do botão "Informações" */
+    #menuInicial button i {
+      font-size: 2.5em; /* Ícones maiores */
+      margin-bottom: 10px; /* Espaço entre o ícone e o texto */
+    }
+
     #logoPequena {
       width: 120px;
       /* Ajuste conforme necessário */
@@ -130,8 +168,15 @@
 
     .categorias button,
     .subcategorias button {
-      background-color: #f70000;
+      background-color: #D90429;
       color: #fff;
+      width: 100%;
+      max-width: 320px; /* Largura máxima para consistência */
+      height: 55px; /* Altura fixa */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1em;
     }
 
     /* Tela de Produtos */
@@ -144,7 +189,7 @@
       width: 90%;
       padding: 10px;
       margin-bottom: 15px;
-      border: 2px solid #f70000;
+      border: 2px solid #D90429;
       border-radius: 8px;
       font-size: 1em;
     }
@@ -154,25 +199,59 @@
       border-radius: 10px;
       padding: 15px;
       margin: 10px 0;
-      text-align: left;
-      box-shadow: 0 0 8px rgb(255, 255, 255);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .produto-info {
+      flex-grow: 1;
     }
 
     .produto h3 {
-      color: #000;
+      color: #333;
       margin-bottom: 5px;
+      font-size: 1.1em;
     }
 
     .produto p {
-      color: #000;
-      margin-bottom: 5px;
+      color: #666;
+      font-size: 0.9em;
+      margin-bottom: 0;
     }
 
-    .produto .preco {
-      color: #ff0000;
+    .produto-preco {
+      flex-shrink: 0;
+      background-color: transparent;
+      color: #D90429;
       font-weight: bold;
-      float: right;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 1.2em;
+      text-align: center;
+      min-width: 90px;
+      border: 2px solid #D90429;
+    }
+
+    .precos {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .precos span {
+      background-color: #f2f2f2;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.95em;
+      color: #333;
+      border: 1px solid #ddd;
+      width: 100%;
+      text-align: left;
     }
 
     /* Tela de Combos/Promoções */
@@ -268,7 +347,7 @@
 
     .total {
       font-size: 1.2em;
-      color: #ff0000;
+      color: #D90429;
       font-weight: bold;
       text-align: right;
       margin-bottom: 15px;
@@ -329,7 +408,7 @@
       font-size: 1.2em;
       font-weight: bold;
       text-align: right;
-      color: #fbff00;
+      color: #FFC107;
     }
 
     .botoes-pedidos {
@@ -386,6 +465,77 @@
       margin-top: 8px;
     }
 
+    /* Estilos para a nova seção Monte sua Pizza */
+    .monte-pizza-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, .1);
+    }
+
+    @media (min-width: 768px) {
+      .monte-pizza-container {
+        flex-direction: row;
+      }
+    }
+
+    .ingredientes-disponiveis {
+      flex: 1;
+    }
+
+    .resumo-pizza {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #buscaIngrediente {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 2px solid #D90429;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+
+    .controles-pizza {
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    .controles-pizza .quantidade {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .controles-pizza .quantidade div {
+      display: flex;
+      align-items: center;
+    }
+
+    .borda-custom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #bordaSelecionadaCustom {
+      font-style: italic;
+      color: #000;
+    }
+
+    #montePizza .total {
+      margin-top: auto; /* Empurra o total para o final do flex container */
+    }
+
+    #montePizza .btn-pedido {
+      margin-top: 10px;
+    }
     /* ---------- MONTE SUA PIZZA ---------- */
     #montePizza .detalhes-container {
       max-width: 500px;
@@ -439,7 +589,7 @@
     .btn-pedido {
       width: 100%;
       max-width: 300px;
-      background: #ffee00;
+      background: #FFC107;
       display: block;
       margin: 12px auto 0;
       padding: 15px 25px;
@@ -464,8 +614,149 @@
       }
     }
 
+    /* Estilos para a nova seção Monte sua Pizza */
+    .monte-pizza-container {
+      display: flex;
+      flex-direction: column;
+      gap: 30px; /* Aumenta o espaço entre as colunas */
+      background: #f9f9f9; /* Fundo um pouco mais suave */
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .monte-pizza-container {
+        flex-direction: row;
+      }
+    }
+
+    .ingredientes-disponiveis {
+      flex: 1.5; /* Coluna da esquerda um pouco maior */
+    }
+
+    .resumo-pizza {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .resumo-pizza h3 {
+      border-bottom: 2px solid #f70000;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    #buscaIngrediente {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+    #buscaIngrediente:focus {
+      border-color: #f70000;
+      outline: none;
+    }
+
+    .controles-pizza {
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    .controles-pizza .quantidade {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .controles-pizza .quantidade div {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .controles-pizza .quantidade button {
+      padding: 0;
+      font-size: 1.2em;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+      max-width: 32px;
+      min-width: 32px;
+      line-height: 32px; /* Vertically center text */
+      text-align: center;
+    }
+
+    .borda-custom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #btnBordaCustom {
+      padding: 8px 16px; /* Smaller padding */
+      font-size: 0.9em;   /* Smaller font */
+    }
+
+    #bordaSelecionadaCustom {
+      font-style: italic;
+      color: #000;
+      font-weight: bold;
+    }
+
+    #montePizza .total {
+      margin-top: auto;
+      font-size: 1.5em; /* Total mais destacado */
+      font-weight: bold;
+      color: #000;
+      text-align: right;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    #montePizza .btn-pedido {
+      margin-top: 10px;
+    }
+
+    /* Tags de ingredientes selecionados */
+    #ingredientesEscolhidos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ingrediente-tag {
+      background-color: #FFC107;
+      color: #2d2d2d;
+      padding: 5px 10px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      font-size: 0.9em;
+    }
+    .ingrediente-tag button {
+      background: none;
+      border: none;
+      color: #2d2d2d;
+      margin-left: 8px;
+      padding: 0;
+      cursor: pointer;
+      font-size: 1.2em;
+      line-height: 1;
+      width: auto;
+      min-width: auto;
+    }
+
     #montePizza .produto.selecionado {
       background: #fff8b7;
+      border: 1px solid #D90429;
     }
 
     #listaIngredientesHamburguer {
@@ -512,6 +803,1295 @@
       min-width: 24px;
       text-align: center;
     }
+
+    /* Estilos para Monte seu Açaí (baseado no Hambúrguer) */
+    #ingredientesAcaiEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #monteAcai .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesAcai .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesAcai .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesAcai .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+    #listaIngredientesAcai {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesAcai {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanho-acai {
+      margin-bottom: 20px;
+    }
+    .lista-tamanhos-acai {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .lista-tamanhos-acai label {
+      display: block;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lista-tamanhos-acai input[type="radio"] {
+      display: none; /* Esconde o radio button original */
+    }
+    #btnMonteAcai {
+      background-color: #d6baff; /* Roxo Açaí Claro */
+      color: #000;
+    }
+
+    .lista-tamanhos-acai input[type="radio"]:checked + label {
+      background-color: #FFC107;
+      border-color: #D90429;
+      font-weight: bold;
+    }
+
+    #listaIngredientesPastel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width:600px) {
+      #listaIngredientesPastel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Estilos para Monte seu Pastel (baseado no Hambúrguer) */
+    #ingredientesPastelEscolhidos {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #montePastel .observacao {
+      margin-top: 20px;
+    }
+    #listaIngredientesPastel .produto {
+      padding: 8px 10px;
+      margin: 5px 0;
+    }
+    #listaIngredientesPastel .produto>div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #listaIngredientesPastel .produto>div span {
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Estilos para as opções de tamanho do açaí */
+    .opcoes-tamanh
+  /* --- ANIMAÇÕES E TRANSIÇÕES --- */
+    .tela {
+      display: none;
+      padding: 20px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    .tela.active {
+      display: block;
+      opacity: 1;
+    }
+
+    button, .produto, .combo-item {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover, .produto:hover, .combo-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* --- TOAST (Notificação) --- */
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 16px;
+      position: fixed;
+      z-index: 100;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 30px;
+      font-size: 17px;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.5s linear;
+    }
+
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+    }
   </style>
 </head>
 
@@ -524,13 +2104,16 @@
 
     <!-- Menu Inicial -->
     <nav id="menuInicial">
-      <button onclick="mostrarTela('cardapio')">Cardápio</button>
-      <button onclick="mostrarCombos()">Combos da Noite</button>
-      <button onclick="mostrarPromocoes()">Promoção da Noite</button>
-      <button onclick="iniciarMontePizza()">Monte sua Pizza</button>
-      <button onclick="iniciarMonteHamburguer()">Monte seu Hambúrguer</button>
-      <button onclick="mostrarTela('pedidos')">Ver Pedidos</button>
-      <button onclick="mostrarTela('informacoes')">Informações</button>
+      <button onclick="mostrarTela('cardapio')"><i class="fa-solid fa-book-open"></i> Cardápio</button>
+      <button onclick="mostrarCombos()"><i class="fa-solid fa-star"></i> Combos da Noite</button>
+      <button onclick="mostrarPromocoes()"><i class="fa-solid fa-tags"></i> Promoção da Noite</button>
+      <button onclick="iniciarMontePizza()"><i class="fa-solid fa-pizza-slice"></i> Monte sua Pizza</button>
+      <button onclick="iniciarMonteHamburguer()"><i class="fa-solid fa-hamburger"></i> Monte seu Hambúrguer</button>
+      <button onclick="iniciarMontePastel()"><i class="fa-solid fa-stroopwafel"></i> Monte seu Pastel</button>
+      <button id="btnMonteAcai" onclick="iniciarMonteAcai()"><i class="fa-solid fa-bowl-food"></i> Monte seu Açaí</button>
+      <button onclick="mostrarTela('pedidos')"><i class="fa-solid fa-shopping-bag"></i> Ver Pedidos</button>
+      <button onclick="mostrarTela('informacoes')"><i class="fa-solid fa-info-circle"></i> Informações</button>
+      <button id="btnInstalar" style="display: none;"><i class="fa-solid fa-download"></i> Instalar Cardápio</button>
 
       <!-- Logo pequena -->
       <img id="logoPequena" src="imagens_inicial/logo_pizzaria.png" alt="Logo Pizzaria" />
@@ -668,76 +2251,66 @@
     </div>
 
     <br>
-    <button onclick="mostrarTela('produtos')">Voltar</button>
+    <button onclick="voltarParaLista()">Voltar</button>
   </div>
   <!-- Tela MONTE SUA PIZZA -->
   <div id="montePizza" class="tela">
-    <div class="detalhes-container">
-      <h2>MINHA PIZZA</h2>
+    <div class="monte-pizza-container">
 
-      <!-- quantidade -->
-      <div class="quantidade">
-        <label>Quantidade:</label>
-        <button onclick="alterarQuantidadeCustom(-1)">-</button>
-        <span id="quantidadeValorCustom">1</span>
-        <button onclick="alterarQuantidadeCustom(1)">+</button>
-      </div>
-
-      <!-- borda -->
-      <button id="btnBordaCustom" type="button" onclick="toggleBorda()">Bordas</button>
-      <p id="bordaSelecionadaCustom" class="txt-borda">Borda Selecionada: Nenhuma</p>
-      <div id="bordaPanelCustom" class="painel-borda">
-        <p>Escolha sua borda (fechará automaticamente):</p>
-        <div class="opcoes-borda">
-          <label>
-            <input type="radio" name="bordaSabor" value="Nenhuma" checked onchange="selecionarBorda()" />
-            Sem borda
-          </label>
-          <label>
-            <input type="radio" name="bordaSabor" value="Catupiry" onchange="selecionarBorda()" />
-            Catupiry (3,00)
-          </label>
-          <label>
-            <input type="radio" name="bordaSabor" value="Cheddar" onchange="selecionarBorda()" />
-            Cheddar (3,00)
-          </label>
-          <label>
-            <input type="radio" name="bordaSabor" value="Paozinho misto" onchange="selecionarBorda()" />
-            Paozinho misto (9,00)
-          </label>
-          <label>
-            <input type="radio" name="bordaSabor" value="Paozinho Frango + Mussarela" onchange="selecionarBorda()" />
-            Paozinho Frango + Mussarela (12,00)
-          </label>
-          <label>
-            <input type="radio" name="bordaSabor" value="Camarão" onchange="selecionarBorda()" />
-            Camarão (9,00)
-          </label>
-          <label>
-            <input type="radio" name="bordaSabor" value="Chocolate" onchange="selecionarBorda()" />
-            Chocolate (7,00)
-          </label>
-          <label>
-            <input type="radio" name="bordaSabor" value="cream cheese" onchange="selecionarBorda()" />
-            cream cheese (16,00)
-          </label>
+      <!-- Coluna da Esquerda: Ingredientes Disponíveis -->
+      <div class="ingredientes-disponiveis">
+        <h3>Escolha seus ingredientes:</h3>
+        <input type="text" id="buscaIngrediente" placeholder="Buscar ingrediente..." oninput="listarIngredientes()">
+        <div id="listaIngredientes" class="caixa-scroll">
+          <!-- Ingredientes serão inseridos pelo JS -->
         </div>
       </div>
 
+      <!-- Coluna da Direita: Resumo da Pizza -->
+      <div class="resumo-pizza">
+        <h3>Sua Pizza:</h3>
 
-      <!-- ingredientes escolhidos -->
-      <h3>Itens escolhidos:</h3>
-      <div id="ingredientesEscolhidos" class="caixa‑scroll selecao-vazia">
-        <em>Nenhum ingrediente ainda</em>
+        <!-- Ingredientes Escolhidos -->
+        <div id="ingredientesEscolhidos" class="caixa-scroll selecao-vazia">
+          <em>Nenhum ingrediente ainda</em>
+        </div>
+
+        <!-- Controles -->
+        <div class="controles-pizza">
+          <div class="quantidade">
+            <label>Quantidade:</label>
+            <div>
+              <button onclick="alterarQuantidadeCustom(-1)">-</button>
+              <span id="quantidadeValorCustom">1</span>
+              <button onclick="alterarQuantidadeCustom(1)">+</button>
+            </div>
+          </div>
+
+          <div class="borda-custom">
+            <button id="btnBordaCustom" type="button" onclick="toggleBorda()">Bordas</button>
+            <p id="bordaSelecionadaCustom" class="txt-borda">Nenhuma</p>
+          </div>
+        </div>
+
+        <!-- Painel de Opções de Borda -->
+        <div id="bordaPanelCustom" class="painel-borda">
+          <p>Escolha sua borda:</p>
+          <div class="opcoes-borda">
+            <label><input type="radio" name="bordaSaborCustom" value="Nenhuma" onchange="selecionarBorda()"> Sem borda</label>
+            <label><input type="radio" name="bordaSaborCustom" value="Catupiry" onchange="selecionarBorda()"> Catupiry (R$ 3,00)</label>
+            <label><input type="radio" name="bordaSaborCustom" value="Cheddar" onchange="selecionarBorda()"> Cheddar (R$ 3,00)</label>
+            <label><input type="radio" name="bordaSaborCustom" value="Paozinho misto" onchange="selecionarBorda()"> Paozinho misto (R$ 9,00)</label>
+            <label><input type="radio" name="bordaSaborCustom" value="Paozinho Frango + Mussarela" onchange="selecionarBorda()"> Paozinho Frango + Mussarela (R$ 12,00)</label>
+            <label><input type="radio" name="bordaSaborCustom" value="Camarão" onchange="selecionarBorda()"> Camarão (R$ 9,00)</label>
+            <label><input type="radio" name="bordaSaborCustom" value="Chocolate" onchange="selecionarBorda()"> Chocolate (R$ 7,00)</label>
+            <label><input type="radio" name="bordaSaborCustom" value="cream cheese" onchange="selecionarBorda()"> Cream Cheese (R$ 16,00)</label>
+          </div>
+        </div>
+
+        <!-- Total e Botão de Adicionar -->
+        <div class="total" id="precoTotalCustom"></div>
+        <button class="btn-pedido" onclick="adicionarCustomPizza()">Adicionar ao Pedido</button>
       </div>
-
-      <!-- lista de ingredientes -->
-      <h3 style="margin-top:18px">Escolha seus ingredientes:</h3>
-      <div id="listaIngredientes" class="caixa‑scroll"></div>
-
-      <!-- total + botão -->
-      <div class="total" id="precoTotalCustom"></div>
-      <button class="btn-pedido" onclick="adicionarCustomPizza()">Adicionar ao Pedido</button>
     </div>
 
     <br>
@@ -765,6 +2338,74 @@
       <!-- 3) Ingredientes disponíveis -->
       <h3 style="margin-top:20px">Escolha seus ingredientes:</h3>
       <div id="listaIngredientesHamburguer" class="caixa-scroll">
+        <!-- JS irá preencher -->
+      </div>
+
+    </div>
+    <br>
+    <button onclick="voltarMenu()">Voltar</button>
+  </div>
+
+  <!-- Tela MONTE SEU AÇAÍ -->
+  <div id="monteAcai" class="tela">
+    <div class="detalhes-container" style="max-width:500px;margin:0 auto;text-align:left;">
+
+      <h2>MEU AÇAÍ</h2>
+
+      <!-- Opções de Tamanho -->
+      <div class="opcoes-tamanho-acai">
+        <h3>Escolha o tamanho:</h3>
+        <div id="tamanhosAcai" class="lista-tamanhos-acai">
+          <!-- Tamanhos serão inseridos pelo JS -->
+        </div>
+      </div>
+
+      <!-- 1) Selecionados -->
+      <h3>Ingredientes selecionados:</h3>
+      <div id="ingredientesAcaiEscolhidos" class="caixa-scroll selecao-vazia">
+        <em>Nenhum ingrediente ainda</em>
+      </div>
+
+      <!-- 2) Observação + botão -->
+      <textarea class="observacao" id="observacaoAcai" placeholder="Alguma observação?"></textarea>
+      <div class="total" id="precoTotalAcai"></div>
+      <button class="btn-pedido" onclick="adicionarCustomAcai()">
+        Adicionar ao Pedido
+      </button>
+
+      <!-- 3) Ingredientes disponíveis -->
+      <h3 style="margin-top:20px">Escolha seus ingredientes:</h3>
+      <div id="listaIngredientesAcai" class="caixa-scroll">
+        <!-- JS irá preencher -->
+      </div>
+
+    </div>
+    <br>
+    <button onclick="voltarMenu()">Voltar</button>
+  </div>
+
+  <!-- Tela MONTE SEU PASTEL -->
+  <div id="montePastel" class="tela">
+    <div class="detalhes-container" style="max-width:500px;margin:0 auto;text-align:left;">
+
+      <h2>MEU PASTEL</h2>
+
+      <!-- 1) Selecionados -->
+      <h3>Recheios selecionados:</h3>
+      <div id="ingredientesPastelEscolhidos" class="caixa-scroll selecao-vazia">
+        <em>Nenhum recheio ainda</em>
+      </div>
+
+      <!-- 2) Observação + botão -->
+      <textarea class="observacao" id="observacaoPastel" placeholder="Alguma observação?"></textarea>
+      <div class="total" id="precoTotalPastel"></div>
+      <button class="btn-pedido" onclick="adicionarCustomPastel()">
+        Adicionar ao Pedido
+      </button>
+
+      <!-- 3) Ingredientes disponíveis -->
+      <h3 style="margin-top:20px">Escolha seus recheios:</h3>
+      <div id="listaIngredientesPastel" class="caixa-scroll">
         <!-- JS irá preencher -->
       </div>
 
@@ -850,6 +2491,16 @@
     <button onclick="voltarMenu()">Voltar</button>
   </div>
 
+  <!-- Tela de Instalação (iOS) -->
+  <div id="instrucoes-ios" class="tela" style="background-color: #fff; color: #000; text-align: center; padding: 20px;">
+    <h2>Instalar Cardápio</h2>
+    <p>Para instalar o app, toque no ícone de compartilhamento <i class="fa-solid fa-share-from-square"></i> e depois em "Adicionar à Tela de Início".</p>
+    <br>
+    <button onclick="document.getElementById('instrucoes-ios').classList.remove('active')">Fechar</button>
+  </div>
+
+  <div id="toast"></div>
+
   <script>
     /* ==================== S L I D E S H O W ==================== */
     const imagensFundo = [
@@ -866,6 +2517,54 @@
     }
     setInterval(trocarImagemFundo, 4000);
     trocarImagemFundo();
+
+    /* ==================== TOAST ==================== */
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.add('show');
+      setTimeout(function(){
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    /* ==================== LÓGICA PWA ==================== */
+    let deferredPrompt;
+    const btnInstalar = document.getElementById('btnInstalar');
+    const instrucoesIos = document.getElementById('instrucoes-ios');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      btnInstalar.style.display = 'block';
+    });
+
+    btnInstalar.addEventListener('click', (e) => {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if (isIOS) {
+        instrucoesIos.classList.add('active');
+      } else {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('Usuário instalou o PWA');
+            }
+            deferredPrompt = null;
+          });
+        }
+      }
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(function(registration) {
+          console.log('Service Worker registrado com sucesso:', registration);
+        })
+        .catch(function(error) {
+          console.log('Erro ao registrar o Service Worker:', error);
+        });
+    }
 
     function mostrarTela(id) {
       const telas = document.querySelectorAll('.tela');
@@ -886,6 +2585,10 @@
       document.getElementById('menuInicialContainer').style.display = 'block';
     }
 
+    function voltarParaLista() {
+      mostrarTela(telaAnterior);
+    }
+
     /* =============== VARIÁVEIS / CARRINHO / LÓGICA =============== */
     let carrinho = [];
     let produtoSelecionado = null;
@@ -895,6 +2598,7 @@
     let tipoPizzaAtual = ''; // 'grande', 'pequena' ou 'outros'
     let isSelecionandoSegundaMetade = false;
     let primeiraMetade = null;
+    let telaAnterior = 'cardapio'; // Para o botão "Voltar"
 
     // Borda
     let mostraPainelBorda = false; // se o painel de bordas está aberto
@@ -907,7 +2611,7 @@
     let sitioSelecionado = '';
     let taxaEntrega = 0;
     // ---- MONTE SUA PIZZA ----
-    const BASE_CUSTOM_PIZZA = 30.00;            // massa + molho padrão
+    const BASE_CUSTOM_PIZZA = 20.00;            // massa + molho padrão
     const ingredientesBase = [
       { nome: 'Mussarela', preco: 6.00 },
       { nome: 'Catupiry', preco: 3.00 },
@@ -954,6 +2658,46 @@
     ];
     // contagem atual de cada ingrediente
     let contagemIngredientesHamburguer = {};
+
+    // --------------- Monte seu Açaí ---------------
+    const tamanhosAcai = [
+      { nome: '150ml', preco: 8.00 },
+      { nome: '250ml', preco: 12.00 },
+      { nome: '350ml', preco: 15.00 },
+      { nome: '500ml', preco: 20.00 },
+    ];
+    let tamanhoAcaiSelecionado = null;
+
+    const ingredientesAcai = [
+        { nome: 'Leite em Pó', preco: 2.00 },
+        { nome: 'Leite Condensado', preco: 2.50 },
+        { nome: 'Granola', preco: 2.00 },
+        { nome: 'Banana', preco: 1.50 },
+        { nome: 'Morango', preco: 3.00 },
+        { nome: 'Manga', preco: 2.00 },
+        { nome: 'Jujuba', preco: 1.00 },
+        { nome: 'Paçoca', preco: 1.50 },
+        { nome: 'Discos de Chocolate', preco: 2.00 },
+        { nome: 'Calda de Chocolate', preco: 2.00 },
+        { nome: 'Calda de Morango', preco: 2.00 },
+    ];
+    let contagemIngredientesAcai = {};
+
+    // --------------- Monte seu Pastel ---------------
+    const BASE_PASTEL = 5.00; // Preço base para a massa do pastel
+    const ingredientesPastel = [
+        { nome: 'Carne Moída', preco: 3.00 },
+        { nome: 'Frango Desfiado', preco: 3.00 },
+        { nome: 'Queijo Mussarela', preco: 2.50 },
+        { nome: 'Presunto', preco: 2.00 },
+        { nome: 'Calabresa', preco: 2.50 },
+        { nome: 'Bacon', preco: 3.50 },
+        { nome: 'Milho e Ervilha', preco: 1.50 },
+        { nome: 'Palmito', preco: 3.00 },
+        { nome: 'Catupiry', preco: 2.50 },
+        { nome: 'Cheddar', preco: 2.50 },
+    ];
+    let contagemIngredientesPastel = {};
 
     // inicializa e abre a tela
     function iniciarMonteHamburguer() {
@@ -1069,8 +2813,249 @@
         precoFinal
       };
       carrinho.push(itemPedido);
-      mostrarTela('pedidos');
-      atualizarListaPedidos();
+      showToast('Item adicionado ao pedido!');
+      setTimeout(() => {
+        mostrarTela('pedidos');
+        atualizarListaPedidos();
+      }, 300);
+    }
+
+    // inicializa e abre a tela de Açaí
+    function iniciarMonteAcai() {
+      contagemIngredientesAcai = {};
+      ingredientesAcai.forEach(i => {
+        contagemIngredientesAcai[i.nome] = 0;
+      });
+
+      renderizarTamanhosAcai();
+      selecionarTamanhoAcai(tamanhosAcai[0].nome); // Seleciona o primeiro por padrão
+
+      renderizarSelecionadosAcai();
+      renderizarIngredientesAcai();
+      atualizarTotalAcai();
+      mostrarTela('monteAcai');
+    }
+
+    function renderizarTamanhosAcai() {
+      const container = document.getElementById('tamanhosAcai');
+      container.innerHTML = '';
+      tamanhosAcai.forEach((tamanho, index) => {
+        const id = `tamanho-${index}`;
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.id = id;
+        radio.name = 'tamanhoAcai';
+        radio.value = tamanho.nome;
+        if (index === 0) radio.checked = true;
+        radio.onchange = () => selecionarTamanhoAcai(tamanho.nome);
+
+        const label = document.createElement('label');
+        label.htmlFor = id;
+        label.innerText = `${tamanho.nome} - R$ ${tamanho.preco.toFixed(2)}`;
+
+        container.appendChild(radio);
+        container.appendChild(label);
+      });
+    }
+
+    function selecionarTamanhoAcai(nome) {
+      tamanhoAcaiSelecionado = tamanhosAcai.find(t => t.nome === nome);
+      atualizarTotalAcai();
+    }
+
+    function renderizarSelecionadosAcai() {
+      const div = document.getElementById('ingredientesAcaiEscolhidos');
+      const itens = ingredientesAcai
+        .filter(i => contagemIngredientesAcai[i.nome] > 0)
+        .map(i => `${i.nome} x${contagemIngredientesAcai[i.nome]}`);
+      if (itens.length === 0) {
+        div.innerHTML = '<em>Nenhum ingrediente ainda</em>';
+        div.classList.add('selecao-vazia');
+      } else {
+        div.classList.remove('selecao-vazia');
+        div.innerHTML = itens.join('<br>');
+      }
+    }
+    function renderizarIngredientesAcai() {
+      const lista = document.getElementById('listaIngredientesAcai');
+      lista.innerHTML = '';
+      ingredientesAcai.forEach(ing => {
+        const count = contagemIngredientesAcai[ing.nome] || 0;
+        const div = document.createElement('div');
+        div.classList.add('produto');
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        div.innerHTML = `
+          <span>${ing.nome} – R$ ${ing.preco.toFixed(2)}</span>
+          <div>
+            <button onclick="diminuirIngredienteAcai('${ing.nome}')">–</button>
+            <span id="qtd-acai-${ing.nome.replace(/\s+/g, '-')}">${count}</span>
+            <button onclick="aumentarIngredienteAcai('${ing.nome}')">+</button>
+          </div>
+        `;
+        lista.appendChild(div);
+      });
+    }
+    function aumentarIngredienteAcai(nome) {
+      contagemIngredientesAcai[nome]++;
+      document.getElementById(`qtd-acai-${nome.replace(/\s+/g, '-')}`).innerText = contagemIngredientesAcai[nome];
+      atualizarTotalAcai();
+      renderizarSelecionadosAcai();
+    }
+    function diminuirIngredienteAcai(nome) {
+      if (contagemIngredientesAcai[nome] > 0) {
+        contagemIngredientesAcai[nome]--;
+        document.getElementById(`qtd-acai-${nome.replace(/\s+/g, '-')}`).innerText = contagemIngredientesAcai[nome];
+        atualizarTotalAcai();
+        renderizarSelecionadosAcai();
+      }
+    }
+    function atualizarTotalAcai() {
+      if (!tamanhoAcaiSelecionado) return;
+      let total = tamanhoAcaiSelecionado.preco;
+      ingredientesAcai.forEach(ing => {
+        const cnt = contagemIngredientesAcai[ing.nome] || 0;
+        total += cnt * ing.preco;
+      });
+      document.getElementById('precoTotalAcai').innerText = `Total: R$ ${total.toFixed(2)}`;
+    }
+    function adicionarCustomAcai() {
+      if (!tamanhoAcaiSelecionado) {
+        alert('Por favor, selecione um tamanho para o açaí.');
+        return;
+      }
+
+      const itens = ingredientesAcai
+        .filter(i => contagemIngredientesAcai[i.nome] > 0)
+        .map(i => `${i.nome} x${contagemIngredientesAcai[i.nome]}`)
+        .join(', ');
+      
+      const obs = document.getElementById('observacaoAcai').value.trim();
+      let precoFinal = tamanhoAcaiSelecionado.preco;
+      ingredientesAcai.forEach(i => {
+        precoFinal += (contagemIngredientesAcai[i.nome] || 0) * i.preco;
+      });
+
+      const nomeFinal = `MEU AÇAÍ (${tamanhoAcaiSelecionado.nome})`;
+
+      const itemPedido = {
+        nome: nomeFinal,
+        quantidade: 1,
+        tipo: 'Açaí Personalizado',
+        observacao: (itens ? itens : 'Sem adicionais') + (obs ? ' | ' + obs : ''),
+        borda: '',
+        precoFinal
+      };
+      carrinho.push(itemPedido);
+      showToast('Item adicionado ao pedido!');
+      setTimeout(() => {
+        mostrarTela('pedidos');
+        atualizarListaPedidos();
+      }, 300);
+    }
+
+    // --------------- Monte seu Pastel ---------------
+    function iniciarMontePastel() {
+      contagemIngredientesPastel = {};
+      ingredientesPastel.forEach(i => {
+        contagemIngredientesPastel[i.nome] = 0;
+      });
+      renderizarSelecionadosPastel();
+      renderizarIngredientesPastel();
+      atualizarTotalPastel();
+      mostrarTela('montePastel');
+    }
+
+    function renderizarSelecionadosPastel() {
+      const div = document.getElementById('ingredientesPastelEscolhidos');
+      const itens = ingredientesPastel
+        .filter(i => contagemIngredientesPastel[i.nome] > 0)
+        .map(i => `${i.nome} x${contagemIngredientesPastel[i.nome]}`);
+      if (itens.length === 0) {
+        div.innerHTML = '<em>Nenhum recheio ainda</em>';
+        div.classList.add('selecao-vazia');
+      } else {
+        div.classList.remove('selecao-vazia');
+        div.innerHTML = itens.join('<br>');
+      }
+    }
+
+    function renderizarIngredientesPastel() {
+      const lista = document.getElementById('listaIngredientesPastel');
+      lista.innerHTML = '';
+      ingredientesPastel.forEach(ing => {
+        const count = contagemIngredientesPastel[ing.nome] || 0;
+        const div = document.createElement('div');
+        div.classList.add('produto');
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        div.innerHTML = `
+          <span>${ing.nome} – R$ ${ing.preco.toFixed(2)}</span>
+          <div>
+            <button onclick="diminuirIngredientePastel('${ing.nome}')">–</button>
+            <span id="qtd-pastel-${ing.nome.replace(/\s+/g, '-')}">${count}</span>
+            <button onclick="aumentarIngredientePastel('${ing.nome}')">+</button>
+          </div>
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    function aumentarIngredientePastel(nome) {
+      contagemIngredientesPastel[nome]++;
+      document.getElementById(`qtd-pastel-${nome.replace(/\s+/g, '-')}`).innerText = contagemIngredientesPastel[nome];
+      atualizarTotalPastel();
+      renderizarSelecionadosPastel();
+    }
+
+    function diminuirIngredientePastel(nome) {
+      if (contagemIngredientesPastel[nome] > 0) {
+        contagemIngredientesPastel[nome]--;
+        document.getElementById(`qtd-pastel-${nome.replace(/\s+/g, '-')}`).innerText = contagemIngredientesPastel[nome];
+        atualizarTotalPastel();
+        renderizarSelecionadosPastel();
+      }
+    }
+
+    function atualizarTotalPastel() {
+      let total = BASE_PASTEL;
+      ingredientesPastel.forEach(ing => {
+        const cnt = contagemIngredientesPastel[ing.nome] || 0;
+        total += cnt * ing.preco;
+      });
+      document.getElementById('precoTotalPastel').innerText = `Total: R$ ${total.toFixed(2)}`;
+    }
+
+    function adicionarCustomPastel() {
+      const itens = ingredientesPastel
+        .filter(i => contagemIngredientesPastel[i.nome] > 0)
+        .map(i => `${i.nome} x${contagemIngredientesPastel[i.nome]}`)
+        .join(', ');
+      if (!itens) {
+        alert('Selecione ao menos um recheio.');
+        return;
+      }
+      const obs = document.getElementById('observacaoPastel').value.trim();
+      let precoFinal = BASE_PASTEL;
+      ingredientesPastel.forEach(i => {
+        precoFinal += (contagemIngredientesPastel[i.nome] || 0) * i.preco;
+      });
+      const itemPedido = {
+        nome: 'MEU PASTEL',
+        quantidade: 1,
+        tipo: 'Pastel Personalizado',
+        observacao: itens + (obs ? ' | ' + obs : ''),
+        borda: '',
+        precoFinal
+      };
+      carrinho.push(itemPedido);
+      showToast('Item adicionado ao pedido!');
+      setTimeout(() => {
+        mostrarTela('pedidos');
+        atualizarListaPedidos();
+      }, 300);
     }
 
     // ====================== COMBOS / PROMOÇÕES ======================
@@ -1172,6 +3157,7 @@
     }
 
     function comboClicado(combo) {
+      telaAnterior = 'combos'; // Define a tela anterior
       produtoSelecionado = combo;
       quantidadeSelecionada = 1;
       precoBase = combo.preco;
@@ -1214,6 +3200,7 @@
     }
 
     function promocaoClicada(promo) {
+      telaAnterior = 'promocoes'; // Define a tela anterior
       produtoSelecionado = promo;
       quantidadeSelecionada = 1;
       precoBase = promo.preco;
@@ -1254,11 +3241,11 @@
       valorBorda = 0;
       mostraPainelBorda = false;
       document.getElementById('bordaPanelCustom').style.display = 'none';
-      document.getElementById('bordaSelecionadaCustom').innerText =
-        'Borda Selecionada: Nenhuma';
+      document.getElementById('bordaSelecionadaCustom').innerText = 'Nenhuma';
 
       /* --- quantidade & listas --- */
       document.getElementById('quantidadeValorCustom').innerText = '1';
+      document.getElementById('buscaIngrediente').value = ''; // Limpa a busca
       listarIngredientes();              // redesenha a lista sem “selecionado”
       atualizarTotalCustom();            // total volta ao valor da massa
 
@@ -1299,7 +3286,7 @@
         { codigo: 'PIZZA-', nome: 'Toscana (G)', preco: 36.00, desc: 'Molho de tomate, calabresa, mussarela' },
         { codigo: 'PIZZA-', nome: 'Vegetariana (G)', preco: 36.00, desc: 'Molho de tomate, mussarela, palmito, azeitona, cebola, tomate' },
         { codigo: 'PIZZA-', nome: 'Vegetariana 3 Queijos (G)', preco: 40.00, desc: 'Molho de tomate, mussarela, catupiry, cheddar, parmesão' },
-        { codigo: 'PIZZA-', nome: 'Catubresa (G)', preco: 38.00, desc: 'Calabresa, catupiry, mussarela, molho de tomate e orégano' },
+        { codigo: 'PIZZA-', nome: 'Catubresa (G)', preco: 38.00, desc: 'Calabresa, catupiry, mussarela, cheddar, molho de tomate e orégano' },
         { codigo: 'PIZZA-', nome: 'Nordestina (G)', preco: 38.00, desc: ' Queijo branco, mussarela, molho de tomate e orégano' },
       ],
       'Doces': [
@@ -1519,10 +3506,9 @@
         { codigo: 'BE005', nome: 'Refrigerante 2LT Jatobá', preco: 10.00, desc: 'Refrigerante de 2 litros - Jatobá' }
       ],
       'Batata Frita': [
-        { codigo: 'B001', nome: 'Batata Frita P', preco: 7.00, desc: 'Porção de batata frita crocante + cheddar + Quijo Ralado' },
-        { codigo: 'B001', nome: 'Batata Frita G', preco: 15.00, desc: 'Porção de batata frita crocante + cheddar + catupiry + Quijo Ralado' },
-        { codigo: 'B002', nome: 'Batata Especial', preco: 20.00, desc: 'Porção de batata frita crocante + cheddar + catupiry + bacon + Queijo ralado' },
-        { codigo: 'B002', nome: 'Batata Bresa', preco: 25.00, desc: 'Porção de batata frita crocante + calabresa + cebola + Queijo ralado' }
+        { codigo: 'B001', nome: 'Batata Frita', preco: 15.00, desc: 'Porção de batata frita crocante + cheddar + catupiry' },
+        { codigo: 'B002', nome: 'Batata Maluca', preco: 35.00, desc: 'Porção de batata frita crocante + cheddar + catupiry + calabresa' },
+        { codigo: 'B003', nome: 'Batata Cheddarêêê', preco: 25.00, desc: 'Porção de batata frita crocante + cheddar Premium derretido+ Bacon Crocante' }
       ]
     };
 
@@ -1642,6 +3628,13 @@
       });
     }
 
+    function toggleIngredienteByName(nome) {
+      const ingrediente = ingredientesBase.find(i => i.nome === nome);
+      if (ingrediente) {
+        toggleIngrediente(ingrediente);
+      }
+    }
+
     function toggleIngrediente(ing) {
       const pos = ingredientesSelecionados.findIndex(x => x.nome === ing.nome);
       if (pos === -1) {
@@ -1658,16 +3651,24 @@
 
     function exibirEscolhidos() {
       const div = document.getElementById('ingredientesEscolhidos');
-      div.classList.remove('selecao-vazia');
+      div.innerHTML = ''; // Limpa o conteúdo anterior
 
       if (ingredientesSelecionados.length === 0) {
         div.innerHTML = '<em>Nenhum ingrediente ainda</em>';
         div.classList.add('selecao-vazia');
         return;
       }
-      div.innerHTML = ingredientesSelecionados
-        .map(i => `${i.nome} – R$ ${i.preco.toFixed(2)}`)
-        .join('<br>');
+      
+      div.classList.remove('selecao-vazia');
+      ingredientesSelecionados.forEach(ing => {
+        const tag = document.createElement('div');
+        tag.classList.add('ingrediente-tag');
+        tag.innerHTML = `
+          <span>${ing.nome}</span>
+          <button onclick="toggleIngredienteByName('${ing.nome}')">&times;</button>
+        `;
+        div.appendChild(tag);
+      });
     }
 
     function alterarQuantidadeCustom(v) {
@@ -1683,6 +3684,7 @@
     }
     /* ============= DETALHES DO PRODUTO ============= */
     function produtoClicado(prod) {
+      telaAnterior = 'produtos'; // Define a tela anterior
       const pizzaCats = ['Tradicionais', 'Doces', 'Premium Doces', 'Premium Salgadas'];
       if (pizzaCats.includes(subcategoriaAtual)) {
         if (isSelecionandoSegundaMetade) {
@@ -1814,7 +3816,7 @@
         .getElementById('montePizza')
         .classList.contains('active');
       const seletor = estaNoCustom
-        ? '#bordaPanelCustom input[name="bordaSabor"]'
+        ? '#bordaPanelCustom input[name="bordaSaborCustom"]'
         : '#bordaPanel input[name="bordaSabor"]';
       const radios = document.querySelectorAll(seletor);
 
@@ -1828,8 +3830,8 @@
 
       /* ---------- mostra escolha & fecha painel ---------- */
       if (estaNoCustom) {
-        document.getElementById('bordaSelecionadaCustom').innerText =
-          `Borda Selecionada: ${saborBorda}`;
+        const bordaTexto = valorBorda > 0 ? `${saborBorda} (+ R$ ${valorBorda.toFixed(2)})` : 'Nenhuma';
+        document.getElementById('bordaSelecionadaCustom').innerText = bordaTexto;
         atualizarTotalCustom();
         document.getElementById('bordaPanelCustom').style.display = 'none';
       } else {
@@ -1973,8 +3975,11 @@
       };
 
       carrinho.push(itemPedido);
+    showToast('Item adicionado ao pedido!');
+    setTimeout(() => {
       mostrarTela('pedidos');
       atualizarListaPedidos();
+    }, 300);
     }
 
     function adicionarAoPedidoGenerico() {
@@ -1992,8 +3997,11 @@
       };
 
       carrinho.push(itemPedido);
+    showToast('Item adicionado ao pedido!');
+    setTimeout(() => {
       mostrarTela('pedidos');
       atualizarListaPedidos();
+    }, 300);
     }
     function adicionarCustomPizza() {
       if (ingredientesSelecionados.length === 0) {
@@ -2015,8 +4023,11 @@
       };
 
       carrinho.push(itemPedido);
+    showToast('Item adicionado ao pedido!');
+    setTimeout(() => {
       mostrarTela('pedidos');
       atualizarListaPedidos();
+    }, 300);
     }
     /* =========== LISTAGEM / REMOÇÃO / TOTAL =========== */
     function removerPedido(index) {
