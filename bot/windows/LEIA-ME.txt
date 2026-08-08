@@ -32,7 +32,9 @@ ATALHOS NO MENU INICIAR
 REINSTALACAO E ATUALIZACAO
 
 Pode executar o INSTALAR.bat novamente. O instalador atualiza o programa e
-preserva a configuracao, a sessao do WhatsApp e o historico de pedidos.
+preserva a configuracao, a sessao do WhatsApp e o historico de pedidos. Se o
+bot estiver aberto, o processo de atendimento sera reiniciado automaticamente
+para carregar os arquivos novos.
 
 SEGURANCA
 

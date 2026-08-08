@@ -47,9 +47,13 @@ try {
 
   $packageRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
   $sourceDirectory = Join-Path $packageRoot 'app'
+  $versionFile = Join-Path $packageRoot 'VERSAO.txt'
+  $packageVersion = if (Test-Path $versionFile) { (Get-Content $versionFile -Raw).Trim() } else { 'versao nao informada' }
   if (-not (Test-Path (Join-Path $sourceDirectory 'manager.js'))) {
     throw 'A pasta app do pacote esta incompleta. Extraia todo o arquivo ZIP antes de instalar.'
   }
+
+  Write-Host "Pacote: $packageVersion" -ForegroundColor Green
 
   $installDirectory = Join-Path $env:LOCALAPPDATA 'LaMundoRobozinho'
   $nodeDirectory = Join-Path $installDirectory 'runtime\node'
@@ -162,7 +166,22 @@ DASHBOARD_AUTO_OPEN=true
   Write-Step 'Instalacao concluida com sucesso'
   Write-Host "Pasta instalada: $installDirectory" -ForegroundColor Green
   Write-Host 'Use o atalho Robozinho La Mundo na Area de Trabalho.' -ForegroundColor Green
-  Start-Process $launcher
+
+  $dashboardWasRunning = $false
+  try {
+    $dashboardCheck = Invoke-WebRequest -UseBasicParsing -TimeoutSec 2 'http://127.0.0.1:3030/api/dashboard'
+    $dashboardWasRunning = $dashboardCheck.StatusCode -eq 200
+  } catch {}
+
+  if ($dashboardWasRunning) {
+    Write-Step 'Reiniciando o atendimento para carregar a versao nova'
+    Invoke-WebRequest -UseBasicParsing -TimeoutSec 5 -Method Post `
+      -Headers @{ 'x-leonus-action' = 'painel-local' } `
+      -Uri 'http://127.0.0.1:3030/api/bot/restart' | Out-Null
+    Start-Process 'http://127.0.0.1:3030/'
+  } else {
+    Start-Process $launcher
+  }
   exit 0
 } catch {
   Write-Host "`nERRO: $($_.Exception.Message)" -ForegroundColor Red
