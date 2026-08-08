@@ -42,7 +42,8 @@ function ticketLines(order, options = {}) {
     lines.push(`${index + 1}. ${item.quantity}x ${String(item.name || '').toUpperCase()}${category}`);
     lines.push(`   Total: ${money(item.total)}`);
     if (item.border) lines.push(`   Borda: ${item.border}`);
-    if (item.observation) lines.push(`   Obs: ${item.observation}`);
+    if (item.details) lines.push(`   Detalhes: ${item.details}`);
+    if (item.observation) lines.push(`   Obs. do item: ${item.observation}`);
   });
 
   lines.push(
@@ -65,7 +66,8 @@ function confirmationMessage(order) {
   (order.items || []).forEach(item => {
     message += `${item.quantity}x ${item.name} - ${money(item.total)}\n`;
     if (item.border) message += `   Borda: ${item.border}\n`;
-    if (item.observation) message += `   Obs: ${item.observation}\n`;
+    if (item.details) message += `   Detalhes: ${item.details}\n`;
+    if (item.observation) message += `   *Observação do item:* ${item.observation}\n`;
   });
   message += `\n*Subtotal:* ${money(order.subtotal)}\n`;
   message += `*Taxa de entrega:* ${money(order.deliveryFee)}\n`;

@@ -118,6 +118,7 @@ function parseOrder(text = '') {
           category,
           quantity: Number.parseInt(match[1], 10) || 1,
           total: parseMoneyBR(match[3]),
+          details: '',
           observation: '',
           border: ''
         };
@@ -139,6 +140,14 @@ function parseOrder(text = '') {
       if (currentItem) currentItem.observation = fieldValue(clean);
       return;
     }
+    if (section === 'items' && lower.startsWith('detalhes:')) {
+      if (currentItem) currentItem.details = fieldValue(clean);
+      return;
+    }
+    if (section === 'items' && (lower.startsWith('observação do item:') || lower.startsWith('observacao do item:'))) {
+      if (currentItem) currentItem.observation = fieldValue(clean);
+      return;
+    }
     if (section === 'items' && lower.startsWith('total:')) {
       if (currentItem) currentItem.total = parseMoneyBR(fieldValue(clean));
       return;
@@ -147,6 +156,10 @@ function parseOrder(text = '') {
     if (lower.startsWith('subtotal:')) {
       section = '';
       order.subtotal = parseMoneyBR(fieldValue(clean));
+      return;
+    }
+    if (lower.startsWith('observação geral:') || lower.startsWith('observacao geral:')) {
+      order.address.observation = fieldValue(clean);
       return;
     }
     if (lower.startsWith('taxa de entrega:')) {

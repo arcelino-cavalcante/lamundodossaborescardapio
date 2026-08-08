@@ -76,7 +76,8 @@ function ticketBuffer(order, config, date) {
     );
     boldLine('TOTAL DO ITEM', money(item.total));
     if (item.border) boldLine('BORDA', item.border);
-    if (item.observation) boldLine('OBSERVAÇÃO', item.observation);
+    if (item.details) boldLine('DETALHES', item.details);
+    if (item.observation) boldLine('OBSERVAÇÃO DO ITEM', item.observation, true);
     if (index < order.items.length - 1) line('');
   });
 

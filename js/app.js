@@ -1174,7 +1174,7 @@ function renderCart() {
     } else {
         CART.forEach(item => {
             const wrapper = document.createElement('div');
-            wrapper.className = 'bg-neutral-800 rounded-lg p-3 flex gap-3 items-start';
+            wrapper.className = 'bg-neutral-800 rounded-lg p-3 flex flex-wrap gap-3 items-start';
 
             const info = document.createElement('div');
             info.className = 'flex-1';
@@ -1235,9 +1235,29 @@ function renderCart() {
             totalDiv.appendChild(removeBtn);
             wrapper.appendChild(totalDiv);
 
+            const noteWrapper = document.createElement('label');
+            noteWrapper.className = 'basis-full w-full border-t border-neutral-700 pt-3';
+            const noteLabel = document.createElement('span');
+            noteLabel.className = 'block text-xs font-semibold text-neutral-300 mb-1';
+            noteLabel.textContent = 'Observação deste item';
+            const noteInput = document.createElement('textarea');
+            noteInput.rows = 2;
+            noteInput.maxLength = 300;
+            noteInput.className = 'w-full bg-neutral-900 border border-neutral-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand-500';
+            noteInput.placeholder = 'Ex.: sem cebola, molho separado...';
+            noteInput.value = item.observation || '';
+            noteInput.setAttribute('aria-label', `Observação para ${item.name}`);
+            noteWrapper.appendChild(noteLabel);
+            noteWrapper.appendChild(noteInput);
+            wrapper.appendChild(noteWrapper);
+
             decBtn.addEventListener('click', () => decrementCartItem(item.key));
             incBtn.addEventListener('click', () => incrementCartItem(item.key));
             removeBtn.addEventListener('click', () => removeCartItem(item.key));
+            noteInput.addEventListener('input', () => {
+                item.observation = noteInput.value;
+                saveCart();
+            });
 
             cartItems.appendChild(wrapper);
         });
@@ -1454,7 +1474,7 @@ async function finishOrder() {
                 address: inputAddress.value,
                 reference: inputRef.value,
                 sitioName: sitioName,
-                observation: inputNote.value
+                observation: inputNote.value.trim()
             },
             items: [...CART]
         };
@@ -1501,10 +1521,7 @@ function formatOrderForWhatsApp(order) {
     msg += `*Nome do Cliente:* ${order.customer.name}\n`;
     msg += `*WhatsApp:* ${order.customer.whatsapp}\n`;
 
-    let refStr = order.customer.reference || '';
-    if (order.customer.observation) {
-        refStr += refStr ? ` | Obs: ${order.customer.observation}` : `Obs: ${order.customer.observation}`;
-    }
+    const refStr = order.customer.reference || '';
 
     if (order.customer.deliveryType === 'local') {
         msg += `*Endereço:* Retirada no Local\n`;
@@ -1515,6 +1532,10 @@ function formatOrderForWhatsApp(order) {
             msg += `*Sítio:* ${order.customer.sitioName || ''}\n`;
         }
         if (refStr) msg += `*Local/Ponto de Referência:* ${refStr}\n`;
+    }
+    if (order.customer.observation) {
+        const generalObservation = String(order.customer.observation).replace(/\s+/g, ' ').trim();
+        if (generalObservation) msg += `*Observação geral:* ${generalObservation}\n`;
     }
 
     msg += `\n*Itens do pedido:*\n`;
@@ -1541,7 +1562,9 @@ function formatOrderForWhatsApp(order) {
         }
 
         if (borda) msg += `Borda: ${borda}\n`;
-        if (obsParts.length > 0) msg += `Obs: ${obsParts.join(', ')}\n`;
+        if (obsParts.length > 0) msg += `Detalhes: ${obsParts.join(', ')}\n`;
+        const itemObservation = String(item.observation || '').replace(/\s+/g, ' ').trim();
+        if (itemObservation) msg += `Observação do item: ${itemObservation}\n`;
     });
 
     // Taxa

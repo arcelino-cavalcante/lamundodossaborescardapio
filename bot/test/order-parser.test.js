@@ -10,14 +10,16 @@ const CASH_ORDER = `*Olá, gostaria de fazer o seguinte pedido:*
 *WhatsApp:* (87) 99999-1111
 *Endereço:* Rua das Flores, 25
 *Sítio:* Sítio Boa Vista
-*Local/Ponto de Referência:* Próximo à igreja | Obs: Portão azul
+*Local/Ponto de Referência:* Próximo à igreja
+*Observação geral:* Portão azul
 
 *Itens do pedido:*
 (2) Calabresa [PIZZAS] - R$ 76,00
 Quantidade: 2
 Total: R$ 76,00
 Borda: Catupiry
-Obs: Tamanho: Média, Meia: Frango
+Detalhes: Tamanho: Média, Meia: Frango
+Observação do item: Sem cebola e molho separado
 (1) Coca-Cola 2L [REFRIGERANTES] - R$ 15,00
 Quantidade: 1
 Total: R$ 15,00
@@ -73,7 +75,8 @@ test('lê todos os campos de entrega, itens, dinheiro e troco', () => {
     category: 'PIZZAS',
     quantity: 2,
     total: 76,
-    observation: 'Tamanho: Média, Meia: Frango',
+    details: 'Tamanho: Média, Meia: Frango',
+    observation: 'Sem cebola e molho separado',
     border: 'Catupiry'
   });
   assert.equal(order.subtotal, 91);
@@ -100,11 +103,14 @@ test('gera confirmação e impressão com os campos novos', () => {
   const ticket = lines.join('\n');
 
   assert.match(confirmation, /2x Calabresa/);
+  assert.match(confirmation, /\*Observação do item:\* Sem cebola e molho separado/);
   assert.match(confirmation, /\*Troco:\* R\$ 4,00/);
   assert.match(ticket, /WHATSAPP: \(87\) 99999-1111/);
   assert.match(ticket, /SÍTIO   : Sítio Boa Vista/);
   assert.match(ticket, /OBS\.    : Portão azul/);
   assert.match(ticket, /2x CALABRESA \[PIZZAS\]/);
+  assert.match(ticket, /Detalhes: Tamanho: Média, Meia: Frango/);
+  assert.match(ticket, /Obs\. do item: Sem cebola e molho separado/);
   assert.match(ticket, /TAXA      : R\$ 5,00/);
   assert.match(ticket, /PAGAMENTO : Dinheiro/);
   assert.match(ticket, /TROCO     : R\$ 4,00/);
