@@ -1345,7 +1345,7 @@
       "description": "Brigadeiro, leite condensado, leite em pó, granola, frutas (banana ou morango)",
       "categoryId": "acai",
       "imageUrl": "",
-      "available": true,
+      "available": false,
       "optionGroupId": null,
       "price": 23
     },
@@ -1355,7 +1355,7 @@
       "description": "Brigadeiro, leite condensado, leite em pó, granola, frutas (banana ou morango)",
       "categoryId": "acai",
       "imageUrl": "",
-      "available": true,
+      "available": false,
       "optionGroupId": null,
       "price": 18
     },
@@ -1365,7 +1365,7 @@
       "description": "Brigadeiro, leite condensado, leite em pó, granola, frutas, jujubas, chocolate",
       "categoryId": "acai",
       "imageUrl": "",
-      "available": true,
+      "available": false,
       "optionGroupId": null,
       "price": 35
     },
