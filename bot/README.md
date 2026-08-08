@@ -140,6 +140,10 @@ Os pedidos, configurações do painel e últimos 500 erros ficam em `bot/leonus.
 
 O pedido continua salvo no SQLite. O bot não afirma que foi impresso: responde que houve falha e registra o erro no terminal com o IP e a porta utilizados.
 
+## Proteção contra mensagens duplicadas
+
+Cada mensagem recebida é registrada pelo identificador único fornecido pelo WhatsApp antes do atendimento. Se o WhatsApp entregar o mesmo evento novamente, o bot ignora a repetição e não envia uma segunda resposta. Essa proteção fica salva no SQLite por 30 dias e continua funcionando após reinicializações rápidas do bot.
+
 ## Estrutura
 
 ```text

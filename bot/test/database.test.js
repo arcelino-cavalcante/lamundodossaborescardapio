@@ -28,6 +28,9 @@ test('salva o pedido completo e impede impressão duplicada pelo message_id', as
 
   const first = await database.saveOrder('5587999990000', order, 'message-123');
   const duplicate = await database.saveOrder('5587999990000', order, 'message-123');
+  const firstIncoming = await database.claimIncomingMessage('incoming-123', '5587999990000', 'chat');
+  const duplicateIncoming = await database.claimIncomingMessage('incoming-123', '5587999990000', 'chat');
+  const secondIncoming = await database.claimIncomingMessage('incoming-456', '5587999990000', 'image');
   const report = await database.salesReport('today');
   await database.setSetting('ticket_footer', 'Obrigado pela preferência!');
   await database.addLog('error', 'teste', 'Falha simulada');
@@ -36,6 +39,9 @@ test('salva o pedido completo e impede impressão duplicada pelo message_id', as
 
   assert.equal(first.duplicate, false);
   assert.equal(duplicate.duplicate, true);
+  assert.equal(firstIncoming, true);
+  assert.equal(duplicateIncoming, false);
+  assert.equal(secondIncoming, true);
   assert.equal(report.total, 45);
   assert.equal(report.customers[0].nome, 'Cliente Teste');
   assert.equal(await database.getSetting('ticket_footer'), 'Obrigado pela preferência!');

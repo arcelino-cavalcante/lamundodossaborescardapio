@@ -77,6 +77,14 @@ async function createDatabase(dbPath) {
       dataHora TEXT NOT NULL
     )
   `);
+  await run(db, `
+    CREATE TABLE IF NOT EXISTS mensagens_processadas (
+      message_id TEXT PRIMARY KEY,
+      telefone TEXT,
+      tipo TEXT,
+      dataHora TEXT NOT NULL
+    )
+  `);
 
   const columns = await all(db, 'PRAGMA table_info(pedidos)');
   const existing = new Set(columns.map(column => column.name));
@@ -86,8 +94,29 @@ async function createDatabase(dbPath) {
   await run(db, 'CREATE UNIQUE INDEX IF NOT EXISTS idx_pedidos_message_id ON pedidos(message_id)');
   await run(db, 'CREATE INDEX IF NOT EXISTS idx_pedidos_dataHora ON pedidos(dataHora)');
   await run(db, 'CREATE INDEX IF NOT EXISTS idx_logs_dataHora ON logs(dataHora)');
+  await run(db, 'CREATE INDEX IF NOT EXISTS idx_mensagens_processadas_dataHora ON mensagens_processadas(dataHora)');
+  await run(db, "DELETE FROM mensagens_processadas WHERE dataHora < datetime('now', '-30 days', 'localtime')");
+
+  let claimedMessageCount = 0;
 
   return {
+    async claimIncomingMessage(messageId, phone = '', type = '') {
+      const normalizedId = String(messageId || '').trim();
+      if (!normalizedId) return true;
+
+      const result = await run(db, `
+        INSERT OR IGNORE INTO mensagens_processadas (message_id, telefone, tipo, dataHora)
+        VALUES (?, ?, ?, datetime('now', 'localtime'))
+      `, [normalizedId, String(phone || ''), String(type || '')]);
+
+      claimedMessageCount += 1;
+      if (claimedMessageCount % 100 === 0) {
+        await run(db, "DELETE FROM mensagens_processadas WHERE dataHora < datetime('now', '-30 days', 'localtime')");
+      }
+
+      return result.changes === 1;
+    },
+
     async saveOrder(phone, order, messageId) {
       try {
         const result = await run(db, `

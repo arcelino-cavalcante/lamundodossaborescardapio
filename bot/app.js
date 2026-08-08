@@ -1,4 +1,5 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
+const crypto = require('node:crypto');
 const qrcode = require('qrcode-terminal');
 const config = require('./src/config');
 const { createDatabase } = require('./src/database');
@@ -48,6 +49,19 @@ function isDirectCustomerChat(chatId = '') {
 
 function isAdmin(chatId) {
   return config.adminNumbers.has(phoneNumber(chatId));
+}
+
+function incomingMessageId(message, chatId) {
+  const whatsappId = message.id?._serialized || message.id?.id;
+  if (whatsappId) return String(whatsappId);
+
+  const fingerprint = [
+    chatId,
+    message.timestamp || '',
+    message.type || '',
+    message.body || ''
+  ].join('|');
+  return `fallback:${crypto.createHash('sha256').update(fingerprint).digest('hex')}`;
 }
 
 async function pixInstructions(order, chatId) {
@@ -136,12 +150,20 @@ async function main() {
       // grupos. O bot atende somente conversas individuais de clientes.
       if (message.fromMe || !isDirectCustomerChat(chatId)) return;
 
+      const messageId = incomingMessageId(message, chatId);
+      const phone = phoneNumber(chatId);
+      const claimed = await database.claimIncomingMessage(messageId, phone, message.type);
+      if (!claimed) {
+        console.log('[DUPLICADA IGNORADA]', { de: phone, tipo: message.type, id: messageId.slice(-24) });
+        return;
+      }
+
       const text = message.body?.trim() || '';
       const lower = text.toLowerCase();
       const session = getSession(chatId);
       const isMedia = ['image', 'video', 'audio', 'document'].includes(message.type);
 
-      console.log('[ENTRADA]', { de: phoneNumber(chatId), tipo: message.type });
+      console.log('[ENTRADA]', { de: phone, tipo: message.type, id: messageId.slice(-24) });
 
       if (message.type === 'location') {
         return safeReply(message, '🛵 Localização recebida. O entregador agradece!');
@@ -180,7 +202,7 @@ async function main() {
         }
 
         session.order = order;
-        session.sourceMessageId = message.id?._serialized || `${chatId}-${Date.now()}`;
+        session.sourceMessageId = messageId;
 
         if (order.payment === 'Pix') {
           session.state = 'awaiting_pix_proof';

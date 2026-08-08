@@ -1341,6 +1341,13 @@ function populateSitioSelect() {
         selectSitioFee.disabled = true;
     } else {
         selectSitioFee.disabled = false;
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = '— Escolha um sítio —';
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        selectSitioFee.appendChild(placeholder);
+
         DB.fees.sitios.forEach(site => {
             const option = document.createElement('option');
             option.value = site.id;
@@ -1380,9 +1387,6 @@ function handleDeliveryChange() {
             currentDeliveryFee = 0;
             selectSitioFee.value = '';
         } else {
-            if (!selectSitioFee.value) {
-                selectSitioFee.value = DB.fees.sitios[0].id;
-            }
             const site = DB.fees.sitios.find(s => s.id === selectSitioFee.value);
             currentDeliveryFee = site ? Number(site.fee || 0) : 0;
         }
