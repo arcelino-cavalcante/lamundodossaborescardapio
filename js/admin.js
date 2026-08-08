@@ -87,6 +87,7 @@ const gridCategories = document.getElementById('gridCategories');
 
 // DOM Elements - Taxas
 const tBase = document.getElementById('tBase');
+const tJucati = document.getElementById('tJucati');
 const btnSaveBase = document.getElementById('btnSaveBase');
 const sName = document.getElementById('sName');
 const sFee = document.getElementById('sFee');
@@ -917,14 +918,16 @@ function renderCategories() {
 // --- Fees Logic ---
 function renderBaseFee() {
     tBase.value = DB.fees.base ?? 0;
+    tJucati.value = DB.fees.jucati ?? 20;
 }
 
 btnSaveBase.addEventListener('click', async event => {
     event.preventDefault();
     DB.fees.base = Number(tBase.value || 0);
+    DB.fees.jucati = Number(tJucati.value || 0);
     try {
         await persistDB();
-        showCustomAlert('Taxa base atualizada!');
+        showCustomAlert('Taxas de Vila Neves e Jucati atualizadas!');
     } catch (error) {
         // handled
     }

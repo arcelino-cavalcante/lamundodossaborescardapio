@@ -82,6 +82,13 @@ function parseOrder(text = '') {
       order.deliveryType = /retirada|retirar/i.test(order.address.street) ? 'Retirada' : 'Entrega';
       return;
     }
+    if (lower.startsWith('localidade:')) {
+      const locality = fieldValue(clean);
+      if (/jucati/i.test(locality)) order.deliveryType = 'Entrega em Jucati';
+      else if (/neves/i.test(locality)) order.deliveryType = 'Entrega em Neves';
+      else if (locality) order.deliveryType = locality;
+      return;
+    }
     if (lower.startsWith('sítio:') || lower.startsWith('sitio:')) {
       order.address.sitio = fieldValue(clean);
       order.deliveryType = 'Sítio';

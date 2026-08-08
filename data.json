@@ -709,18 +709,6 @@
       }
     },
     {
-      "id": "prod-051",
-      "name": "Camarão Cheese",
-      "description": "Molho de tomate, orégano, camarão, mussarela, cream cheese",
-      "categoryId": "pizzas",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "prices": {
-        "g": 60
-      }
-    },
-    {
       "id": "prod-052",
       "name": "O Reino de Frango",
       "description": "Mussarela, molho, frango desfiado, cebolinha verde, cream cheese, orégano",
@@ -754,18 +742,6 @@
       "optionGroupId": null,
       "prices": {
         "g": 45
-      }
-    },
-    {
-      "id": "prod-055",
-      "name": "Camarão",
-      "description": "Molho de tomate, mussarela, orégano, camarão",
-      "categoryId": "pizzas",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "prices": {
-        "g": 55
       }
     },
     {
@@ -1093,36 +1069,6 @@
       "price": 6
     },
     {
-      "id": "prod-087",
-      "name": "Camarão + Cream Cheese",
-      "description": "Pastel de camarão com cream cheese",
-      "categoryId": "pasteis",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "price": 13
-    },
-    {
-      "id": "prod-088",
-      "name": "Camarão + Cheddar",
-      "description": "Pastel de camarão com cheddar",
-      "categoryId": "pasteis",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "price": 10
-    },
-    {
-      "id": "prod-089",
-      "name": "Camarão + Mussarela",
-      "description": "Pastel de camarão com mussarela",
-      "categoryId": "pasteis",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "price": 10
-    },
-    {
       "id": "prod-090",
       "name": "Bacon + Mussarela",
       "description": "Pastel de bacon com mussarela",
@@ -1321,26 +1267,6 @@
       "available": true,
       "optionGroupId": null,
       "price": 7
-    },
-    {
-      "id": "prod-110",
-      "name": "Camarão c/ Mussarela",
-      "description": "Esfirra de camarão com mussarela",
-      "categoryId": "esfirras",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "price": 8
-    },
-    {
-      "id": "prod-111",
-      "name": "Camarão c/ Cream Cheese",
-      "description": "Esfirra de camarão com cream cheese",
-      "categoryId": "esfirras",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "price": 10
     },
     {
       "id": "prod-112",
@@ -1554,7 +1480,8 @@
     }
   ],
   "fees": {
-    "base": 5,
+    "base": 1,
+    "jucati": 20,
     "sitios": [
       {
         "id": "sitio-entupido",

@@ -1363,11 +1363,13 @@ function handleDeliveryChange() {
         fieldSitioFee.classList.add('hidden');
         currentDeliveryFee = 0;
     }
-    else if (type === 'vilaneves') {
+    else if (type === 'vilaneves' || type === 'jucati') {
         fieldAddress.classList.remove('hidden');
         fieldSitioRef.classList.add('hidden');
         fieldSitioFee.classList.add('hidden');
-        currentDeliveryFee = Number(DB.fees.base || 0);
+        currentDeliveryFee = type === 'jucati'
+            ? Number(DB.fees.jucati || 0)
+            : Number(DB.fees.base || 0);
     }
     else if (type === 'sitio') {
         fieldAddress.classList.add('hidden');
@@ -1590,6 +1592,8 @@ function formatOrderForWhatsApp(order) {
         if (refStr) msg += `*Local/Ponto de Referência:* ${refStr}\n`;
     } else {
         msg += `*Endereço:* ${order.customer.address || ''}\n`;
+        if (order.customer.deliveryType === 'vilaneves') msg += `*Localidade:* Neves\n`;
+        if (order.customer.deliveryType === 'jucati') msg += `*Localidade:* Jucati\n`;
         if (order.customer.deliveryType === 'sitio') {
             msg += `*Sítio:* ${order.customer.sitioName || ''}\n`;
         }

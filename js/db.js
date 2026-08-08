@@ -82,7 +82,8 @@ export function defaultDB() {
         ],
         products: [],
         fees: {
-            base: 5,
+            base: 1,
+            jucati: 20,
             sitios: []
         },
         monteSeu: [],
@@ -120,6 +121,7 @@ export function normalizeDB(raw = {}) {
         }) : [],
         fees: {
             base: raw.fees && typeof raw.fees.base === 'number' ? raw.fees.base : 0,
+            jucati: raw.fees && typeof raw.fees.jucati === 'number' ? raw.fees.jucati : 20,
             sitios: raw.fees && Array.isArray(raw.fees.sitios) ? raw.fees.sitios : []
         },
         monteSeu: Array.isArray(raw.monteSeu) ? raw.monteSeu : [],

@@ -96,6 +96,17 @@ test('lê Pix e retirada sem exigir endereço de entrega', () => {
   assert.equal(order.total, 13.99);
 });
 
+test('identifica entrega em Jucati na mensagem do cardápio', () => {
+  const message = PIX_ORDER.replace(
+    '*Endereço:* Retirada no Local',
+    '*Endereço:* Rua do Cliente, 10\n*Localidade:* Jucati'
+  );
+  const order = parseOrder(message);
+  assert.deepEqual(validateOrder(order), []);
+  assert.equal(order.deliveryType, 'Entrega em Jucati');
+  assert.equal(order.address.street, 'Rua do Cliente, 10');
+});
+
 test('gera confirmação e impressão com os campos novos', () => {
   const order = parseOrder(CASH_ORDER);
   const confirmation = confirmationMessage(order);
