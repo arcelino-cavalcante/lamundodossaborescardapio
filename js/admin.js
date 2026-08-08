@@ -41,12 +41,11 @@ const authSubmit = document.getElementById('authSubmit');
 const authError = document.getElementById('authError');
 const logoutBtn = document.getElementById('logoutBtn');
 const saveStatus = document.getElementById('saveStatus');
-const GITHUB_REPO = 'arcelino-cavalcante/novo-cardapio-git-cms';
-const [GITHUB_OWNER, GITHUB_REPO_NAME] = GITHUB_REPO.split('/');
+const GITHUB_REPO = 'arcelino-cavalcante/lamundodossaborescardapio';
 const GITHUB_FILE = 'data.json';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
 const GITHUB_CONTENTS_URL = `https://api.github.com/repos/${GITHUB_REPO}/contents`;
-const GITHUB_PAGES_URL = `https://${GITHUB_OWNER}.github.io/${GITHUB_REPO_NAME}`;
+const GITHUB_PAGES_URL = 'https://lamundodossabores.com.br';
 const TOKEN_STORAGE_KEY = 'lamundo_gh_token';
 let githubToken = sessionStorage.getItem(TOKEN_STORAGE_KEY);
 

@@ -10,7 +10,7 @@ O painel precisa de um token porque é ele que autoriza a atualização do arqui
 4. Escolha uma expiração. Recomenda-se 90 dias e a renovação periódica.
 5. Em **Resource owner**, selecione `arcelino-cavalcante`.
 6. Em **Repository access**, escolha **Only select repositories**.
-7. Selecione somente `novo-cardapio-git-cms`.
+7. Selecione somente `lamundodossaborescardapio`.
 8. Em **Repository permissions**, abra **Contents** e selecione **Read and write**.
 9. Não habilite outras permissões.
 10. Clique em **Generate token** e copie o código exibido.
@@ -21,7 +21,7 @@ O GitHub mostra o token completo apenas uma vez. Não coloque esse código em `d
 
 ## Usar no painel
 
-1. Abra `admin.html` no endereço publicado do cardápio.
+1. Abra <https://lamundodossabores.com.br/admin.html>.
 2. Cole o token no campo **Token de Acesso**.
 3. Clique em **Acessar Painel**.
 4. Edite produtos, categorias, taxas ou informações.

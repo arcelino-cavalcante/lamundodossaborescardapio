@@ -18,7 +18,7 @@ function defaultChromePath() {
 }
 
 const botRoot = path.resolve(__dirname, '..');
-const cardapioUrl = process.env.CARDAPIO_URL || 'https://arcelino-cavalcante.github.io/novo-cardapio-git-cms/';
+const cardapioUrl = process.env.CARDAPIO_URL || 'https://lamundodossabores.com.br/';
 
 module.exports = {
   cardapioUrl,
