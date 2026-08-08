@@ -77,6 +77,9 @@ const inputAddress = document.getElementById('inputAddress');
 const inputRef = document.getElementById('inputRef');
 const inputWhatsapp = document.getElementById('inputWhatsapp'); // New Field
 const inputNote = document.getElementById('inputNote');
+const socialProofNotification = document.getElementById('socialProofNotification');
+let socialProofTimer = null;
+let socialProofHideTimer = null;
 
 
 
@@ -334,6 +337,49 @@ function showToast(message, type = 'success') {
         setTimeout(() => el.remove(), 300);
     }, 3000);
 }
+
+function hasOpenCustomerFlow() {
+    return [categoryModal, infoModal, cartModal, pizzaModal, monteSeuModal, storyModal]
+        .some(modal => modal && !modal.classList.contains('hidden'));
+}
+
+function scheduleSocialProof(delay = 30000 + Math.random() * 20000) {
+    clearTimeout(socialProofTimer);
+    socialProofTimer = setTimeout(showSocialProof, delay);
+}
+
+function hideSocialProof() {
+    if (!socialProofNotification) return;
+    socialProofNotification.classList.add('opacity-0', 'translate-y-3');
+    socialProofHideTimer = setTimeout(() => {
+        socialProofNotification.classList.add('hidden');
+        scheduleSocialProof();
+    }, 500);
+}
+
+function showSocialProof() {
+    if (!socialProofNotification) return;
+    if (document.hidden || hasOpenCustomerFlow()) {
+        scheduleSocialProof(10000);
+        return;
+    }
+    clearTimeout(socialProofHideTimer);
+    socialProofNotification.classList.remove('hidden');
+    requestAnimationFrame(() => {
+        socialProofNotification.classList.remove('opacity-0', 'translate-y-3');
+    });
+    socialProofHideTimer = setTimeout(hideSocialProof, 5000);
+}
+
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        clearTimeout(socialProofTimer);
+        clearTimeout(socialProofHideTimer);
+        if (socialProofNotification) socialProofNotification.classList.add('hidden', 'opacity-0', 'translate-y-3');
+    } else {
+        scheduleSocialProof(8000);
+    }
+});
 
 function renderMenu() {
     renderedSections = [];
@@ -1620,6 +1666,7 @@ loadCart();
 loadFavorites();
 loadCustomerHistory();
 renderCart();
+scheduleSocialProof(10000);
 
 (async () => {
     try {

@@ -113,10 +113,6 @@
                 <i class="fa-solid fa-list text-xl"></i>
                 <span class="text-xs">Menu</span>
             </button>
-            <button id="btnStory" class="flex flex-col items-center gap-1 text-neutral-300">
-                <i class="fa-solid fa-book-open text-xl"></i>
-                <span class="text-xs">Nossa História</span>
-            </button>
             <button id="btnOrder" class="relative flex flex-col items-center gap-1 text-neutral-300">
                 <span class="relative flex items-center justify-center">
                     <i class="fa-solid fa-cart-shopping text-xl"></i>
@@ -128,6 +124,10 @@
             <button id="btnInfo" class="flex flex-col items-center gap-1 text-neutral-300">
                 <i class="fa-solid fa-circle-info text-xl"></i>
                 <span class="text-xs">Info</span>
+            </button>
+            <button id="btnStory" class="flex flex-col items-center gap-1 text-neutral-300">
+                <i class="fa-solid fa-book-open text-xl"></i>
+                <span class="text-xs">Nossa História</span>
             </button>
         </div>
     </nav>
@@ -448,6 +448,21 @@
     <!-- Toast Container -->
     <div id="toastContainer"
         class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-sm px-4 pointer-events-none">
+    </div>
+
+    <!-- Notificação social de atividade -->
+    <div id="socialProofNotification"
+        role="status" aria-live="polite"
+        class="hidden fixed left-4 right-4 md:left-auto md:right-6 bottom-24 md:w-80 z-30 pointer-events-none opacity-0 translate-y-3 transition-all duration-500">
+        <div class="rounded-2xl border border-brand-500/40 bg-neutral-950/95 backdrop-blur px-4 py-3 shadow-glow flex items-center gap-3">
+            <span class="w-10 h-10 shrink-0 rounded-full bg-green-500/15 text-green-400 flex items-center justify-center">
+                <i class="fa-solid fa-check"></i>
+            </span>
+            <div>
+                <p class="font-semibold text-sm">+1 pedido realizado</p>
+                <p class="text-xs text-neutral-400 mt-0.5">Mais um sabor escolhido na La Mundo.</p>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="./js/app.js"></script>
