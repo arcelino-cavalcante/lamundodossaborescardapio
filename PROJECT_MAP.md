@@ -1,90 +1,56 @@
-# Mapa do Projeto: Cardápio Digital & KDS v3.0
+# Mapa do Projeto — Cardápio com GitHub CMS
 
-Este documento serve como um **Manual Técnico Completo** para entender, manter e evoluir o sistema. Ele foi desenhado para que qualquer Desenvolvedor ou IA possa assumir o projeto imediatamente.
+## Visão geral
 
----
+Este projeto é um cardápio digital estático. O próprio repositório GitHub funciona como fonte de dados: todo o conteúdo editável fica em `data.json`.
 
-## 1. Visão Geral da Arquitetura
+Não há Firebase, banco externo, KDS/cozinha, impressão térmica ou servidor de pagamentos. Pix aparece apenas como forma de pagamento informada no pedido enviado pelo WhatsApp.
 
-O sistema é um **Web App Híbrido** focado em performance, utilizando arquitetura Serverless.
+## Arquitetura
 
-*   **Frontend**: Vanilla JavaScript (ES6+), HTML5, TailwindCSS (via CDN).
-*   **Backend**: Vercel Serverless Functions (Node.js) para processamento seguro.
-*   **Database**: Google Firebase Firestore (NoSQL).
-*   **Impressão**: Node.js `escpos-network` via Serverless Function.
+- `index.html`: cardápio do cliente, carrinho e envio do pedido pelo WhatsApp.
+- `admin.html`: painel de edição protegido por um token pessoal do GitHub.
+- `data.json`: categorias, produtos, taxas, grupos de opcionais e dados do estabelecimento.
+- `js/app.js`: comportamento do cardápio, carrinho, histórico local e WhatsApp.
+- `js/admin.js`: edição em memória e publicação de `data.json` pela API do GitHub.
+- `js/db.js`: esquema padrão, normalização dos dados, imagens e formatação monetária.
+- `js/ui.js`: alertas e confirmações do painel.
+- `sw.js`: cache básico do PWA, com prioridade para conteúdo atualizado da rede.
+- `vite.config.js`: desenvolvimento e build multipágina de `index.html` e `admin.html`.
 
----
+## Fluxo dos dados
 
-## 2. Estrutura de Arquivos
+1. O cardápio carrega `data.json` do site.
+2. O administrador entra em `admin.html` usando um token do GitHub.
+3. O painel lê o `data.json` diretamente da API do GitHub.
+4. As edições ficam pendentes na memória do navegador.
+5. O botão **Salvar e Publicar** cria um commit que atualiza somente `data.json`.
+6. A hospedagem conectada ao GitHub publica a nova versão.
 
-```text
-/
-├── index.html              # App do Cliente (Cardápio, Carrinho, Histórico)
-├── admin.html              # Painel Administrativo (KDS, Dashboard, Produtos)
-├── print.html              # (Legado) Layout Térmico antigo
-├── firestore.rules         # Regras de Segurança
-├── package.json            # Dependências (escpos, firebase)
-├── .env                    # Variáveis (MP_ACCESS_TOKEN, PRINTER_IP)
-│
-├── js/
-│   ├── app.js              # Lógica Cliente (Carrinho, Pagamento, Histórico)
-│   ├── admin.js            # Lógica Admin (KDS, Auto-Print, Dashboard)
-│   ├── payment.js          # Módulo de Pagamento (Polling Pix)
-│   └── firebase-config.js  # Configuração Firebase Centralizada
-│
-└── api/                    # Serverless Functions (Backend)
-    ├── create-pix.js       # Gera Pix via Mercado Pago
-    ├── check-status.js     # Consulta Status Pix
-    └── print-job.js        # [NOVO] Conecta na Impressora Térmica de Rede
+## Fluxo do pedido
+
+1. O cliente adiciona produtos ao carrinho.
+2. Informa nome, entrega e forma de pagamento: Pix, cartão na maquineta ou dinheiro.
+3. O sistema monta uma mensagem e abre o WhatsApp do estabelecimento.
+4. Carrinho, favoritos e histórico do dia são mantidos apenas no navegador do cliente.
+
+## Desenvolvimento
+
+```bash
+npm ci
+npm run dev
 ```
 
----
+Build de produção:
 
-## 3. Fluxos de Dados (Data Flow)
+```bash
+npm run build
+```
 
-### A. Fluxo de Pedido
-1.  **Checkout**: Cliente escolhe Entrega (Local/Vila/Sítio) e Pagamento (Pix/Cartão/Dinheiro).
-2.  **Pix**: Gera QR Code -> Polling -> Aprovação Automática.
-3.  **Offline (Cartão/Dinheiro)**: Salva pedido direto com status `approved`.
-4.  **Limpeza**: Ao finalizar, o **Carrinho é zerado** imediatamente.
-5.  **Histórico**: Pedido aparece na aba "Pedidos" (Salvo em `localStorage` com reset diário).
+O build gera cardápio, painel, `data.json` e service worker dentro de `dist/`.
 
-### B. Sistema de Cozinha (KDS)
-1.  **Abas**:
-    *   **Pagos / Impressos**: Pedidos prontos para produção.
-    *   **Em Análise**: Pedidos que precisam de confirmação manual.
-2.  **Impressão Automática**:
-    *   Assim que um pedido entra como `paid` ou `approved` (e ainda não foi impresso), o sistema chama `/api/print-job` silenciosamente.
-3.  **Dashboard**: Aba com métricas de vendas do dia (Faturamento, Qtd, Ticket Médio).
+## Segurança do painel
 
-### C. Impressão Térmica (/api/print-job)
-1.  Recebe JSON do pedido.
-2.  Conecta via TCP na impressora (IP no `.env`).
-3.  Formata cupom 58mm/80mm com:
-    *   Método de Pagamento (PIX, DINHEIRO + Troco).
-    *   Dados do Cliente (WhatsApp e Endereço condicional).
-    *   Itens com Categoria (ex: [PIZZA]).
+O projeto é totalmente estático, portanto não existe login em servidor. O token é enviado diretamente do navegador para a API oficial do GitHub e fica guardado somente em `sessionStorage`; ele é removido ao encerrar a sessão da aba ou ao clicar em **Sair**.
 
----
-
-## 4. Integrações Chave
-
-### Firebase Firestore
-*   **Coleção `orders`**:
-    *   `status`: 'waiting_payment', 'paid', 'approved', 'cancelled'.
-    *   `printed`: boolean (controle de auto-print).
-    *   `history`: array de logs.
-
-### Vercel Serverless (API)
-*   **Impressão de Rede**: A Vercel (ou servidor local) deve ter acesso à rede da impressora. Em produção, recomenda-se um túnel ou rodar o backend na mesma rede (Localhost).
-
----
-
-## 5. Guia para Melhorias Futuras
-
-1.  **Webhooks do Mercado Pago**: Substituir o polling `check-status.js` por um webhook real para maior confiabilidade.
-2.  **Autenticação Admin**: Implementar login real no KDS.
-3.  **Relatórios Avançados**: Exportar CSV de vendas mensais.
-
----
-**Atualizado por Antigravity Agent em 07/01/2026**
+Use exclusivamente um token fine-grained restrito ao repositório e com a permissão mínima `Contents: Read and write`. Consulte `GITHUB_TOKEN_GUIDE.md`.

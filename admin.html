@@ -43,9 +43,10 @@
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h1 class="text-xl md:text-2xl font-bold">Painel Administrativo</h1>
             <div class="flex items-center gap-3">
-                <button id="btnPublishGitHub" class="px-4 py-2 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition-colors shadow flex items-center gap-2">
+                <button id="btnPublishGitHub" disabled class="px-4 py-2 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow flex items-center gap-2">
                     <i class="fa-solid fa-cloud-arrow-up"></i> Salvar e Publicar
                 </button>
+                <span id="saveStatus" class="text-xs text-neutral-500">Nenhuma alteração pendente</span>
                 <a href="index.html" class="px-4 py-2 rounded-lg border hover:bg-neutral-100">Voltar ao Cardápio</a>
                 <button id="logoutBtn"
                     class="px-4 py-2 rounded-lg border text-red-600 hover:bg-red-50 hidden">Sair</button>
@@ -57,17 +58,20 @@
         <div class="w-full max-w-sm bg-white border border-neutral-200 rounded-2xl shadow-xl p-6 space-y-4">
             <div class="text-center space-y-1">
                 <h2 class="text-xl font-semibold">Acesso Administrativo</h2>
-                <p class="text-sm text-neutral-500">Insira seu Token do GitHub para atualizar o cardápio.</p>
+                <p class="text-sm text-neutral-500">Use um token de acesso restrito a este repositório. Ele será mantido somente nesta sessão do navegador.</p>
             </div>
             <form id="authForm" class="space-y-3">
                 <div class="space-y-1">
                     <label for="authPassword" class="text-sm font-medium text-neutral-700">Token de Acesso (PAT)</label>
-                    <input id="authPassword" type="password" required
-                        class="w-full border border-neutral-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="ghp_..." />
+                    <input id="authPassword" type="password" required autocomplete="off" spellcheck="false"
+                        class="w-full border border-neutral-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="github_pat_..." />
                 </div>
                 <button id="authSubmit" type="submit"
                     class="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-lg px-3 py-2 font-semibold transition-colors">Acessar Painel</button>
             </form>
+            <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer"
+                class="block text-center text-sm text-brand-700 hover:underline">Criar token no GitHub</a>
+            <p class="text-xs text-neutral-500">Selecione somente o repositório <strong>novo-cardapio-git-cms</strong> e dê acesso <strong>Contents: Read and write</strong>.</p>
             <p id="authError" class="text-sm text-red-600 hidden"></p>
         </div>
     </div>
@@ -81,7 +85,6 @@
                 <button id="tabMonteSeu" class="px-4 py-2 rounded-lg bg-white border">Monte Seu...</button>
                 <button id="tabOpcionais" class="px-4 py-2 rounded-lg bg-white border">Opcionais</button>
                 <button id="tabTaxas" class="px-4 py-2 rounded-lg bg-white border">Taxas</button>
-                <button id="tabEntregadores" class="px-4 py-2 rounded-lg bg-white border">Entregadores</button>
                 <button id="tabInfo" class="px-4 py-2 rounded-lg bg-white border">Informações</button>
             </div>
         </div>
@@ -385,13 +388,6 @@
                     <input id="infoOpen" type="checkbox" class="scale-125" />
                     <label for="infoOpen">Estamos abertos</label>
                 </div>
-                <!-- Footer Message -->
-                <div>
-                    <label class="block text-sm">Mensagem de Rodapé (Nota)</label>
-                    <textarea id="infoFooterMessage" class="w-full border rounded-lg px-3 py-2" rows="2"
-                        placeholder="Deus é Fiel!"></textarea>
-                    <p class="text-xs text-neutral-400 mt-1">Texto exibido ao final da impressão (ex: Versículo).</p>
-                </div>
                 <div class="flex justify-end">
                     <button id="btnSaveInfo" class="px-4 py-2 rounded-lg bg-brand-600 text-white">Salvar
                         Informações</button>
@@ -399,51 +395,7 @@
             </div>
         </section>
 
-
-        <!-- View: Entregadores -->
-        <section id="viewEntregadores" class="hidden">
-            <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h1 class="text-2xl font-bold">Entregadores</h1>
-                    <p class="text-neutral-400">Gerencie sua equipe para despacho rápido.</p>
-                </div>
-            </header>
-
-            <div class="bg-neutral-900 border border-neutral-800 rounded-xl p-6 mb-8">
-                <h2 class="font-bold mb-4">Adicionar Entregador</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input id="courierName" type="text" placeholder="Nome do Entregador"
-                        class="bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:border-brand-500 transition-colors">
-                    <input id="courierPhone" type="tel" placeholder="WhatsApp (11999999999)"
-                        class="bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:border-brand-500 transition-colors">
-                    <button id="btnAddCourier"
-                        class="bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg px-4 py-3 transition-colors">
-                        <i class="fa-solid fa-plus mr-2"></i> Adicionar
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="gridCouriers">
-                <!-- Cards will be injected here -->
-            </div>
-        </section>
     </main>
-
-    <!-- Modal: Dispatch Courier -->
-    <div id="dispatchModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-        <div class="bg-neutral-900 border border-neutral-800 rounded-xl w-full max-w-md p-6">
-            <h3 class="text-xl font-bold mb-4">Chamar Entregador 🛵</h3>
-            <p class="text-neutral-400 text-sm mb-6">Escolha quem vai levar o pedido <span id="dispatchOrderId"
-                    class="font-mono text-white">#0000</span>.</p>
-
-            <div id="dispatchList" class="space-y-2 max-h-60 overflow-y-auto mb-4">
-                <!-- List of couriers to select -->
-            </div>
-
-            <button onclick="closeDispatchModal()"
-                class="w-full bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold py-3 rounded-lg">Cancelar</button>
-        </div>
-    </div>
 
     <script type="module" src="js/admin.js"></script>
     <script>

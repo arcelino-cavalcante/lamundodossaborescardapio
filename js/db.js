@@ -26,19 +26,6 @@ export function resolveImageUrl(rawUrl) {
         return `https://drive.google.com/uc?export=download&id=${driveQueryMatch[1]}`;
     }
 
-    if (value.startsWith('gs://')) {
-        const bucketAndPath = value.slice(5);
-        const firstSlash = bucketAndPath.indexOf('/');
-        if (firstSlash > 0) {
-            const bucket = bucketAndPath.slice(0, firstSlash);
-            const path = bucketAndPath.slice(firstSlash + 1);
-            if (path) {
-                return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(path)}?alt=media`;
-            }
-        }
-        return PLACEHOLDER_IMAGE;
-    }
-
     if (value.startsWith('//')) {
         return `https:${value}`;
     }
@@ -105,9 +92,7 @@ export function defaultDB() {
             address: 'Rua José Bezerra Lins, Garanhuns - PE',
             whatsapp: '(87) 98129-0926',
             instagram: '@lamundodossaboresguns',
-            open: true,
-            printerIp: undefined,
-            footerMessage: ''
+            open: true
         },
         sizeLabels: { p: 'Pequena', m: 'Média', g: 'Grande' }
     };
@@ -135,17 +120,13 @@ export function normalizeDB(raw = {}) {
             address: raw.info.address || '',
             whatsapp: raw.info.whatsapp || '',
             instagram: raw.info.instagram || '',
-            open: typeof raw.info.open === 'boolean' ? raw.info.open : true,
-            printerIp: undefined,
-            footerMessage: raw.info.footerMessage || ''
+            open: typeof raw.info.open === 'boolean' ? raw.info.open : true
         } : {
             description: 'Aberto hoje: 18h–23h',
             address: 'Rua José Bezerra Lins, Garanhuns - PE',
             whatsapp: '(87) 98129-0926',
             instagram: '@lamundodossaboresguns',
-            open: true,
-            printerIp: '192.168.3.14',
-            footerMessage: ''
+            open: true
         },
         sizeLabels: raw.sizeLabels && typeof raw.sizeLabels === 'object' ? raw.sizeLabels : { p: 'Pequena', m: 'Média', g: 'Grande' }
     };

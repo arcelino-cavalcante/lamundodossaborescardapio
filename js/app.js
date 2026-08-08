@@ -10,9 +10,6 @@ let currentMonteSeu = null;
 let currentDeliveryFee = 0;
 let renderedSections = [];
 let searchTerm = ''; // Search state
-let currentOrderId = null; // Track current incomplete order
-let currentPaymentMethod = null; // Track method for WhatsApp redirection
-let orderUnsubscribe = null; // Unsub function for Firestore listener
 
 // DOM Elements
 const menuRoot = document.getElementById('menuRoot');
@@ -76,8 +73,6 @@ const inputAddress = document.getElementById('inputAddress');
 const inputRef = document.getElementById('inputRef');
 const inputWhatsapp = document.getElementById('inputWhatsapp'); // New Field
 const inputNote = document.getElementById('inputNote');
-const btnGeo = document.getElementById('btnGeo');
-let currentLocation = null; // { lat, lng, link }
 
 
 
@@ -214,14 +209,10 @@ function renderHistory() {
             return `<div class="text-xs text-neutral-400">${i.qty}x ${i.name}${catLabel}</div>`;
         }).join('');
 
-        // Status Badge logic (simplified)
-        let statusBadge = '<span class="text-xs text-green-500 font-bold">Enviado</span>';
-        if (order.status === 'paid' || order.status === 'approved') statusBadge = '<span class="text-xs text-green-500 font-bold">Confirmado</span>';
-
         card.innerHTML = `
             <div class="flex justify-between items-start mb-2">
                 <span class="text-xs text-neutral-500">#${(order.id || '').slice(0, 4)} — ${time}</span>
-                ${statusBadge}
+                <span class="text-xs text-green-500 font-bold">Enviado</span>
             </div>
             <div class="space-y-1 mb-2">
                 ${itemsHtml}
@@ -234,49 +225,6 @@ function renderHistory() {
         historyList.appendChild(card);
     });
 }
-async function saveOrderToFirestore(paymentData = null, status = 'pending') {
-    if (!CART.length) return;
-
-    // Gather User Data
-    const name = inputName.value.trim();
-    const address = inputAddress.value.trim();
-    const reference = inputRef.value.trim();
-    const note = inputNote.value.trim();
-    const delivery = deliveryType.value;
-
-    // Calculate total
-    const subtotal = CART.reduce((acc, item) => acc + (item.price * item.qty), 0);
-    const total = subtotal + currentDeliveryFee;
-
-    const order = {
-        date: Date.now(),
-        status: status, // pending, paid, ready, dispatched, delivered
-        customer: {
-            name,
-            address: delivery === 'local' ? 'Retirada' : address,
-            reference,
-            phone: '', // Could ask for phone
-            location: currentLocation // { lat, lng, link }
-        },
-        items: CART,
-        deliveryType: delivery,
-        deliveryFee: currentDeliveryFee,
-        total,
-        note,
-        payment: paymentData // { id: 123, method: 'pix', ... }
-    };
-
-    try {
-        await addDoc(ORDERS_COL, order);
-        console.log('Order saved to Firestore');
-        return order;
-    } catch (error) {
-        console.error('Error saving order:', error);
-        showToast('Erro ao salvar pedido no sistema', 'error');
-        throw error;
-    }
-}
-
 function minPrice(product, useOffer = false) {
     const map = useOffer ? product.offerPrices : product.prices;
     if (!map) return Infinity;
@@ -1376,23 +1324,16 @@ function handleDataUpdate(data) {
     applyInfoToUI();
 }
 
-// Payment Logic
-const pmPix = document.getElementById('pmPix');
-const pmCard = document.getElementById('pmCard');
-const pmCash = document.getElementById('pmCash');
-const viewPmPix = document.getElementById('viewPmPix');
+// Forma de pagamento informada no WhatsApp
 const viewPmCard = document.getElementById('viewPmCard');
 const viewPmCash = document.getElementById('viewPmCash');
+const viewPmPix = document.getElementById('viewPmPix');
 const inputChange = document.getElementById('inputChange');
 const toggleChange = document.getElementById('toggleChange');
 const boxChange = document.getElementById('boxChange');
 const changeResult = document.getElementById('changeResult');
 
 function resetPaymentSelection() {
-    [pmPix, pmCard, pmCash].forEach(btn => {
-        if (btn) btn.classList.remove('border-brand-600', 'bg-brand-600/20', 'text-white');
-        if (btn) btn.classList.add('border-neutral-700', 'bg-neutral-800', 'text-neutral-400');
-    });
     [viewPmPix, viewPmCard, viewPmCash].forEach(view => {
         if (view) view.classList.add('hidden');
     });
@@ -1406,90 +1347,17 @@ function selectPaymentMethod(method) {
     if (method === 'pix') viewId = 'viewPmPix';
     if (method === 'card') viewId = 'viewPmCard';
     if (method === 'cash') viewId = 'viewPmCash';
-    if (method === 'card_link') viewId = 'viewPmCardLink';
 
     const view = document.getElementById(viewId);
     if (view) view.classList.remove('hidden');
 }
 
-// Payment Radio Listeners
 const paymentRadios = document.getElementsByName('paymentMethod');
 paymentRadios.forEach(radio => {
     radio.addEventListener('change', (e) => {
         selectPaymentMethod(e.target.value);
     });
 });
-if (paymentRadios.length > 0) {
-    // Select first checked or default?
-    // User might need to click.
-}
-
-// LINK PAYMENT LOGIC
-const btnPayLink = document.getElementById('btnPayLink');
-const linkPaymentResult = document.getElementById('linkPaymentResult');
-const btnOpenLink = document.getElementById('btnOpenLink');
-
-if (btnPayLink) {
-    btnPayLink.addEventListener('click', async () => {
-        const name = inputName.value.trim();
-        if (!name) { showCustomAlert('Informe seu nome.'); return; }
-        if (CART.length === 0) return;
-
-        // Validation
-        const deliveryTypeVal = deliveryType.value;
-        if (deliveryTypeVal === 'sitio' && !inputRef.value.trim()) {
-            showCustomAlert('Informe um ponto de referência.');
-            inputRef.focus(); return;
-        }
-
-        const subtotal = CART.reduce((acc, item) => acc + (item.price * item.qty), 0);
-        const total = subtotal + currentDeliveryFee;
-
-        // Get Sitio Name
-        let sitioName = '';
-        if (deliveryTypeVal === 'sitio') {
-            const option = selectSitioFee.options[selectSitioFee.selectedIndex];
-            if (option) sitioName = option.text.split('—')[0].trim();
-        }
-
-        try {
-            btnPayLink.disabled = true;
-            btnPayLink.textContent = 'Gerando Link...';
-            currentPaymentMethod = 'card_link';
-
-            // 1. Create Preference
-            // Note: generateId is just for client-side ref, but we should use the Firestore ID if possible.
-            // Better: Add doc first? No, we need orderId for Preference external_ref.
-            // Let's use a temp ID or just the Firestore ID after creation.
-            // Actually, we must create Order FIRST to have a real ID, OR use a generated ID and then save it.
-            // Let's create Order first as 'waiting_payment'.
-
-            const orderId = generateId('order');
-            currentOrderId = orderId;
-
-            // Now create preference with REAL order ID
-            const prefData = await createPreferencePayment(CART, { name }, currentOrderId);
-
-            // Show Link UI
-            linkPaymentResult.classList.remove('hidden');
-            btnOpenLink.href = prefData.init_point;
-            btnPayLink.classList.add('hidden'); // Hide generate button
-
-            // Start Polling
-            startLinkPolling(currentOrderId, (statusData) => {
-                handlePaymentSuccess();
-            });
-
-        } catch (error) {
-            console.error(error);
-            showCustomAlert('Erro ao gerar link: ' + error.message);
-            btnPayLink.disabled = false;
-            btnPayLink.textContent = 'Gerar Link de Pagamento';
-        }
-    });
-
-}
-
 // Change Calculation Logic
 if (toggleChange) {
     toggleChange.addEventListener('change', () => {
@@ -1548,6 +1416,11 @@ async function finishOrder() {
 
     // Validate Fields
     const whatsapp = inputWhatsapp.value.trim();
+    if (!whatsapp) { showCustomAlert('Informe seu WhatsApp.'); return; }
+    if (deliveryType.value !== 'local' && !inputAddress.value.trim()) {
+        showCustomAlert('Informe o endereço de entrega.');
+        return;
+    }
     if (document.getElementById('deliveryType').value === 'sitio') {
         if (!inputRef.value.trim()) { showCustomAlert('Informe um ponto de referência.'); return; }
     }
@@ -1565,12 +1438,10 @@ async function finishOrder() {
         btnFinishOrder.textContent = 'Enviando...';
 
         const orderId = generateId('order');
-        currentOrderId = orderId;
 
         const orderData = {
             id: orderId,
             date: new Date().toISOString(),
-            status: 'approved', // Auto-approve for KDS
             method: method, 
             change: changeFor > 0 ? changeFor : null,
             changeValue: changeFor > 0 ? (changeFor - total) : 0,
@@ -1585,8 +1456,7 @@ async function finishOrder() {
                 sitioName: sitioName,
                 observation: inputNote.value
             },
-            items: [...CART],
-            history: [{ status: 'created', at: new Date().toISOString() }]
+            items: [...CART]
         };
 
         btnFinishOrder.disabled = false;
@@ -1603,7 +1473,6 @@ async function finishOrder() {
             total: total,
             items: [...orderData.items],
             date: new Date().toISOString(),
-            status: 'approved',
             method: method,
             change: changeFor
         });
@@ -1630,6 +1499,7 @@ async function finishOrder() {
 function formatOrderForWhatsApp(order) {
     let msg = `*Olá, gostaria de fazer o seguinte pedido:*\n\n`;
     msg += `*Nome do Cliente:* ${order.customer.name}\n`;
+    msg += `*WhatsApp:* ${order.customer.whatsapp}\n`;
 
     let refStr = order.customer.reference || '';
     if (order.customer.observation) {
@@ -1680,9 +1550,8 @@ function formatOrderForWhatsApp(order) {
     msg += `*Taxa de Entrega:* ${money(order.deliveryFee)}\n`;
     msg += `*VALOR TOTAL:* ${money(order.total)}\n`;
 
-    // Payment specific
     const methodMap = {
-        'pix': 'PIX',
+        'pix': 'Pix',
         'cash': 'Dinheiro',
         'card': 'Cartão (Maquineta)'
     };
@@ -1732,4 +1601,3 @@ if (searchInput) {
         renderMenu();
     });
 }
-

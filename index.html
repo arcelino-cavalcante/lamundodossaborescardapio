@@ -232,10 +232,6 @@
                         <input id="inputAddress"
                             class="flex-1 bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-sm"
                             placeholder="Rua / Nº / Referência" />
-                        <button id="btnGeo" class="bg-neutral-700 hover:bg-neutral-600 text-white px-3 rounded-lg"
-                            title="Usar minha localização">
-                            <i class="fa-solid fa-location-crosshairs"></i>
-                        </button>
                     </div>
                 </div>
 
@@ -263,20 +259,19 @@
                 <div class="mt-6 mb-4">
                     <label class="block text-sm text-neutral-300 mb-2">Forma de Pagamento</label>
                     <div class="grid grid-cols-3 gap-2">
-                        <!-- Pix -->
+                        <!-- Pix informado no WhatsApp -->
                         <label class="cursor-pointer">
                             <input type="radio" name="paymentMethod" value="pix" class="peer sr-only">
                             <div
                                 class="p-3 rounded-xl bg-neutral-800 border-2 border-transparent peer-checked:border-brand-500 peer-checked:bg-brand-500/10 hover:bg-neutral-700 transition-all flex flex-col items-center gap-2 group">
-                                <i
-                                    class="fa-brands fa-pix text-xl group-hover:scale-110 transition-transform text-teal-400"></i>
+                                <i class="fa-brands fa-pix text-xl group-hover:scale-110 transition-transform text-teal-400"></i>
                                 <span class="font-medium text-sm">Pix</span>
                             </div>
                         </label>
 
                         <!-- Maquineta -->
                         <label class="cursor-pointer">
-                            <input type="radio" name="paymentMethod" value="card" class="peer sr-only">
+                            <input type="radio" name="paymentMethod" value="card" class="peer sr-only" checked>
                             <div
                                 class="p-3 rounded-xl bg-neutral-800 border-2 border-transparent peer-checked:border-brand-500 peer-checked:bg-brand-500/10 hover:bg-neutral-700 transition-all flex flex-col items-center gap-2 group">
                                 <i
@@ -299,12 +294,12 @@
 
                     <!-- Conteúdo Dinâmico Pagamento -->
                     <div class="mt-4 p-4 bg-neutral-800 rounded-lg border border-neutral-700">
-                        <div id="viewPmPix" class="space-y-3">
-                            <p class="text-sm text-neutral-300">Pagamento via Pix (Na entrega ou chave informada pelo restaurante).</p>
+                        <div id="viewPmPix" class="hidden space-y-3">
+                            <p class="text-sm text-neutral-300"><i class="fa-brands fa-pix mr-2"></i>A pizzaria enviará a chave Pix pelo WhatsApp.</p>
                         </div>
 
-                        <div id="viewPmCard" class="hidden space-y-3">
-                            <p class="text-sm text-neutral-300"><i class="fa-solid fa-motorcycle mr-2"></i>O entregador levará a maquineta.</p>
+                        <div id="viewPmCard" class="space-y-3">
+                            <p class="text-sm text-neutral-300"><i class="fa-regular fa-credit-card mr-2"></i>Pagamento na entrega com maquineta.</p>
                         </div>
 
                         <div id="viewPmCash" class="hidden space-y-3">

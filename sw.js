@@ -1,10 +1,9 @@
-const CACHE_NAME = 'lamundo-v2';
+const CACHE_NAME = 'lamundo-github-cms-v1';
 const ASSETS = [
     './',
     './index.html',
     './admin.html',
-    './manifest.json',
-    './favicon.ico'
+    './data.json'
 ];
 
 self.addEventListener('install', (e) => {

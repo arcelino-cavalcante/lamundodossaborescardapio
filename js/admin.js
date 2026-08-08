@@ -9,8 +9,9 @@ let editingMonteSeuId = null;
 let editingOptionGroupId = null;
 let productFilterCategory = '';
 let productSearchTerm = '';
-let unsubscribeSnapshot = null;
 let hasInitializedUI = false;
+let hasUnsavedChanges = false;
+let loadedFileSha = null;
 
 // DOM Elements - Tabs
 const tabProdutos = document.getElementById('tabProdutos');
@@ -19,7 +20,6 @@ const tabMonteSeu = document.getElementById('tabMonteSeu');
 const tabOpcionais = document.getElementById('tabOpcionais');
 const tabInfo = document.getElementById('tabInfo');
 const tabTaxas = document.getElementById('tabTaxas');
-const tabEntregadores = document.getElementById('tabEntregadores');
 
 const viewProdutos = document.getElementById('viewProdutos');
 const viewCategorias = document.getElementById('viewCategorias');
@@ -27,17 +27,6 @@ const viewMonteSeu = document.getElementById('viewMonteSeu');
 const viewOpcionais = document.getElementById('viewOpcionais');
 const viewInfo = document.getElementById('viewInfo');
 const viewTaxas = document.getElementById('viewTaxas');
-const viewEntregadores = document.getElementById('viewEntregadores');
-
-// DOM Elements - Couriers
-const courierName = document.getElementById('courierName');
-const courierPhone = document.getElementById('courierPhone');
-const btnAddCourier = document.getElementById('btnAddCourier');
-const gridCouriers = document.getElementById('gridCouriers');
-const dispatchModal = document.getElementById('dispatchModal');
-const dispatchList = document.getElementById('dispatchList');
-const dispatchOrderId = document.getElementById('dispatchOrderId');
-let currentDispatchOrderId = null; // To store ID while modal is open
 
 // DOM Elements - Auth
 const authScreen = document.getElementById('authScreen');
@@ -46,8 +35,12 @@ const authPassword = document.getElementById('authPassword');
 const authSubmit = document.getElementById('authSubmit');
 const authError = document.getElementById('authError');
 const logoutBtn = document.getElementById('logoutBtn');
+const saveStatus = document.getElementById('saveStatus');
 const GITHUB_REPO = 'arcelino-cavalcante/novo-cardapio-git-cms';
-let githubToken = localStorage.getItem('lamundo_gh_token');
+const GITHUB_FILE = 'data.json';
+const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+const TOKEN_STORAGE_KEY = 'lamundo_gh_token';
+let githubToken = sessionStorage.getItem(TOKEN_STORAGE_KEY);
 
 // DOM Elements - Products
 const pName = document.getElementById('pName');
@@ -119,7 +112,6 @@ const infoAddress = document.getElementById('infoAddress');
 const infoWhatsapp = document.getElementById('infoWhatsapp');
 const infoInstagram = document.getElementById('infoInstagram');
 const infoOpen = document.getElementById('infoOpen');
-const infoPrinterIp = document.getElementById('infoPrinterIp');
 const btnSaveInfo = document.getElementById('btnSaveInfo');
 
 // --- Helpers ---
@@ -133,8 +125,42 @@ function sanitizeSizePrices(values) {
 }
 
 async function persistDB() {
-    // Apenas mantém o estado em memória. O salvamento real ocorre no botão "Salvar e Publicar".
-    // Se quiser que salve no localStorage como backup local temporário, pode ser feito aqui.
+    hasUnsavedChanges = true;
+    if (btnPublishGitHub) btnPublishGitHub.disabled = false;
+    if (saveStatus) {
+        saveStatus.textContent = 'Alterações pendentes de publicação';
+        saveStatus.className = 'text-xs font-medium text-amber-600';
+    }
+}
+
+function githubHeaders() {
+    return {
+        'Authorization': `Bearer ${githubToken}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+    };
+}
+
+function encodeBase64Utf8(value) {
+    const bytes = new TextEncoder().encode(value);
+    let binary = '';
+    bytes.forEach(byte => { binary += String.fromCharCode(byte); });
+    return btoa(binary);
+}
+
+function decodeBase64Utf8(value) {
+    const binary = atob(value.replace(/\s/g, ''));
+    const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+}
+
+async function githubErrorMessage(response, fallback) {
+    const body = await response.json().catch(() => ({}));
+    if (response.status === 401) return 'Token inválido ou expirado.';
+    if (response.status === 403) return 'O token não possui acesso de escrita ao conteúdo deste repositório.';
+    if (response.status === 404) return 'Repositório ou data.json não encontrado para este token.';
+    if (response.status === 409) return 'O cardápio foi alterado em outro lugar. Recarregue o painel antes de publicar novamente.';
+    return body.message || fallback;
 }
 
 const btnPublishGitHub = document.getElementById('btnPublishGitHub');
@@ -150,47 +176,42 @@ if (btnPublishGitHub) {
         btnPublishGitHub.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
         
         try {
-            // 1. Get current file SHA
-            const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/data.json`, {
-                headers: {
-                    'Authorization': `token ${githubToken}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            if (!getRes.ok) throw new Error('Falha ao acessar o repositório. Verifique se o Token tem permissão de "repo".');
-            const fileData = await getRes.json();
-            const currentSha = fileData.sha;
+            if (!loadedFileSha) throw new Error('Recarregue o painel para sincronizar o data.json antes de publicar.');
 
-            // 2. Prepare new content (base64)
-            const plain = JSON.parse(JSON.stringify(DB));
-            const newContent = btoa(unescape(encodeURIComponent(JSON.stringify(plain, null, 2))));
+            const plain = normalizeDB(DB);
+            const newContent = encodeBase64Utf8(`${JSON.stringify(plain, null, 2)}\n`);
 
-            // 3. Commit to GitHub
-            const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/data.json`, {
+            const putRes = await fetch(GITHUB_API_URL, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `token ${githubToken}`,
-                    'Accept': 'application/vnd.github.v3+json',
+                    ...githubHeaders(),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     message: 'Atualização do cardápio via Admin',
                     content: newContent,
-                    sha: currentSha
+                    sha: loadedFileSha
                 })
             });
 
             if (putRes.ok) {
-                showCustomAlert('Alterações publicadas com sucesso! O site será atualizado em ~1 minuto.');
+                const result = await putRes.json();
+                loadedFileSha = result.content?.sha || loadedFileSha;
+                hasUnsavedChanges = false;
+                btnPublishGitHub.disabled = true;
+                if (saveStatus) {
+                    saveStatus.textContent = 'Cardápio publicado no GitHub';
+                    saveStatus.className = 'text-xs font-medium text-green-700';
+                }
+                showCustomAlert('Alterações publicadas no GitHub com sucesso. O site será atualizado após a próxima publicação automática.');
             } else {
-                const errData = await putRes.json();
-                throw new Error(errData.message || 'Erro ao fazer commit');
+                throw new Error(await githubErrorMessage(putRes, 'Erro ao publicar o data.json.'));
             }
         } catch (error) {
             console.error('Erro ao publicar:', error);
             showCustomAlert('Erro ao publicar: ' + error.message);
         } finally {
-            btnPublishGitHub.disabled = false;
+            btnPublishGitHub.disabled = !hasUnsavedChanges;
             btnPublishGitHub.innerHTML = originalText;
         }
     });
@@ -199,12 +220,12 @@ if (btnPublishGitHub) {
 // --- Tabs Logic ---
 function switchTab(tab) {
     // Hide all views
-    [viewProdutos, viewCategorias, viewMonteSeu, viewOpcionais, viewInfo, viewTaxas, viewEntregadores].forEach(v => {
+    [viewProdutos, viewCategorias, viewMonteSeu, viewOpcionais, viewInfo, viewTaxas].forEach(v => {
         if (v) v.classList.add('hidden');
     });
 
     // Reset tabs
-    [tabProdutos, tabCategorias, tabMonteSeu, tabOpcionais, tabInfo, tabTaxas, tabEntregadores].forEach(t => {
+    [tabProdutos, tabCategorias, tabMonteSeu, tabOpcionais, tabInfo, tabTaxas].forEach(t => {
         if (t) t.className = 'px-4 py-2 rounded-lg bg-white border';
     });
 
@@ -229,13 +250,6 @@ function switchTab(tab) {
             tabTaxas.classList.remove('text-neutral-400');
             tabTaxas.classList.add('bg-neutral-800', 'text-white');
         }
-    } else if (tab === 'Entregadores') {
-        if (viewEntregadores) viewEntregadores.classList.remove('hidden');
-        if (tabEntregadores) {
-            tabEntregadores.classList.remove('text-neutral-400');
-            tabEntregadores.classList.add('bg-neutral-800', 'text-white');
-        }
-        renderCouriers();
     }
 }
 
@@ -245,7 +259,6 @@ tabMonteSeu.addEventListener('click', () => switchTab('MonteSeu'));
 tabOpcionais.addEventListener('click', () => switchTab('Opcionais'));
 tabInfo.addEventListener('click', () => switchTab('Info'));
 tabTaxas.addEventListener('click', () => switchTab('Taxas'));
-tabEntregadores.addEventListener('click', () => switchTab('Entregadores'));
 
 // --- Products Logic ---
 function formatProductPrice(product, category) {
@@ -1159,8 +1172,7 @@ btnSaveInfo.addEventListener('click', async event => {
         address: infoAddress.value.trim(),
         whatsapp: infoWhatsapp.value.trim(),
         instagram: infoInstagram.value.trim(),
-        open: infoOpen.checked,
-        footerMessage: (document.getElementById('infoFooterMessage')?.value || '').trim()
+        open: infoOpen.checked
     };
     try {
         await persistDB();
@@ -1195,11 +1207,6 @@ function renderAll({ resetForms = false } = {}) {
         infoWhatsapp.value = DB.info.whatsapp || '';
         infoInstagram.value = DB.info.instagram || '';
         infoOpen.checked = !!DB.info.open;
-
-        const infoFooterMessage = document.getElementById('infoFooterMessage');
-        if (infoFooterMessage) {
-            infoFooterMessage.value = DB.info.footerMessage || '';
-        }
     }
     if (resetForms) {
         clearProductForm();
@@ -1218,33 +1225,36 @@ function renderAll({ resetForms = false } = {}) {
 async function bootstrapAdmin() {
     if (authSubmit) authSubmit.disabled = true;
     try {
-        const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/data.json`, {
-            headers: {
-                'Authorization': `token ${githubToken}`,
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        });
+        const response = await fetch(GITHUB_API_URL, { headers: githubHeaders(), cache: 'no-store' });
         
         if (response.ok) {
             const data = await response.json();
-            const content = decodeURIComponent(escape(atob(data.content)));
+            const content = decodeBase64Utf8(data.content);
             DB = normalizeDB(JSON.parse(content));
+            loadedFileSha = data.sha;
             
             if (authScreen) authScreen.classList.add('hidden');
             if (logoutBtn) logoutBtn.classList.remove('hidden');
+            hasUnsavedChanges = false;
+            if (btnPublishGitHub) btnPublishGitHub.disabled = true;
+            if (saveStatus) {
+                saveStatus.textContent = 'Cardápio sincronizado com o GitHub';
+                saveStatus.className = 'text-xs text-neutral-500';
+            }
             hasInitializedUI = true;
             renderAll({ resetForms: true });
         } else {
-            throw new Error('Token inválido ou sem acesso.');
+            throw new Error(await githubErrorMessage(response, 'Token inválido ou sem acesso.'));
         }
     } catch (e) {
         console.error(e);
-        localStorage.removeItem('lamundo_gh_token');
+        sessionStorage.removeItem(TOKEN_STORAGE_KEY);
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
         githubToken = null;
         if (authScreen) authScreen.classList.remove('hidden');
         if (logoutBtn) logoutBtn.classList.add('hidden');
         if (authError) {
-            authError.textContent = 'Token inválido ou sem permissão.';
+            authError.textContent = e.message || 'Token inválido ou sem permissão.';
             authError.classList.remove('hidden');
         }
     } finally {
@@ -1257,7 +1267,7 @@ if (authForm) {
         e.preventDefault();
         if (authError) authError.classList.add('hidden');
         githubToken = authPassword.value.trim();
-        localStorage.setItem('lamundo_gh_token', githubToken);
+        sessionStorage.setItem(TOKEN_STORAGE_KEY, githubToken);
         if (authSubmit) authSubmit.textContent = 'Verificando...';
         await bootstrapAdmin();
         if (authSubmit) authSubmit.textContent = 'Acessar Painel';
@@ -1266,7 +1276,8 @@ if (authForm) {
 
 if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('lamundo_gh_token');
+        sessionStorage.removeItem(TOKEN_STORAGE_KEY);
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
         location.reload();
     });
 }
@@ -1276,187 +1287,11 @@ if (githubToken) {
     bootstrapAdmin();
 } else {
     if (authScreen) authScreen.classList.remove('hidden');
-    // Fetch public data just to have it in memory, though UI is blocked
     fetchDB().then(data => { DB = data; });
 }
 
-/* KDS Logic - Appended to admin.js */
-
-// DOM Elements - KDS
-// tabCozinha defined at top
-// viewCozinha defined at top
-// const btnToggleSound = document.getElementById('btnToggleSound');
-
-
-
-
-// --- Couriers Logic ---
-
-// State for editing courier
-let editingCourierIndex = null;
-
-function renderCouriers() {
-    if (!DB.info || !DB.info.couriers) {
-        if (gridCouriers) gridCouriers.innerHTML = '<p class="text-neutral-500 col-span-full">Nenhum entregador cadastrado.</p>';
-        return;
-    }
-
-    if (gridCouriers) {
-        gridCouriers.innerHTML = DB.info.couriers.map((c, index) => `
-            <div class="bg-neutral-800 rounded-lg p-4 flex justify-between items-center border border-neutral-700">
-                <div>
-                    <h3 class="font-bold text-white">${c.name}</h3>
-                    <p class="text-sm text-neutral-400"><i class="fa-brands fa-whatsapp mr-1"></i>${c.phone}</p>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="editCourier(${index})" class="text-blue-500 hover:text-blue-400 p-2"><i class="fa-solid fa-pen"></i></button>
-                    <button onclick="removeCourier(${index})" class="text-red-500 hover:text-red-400 p-2"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            </div>
-        `).join('');
-    }
-}
-
-window.editCourier = (index) => {
-    if (!DB.info || !DB.info.couriers) return;
-    const courier = DB.info.couriers[index];
-    if (!courier) return;
-
-    courierName.value = courier.name;
-    courierPhone.value = courier.phone;
-    editingCourierIndex = index;
-
-    if (btnAddCourier) {
-        btnAddCourier.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Atualizar';
-        btnAddCourier.className = 'bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg px-4 py-3 transition-colors';
-    }
-    courierName.focus();
-};
-
-window.removeCourier = async (index) => {
-    if (!await showCustomConfirm('Remover entregador?')) return;
-    if (!DB.info || !DB.info.couriers) return;
-
-    const couriers = DB.info.couriers;
-    couriers.splice(index, 1);
-    DB.info.couriers = couriers;
-
-    await persistDB();
-    renderCouriers();
-
-    if (editingCourierIndex === index) resetCourierForm();
-    showToast('Entregador removido!');
-};
-
-function resetCourierForm() {
-    courierName.value = '';
-    courierPhone.value = '';
-    editingCourierIndex = null;
-    if (btnAddCourier) {
-        btnAddCourier.innerHTML = '<i class="fa-solid fa-plus mr-2"></i> Adicionar';
-        btnAddCourier.className = 'bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg px-4 py-3 transition-colors';
-    }
-}
-
-if (btnAddCourier) {
-    btnAddCourier.addEventListener('click', async () => {
-        const name = courierName.value.trim();
-        const phone = courierPhone.value.trim();
-        if (!name || !phone) { showCustomAlert('Preencha nome e WhatsApp.'); return; }
-
-        if (!DB.info) DB.info = {};
-        if (!DB.info.couriers) DB.info.couriers = [];
-
-        if (editingCourierIndex !== null) {
-            // Update
-            DB.info.couriers[editingCourierIndex] = { name, phone };
-            await persistDB();
-            showToast('Entregador atualizado!');
-            resetCourierForm();
-        } else {
-            // Create
-            DB.info.couriers.push({ name, phone });
-            await persistDB();
-
-            courierName.value = '';
-            courierPhone.value = '';
-            showToast('Entregador adicionado!');
-        }
-        renderCouriers();
-    });
-}
-
-// --- Dispatch Logic ---
-window.openDispatchModal = (orderId) => {
-    currentDispatchOrderId = orderId;
-    if (dispatchOrderId) dispatchOrderId.textContent = `#${orderId.slice(0, 4)}`;
-
-    // Populate Modal List
-    if (dispatchList) {
-        if (!DB.info || !DB.info.couriers || DB.info.couriers.length === 0) {
-            dispatchList.innerHTML = '<p class="text-neutral-500 text-center">Nenhum entregador cadastrado. Vá em "Entregadores" primeiro.</p>';
-        } else {
-            dispatchList.innerHTML = DB.info.couriers.map((c, idx) => `
-                <button onclick="selectCourierForDispatch(${idx})" class="w-full text-left p-3 rounded hover:bg-neutral-800 flex justify-between items-center border border-neutral-700 mb-2 group">
-                    <div>
-                        <div class="font-bold text-white">${c.name}</div>
-                        <div class="text-xs text-neutral-500">${c.phone}</div>
-                    </div>
-                    <i class="fa-solid fa-paper-plane text-neutral-500 group-hover:text-brand-500"></i>
-                </button>
-            `).join('');
-        }
-    }
-
-    if (dispatchModal) dispatchModal.classList.remove('hidden');
-};
-
-window.closeDispatchModal = () => {
-    if (dispatchModal) dispatchModal.classList.add('hidden');
-    currentDispatchOrderId = null;
-};
-
-window.selectCourierForDispatch = async (courierIndex) => {
-    const courier = DB.info.couriers[courierIndex];
-    if (!courier || !currentDispatchOrderId) return;
-
-    try {
-        const docRef = doc(ORDERS_COL, currentDispatchOrderId);
-        const snap = await getDoc(docRef);
-        if (!snap.exists()) { showCustomAlert('Pedido não encontrado.'); return; }
-        const order = { id: snap.id, ...snap.data() };
-
-        // Construct Message
-        let mapLink = '';
-        if (order.customer.location && order.customer.location.link) {
-            mapLink = `📍 *Localização:* ${order.customer.location.link}\n`;
-        } else if (order.customer.address) {
-            mapLink = `📍 *Endereço:* ${order.customer.address} (${order.customer.reference || ''})\n`;
-        }
-
-        const itemsList = order.items.map(i => {
-            const catLabel = i.meta && i.meta.categoryName ? ` [${i.meta.categoryName.toUpperCase()}]` : '';
-            return `- ${i.qty}x ${i.name}${catLabel}`;
-        }).join('\n');
-
-        const msg = `*Pedido #${order.id.slice(0, 4)}* para ${order.customer.name}\n\n${itemsList}\n\n${mapLink}\nO cliente aguarda! 🛵💨`;
-
-        const whatsappUrl = `https://wa.me/55${courier.phone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
-
-        window.open(whatsappUrl, '_blank');
-        closeDispatchModal();
-
-    } catch (e) {
-        console.error(e);
-        showCustomAlert('Erro ao gerar despacho.');
-    }
-};
-
-// Toast Helper
-function showToast(msg) {
-    const toast = document.createElement('div');
-    toast.className = 'fixed bottom-4 right-4 bg-neutral-800 text-white px-4 py-2 rounded shadow border border-neutral-700 animate-fade-in z-50';
-    toast.textContent = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
+window.addEventListener('beforeunload', event => {
+    if (!hasUnsavedChanges) return;
+    event.preventDefault();
+    event.returnValue = '';
+});
