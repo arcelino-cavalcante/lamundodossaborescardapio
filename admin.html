@@ -110,12 +110,13 @@
                     <select id="pOptionGroup" class="w-full border rounded-lg px-3 py-2"></select>
                 </div>
                 <div class="col-span-full md:col-span-1">
-                    <label class="block text-sm">URL da Imagem</label>
+                    <label class="block text-sm">URL da imagem</label>
                     <input id="pImage" class="w-full border rounded-lg px-3 py-2" placeholder="https://..." />
-                    <div class="mt-2 text-xs text-neutral-500">Ou faça upload:</div>
-                    <input id="pFileInput" type="file" accept="image/*"
+                    <div class="mt-2 text-xs text-neutral-500">Ou envie uma imagem para a pasta <code>images/products/</code> do GitHub:</div>
+                    <input id="pFileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif"
                         class="block w-full text-sm text-neutral-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100" />
-                    <div id="pUploadStatus" class="mt-1 text-xs text-brand-600 font-semibold h-4"></div>
+                    <div id="pUploadStatus" class="mt-1 text-xs text-brand-600 font-semibold min-h-4"></div>
+                    <p class="mt-1 text-xs text-neutral-500">Formatos: JPG, PNG, WebP ou GIF. Máximo: 2 MB. O envio acontece ao clicar em “Salvar e Publicar”.</p>
                 </div>
                 <div id="boxPricesSimple" class="col-span-full md:col-span-1">
                     <label class="block text-sm">Preço (único)</label>

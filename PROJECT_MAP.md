@@ -11,6 +11,7 @@ Não há Firebase, banco externo, KDS/cozinha, impressão térmica ou servidor d
 - `index.html`: cardápio do cliente, carrinho e envio do pedido pelo WhatsApp.
 - `admin.html`: painel de edição protegido por um token pessoal do GitHub.
 - `data.json`: categorias, produtos, taxas, grupos de opcionais e dados do estabelecimento.
+- `images/products/`: imagens enviadas pelo painel administrativo.
 - `js/app.js`: comportamento do cardápio, carrinho, histórico local e WhatsApp.
 - `js/admin.js`: edição em memória e publicação de `data.json` pela API do GitHub.
 - `js/db.js`: esquema padrão, normalização dos dados, imagens e formatação monetária.
@@ -24,8 +25,18 @@ Não há Firebase, banco externo, KDS/cozinha, impressão térmica ou servidor d
 2. O administrador entra em `admin.html` usando um token do GitHub.
 3. O painel lê o `data.json` diretamente da API do GitHub.
 4. As edições ficam pendentes na memória do navegador.
-5. O botão **Salvar e Publicar** cria um commit que atualiza somente `data.json`.
-6. A hospedagem conectada ao GitHub publica a nova versão.
+5. Imagens selecionadas são enviadas para `images/products/` em commits próprios.
+6. O produto guarda somente a URL pública da imagem, nunca o conteúdo Base64.
+7. O botão **Salvar e Publicar** cria o commit que atualiza `data.json`.
+8. O GitHub Pages publica a nova versão.
+
+## Upload de imagens
+
+- Formatos aceitos: JPG, PNG, WebP e GIF.
+- Tamanho máximo por arquivo: 2 MB.
+- A seleção do arquivo não publica imediatamente; ela entra na fila de alterações.
+- Ao usar **Salvar e Publicar**, o painel envia primeiro as imagens e depois o `data.json`.
+- Se a publicação dos dados falhar depois do upload, o painel mantém o estado para permitir uma nova tentativa sem reenviar a mesma imagem.
 
 ## Fluxo do pedido
 

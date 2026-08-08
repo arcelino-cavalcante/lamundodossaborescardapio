@@ -25,6 +25,8 @@ O GitHub mostra o token completo apenas uma vez. Não coloque esse código em `d
 2. Cole o token no campo **Token de Acesso**.
 3. Clique em **Acessar Painel**.
 4. Edite produtos, categorias, taxas ou informações.
+   - Para imagens, você pode informar uma URL ou selecionar um arquivo JPG, PNG, WebP ou GIF de até 2 MB.
+   - Arquivos selecionados serão gravados em `images/products/`; o `data.json` receberá apenas a URL pública.
 5. Observe o aviso **Alterações pendentes de publicação**.
 6. Clique em **Salvar e Publicar**.
 7. Aguarde a confirmação de que o commit foi criado no GitHub.

@@ -12,6 +12,8 @@ let productSearchTerm = '';
 let hasInitializedUI = false;
 let hasUnsavedChanges = false;
 let loadedFileSha = null;
+let selectedProductImageFile = null;
+const pendingProductImages = new Map();
 
 // DOM Elements - Tabs
 const tabProdutos = document.getElementById('tabProdutos');
@@ -37,8 +39,11 @@ const authError = document.getElementById('authError');
 const logoutBtn = document.getElementById('logoutBtn');
 const saveStatus = document.getElementById('saveStatus');
 const GITHUB_REPO = 'arcelino-cavalcante/novo-cardapio-git-cms';
+const [GITHUB_OWNER, GITHUB_REPO_NAME] = GITHUB_REPO.split('/');
 const GITHUB_FILE = 'data.json';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+const GITHUB_CONTENTS_URL = `https://api.github.com/repos/${GITHUB_REPO}/contents`;
+const GITHUB_PAGES_URL = `https://${GITHUB_OWNER}.github.io/${GITHUB_REPO_NAME}`;
 const TOKEN_STORAGE_KEY = 'lamundo_gh_token';
 let githubToken = sessionStorage.getItem(TOKEN_STORAGE_KEY);
 
@@ -128,7 +133,10 @@ async function persistDB() {
     hasUnsavedChanges = true;
     if (btnPublishGitHub) btnPublishGitHub.disabled = false;
     if (saveStatus) {
-        saveStatus.textContent = 'Alterações pendentes de publicação';
+        const imageCount = pendingProductImages.size;
+        saveStatus.textContent = imageCount
+            ? `Alterações pendentes (${imageCount} ${imageCount === 1 ? 'imagem' : 'imagens'})`
+            : 'Alterações pendentes de publicação';
         saveStatus.className = 'text-xs font-medium text-amber-600';
     }
 }
@@ -163,6 +171,69 @@ async function githubErrorMessage(response, fallback) {
     return body.message || fallback;
 }
 
+function productImagePath(productId, productName, file) {
+    const extensionByType = {
+        'image/jpeg': 'jpg',
+        'image/png': 'png',
+        'image/webp': 'webp',
+        'image/gif': 'gif'
+    };
+    const extension = extensionByType[file.type];
+    const slug = productName
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '') || 'produto';
+    const safeId = productId.replace(/[^a-zA-Z0-9-]/g, '');
+    return `images/products/${slug}-${safeId}-${Date.now()}.${extension}`;
+}
+
+function githubPathUrl(pathValue) {
+    return `${GITHUB_PAGES_URL}/${pathValue.split('/').map(encodeURIComponent).join('/')}`;
+}
+
+async function fileToBase64(file) {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const chunkSize = 0x8000;
+    let binary = '';
+    for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+        binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+    }
+    return btoa(binary);
+}
+
+async function uploadPendingProductImages() {
+    const pending = Array.from(pendingProductImages.values());
+    for (let index = 0; index < pending.length; index += 1) {
+        const image = pending[index];
+        if (image.uploaded) continue;
+
+        if (saveStatus) {
+            saveStatus.textContent = `Enviando imagem ${index + 1} de ${pending.length}...`;
+            saveStatus.className = 'text-xs font-medium text-blue-700';
+        }
+
+        const encodedPath = image.path.split('/').map(encodeURIComponent).join('/');
+        const response = await fetch(`${GITHUB_CONTENTS_URL}/${encodedPath}`, {
+            method: 'PUT',
+            headers: {
+                ...githubHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: `Adiciona imagem de ${image.productName}`,
+                content: await fileToBase64(image.file)
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(await githubErrorMessage(response, `Erro ao enviar a imagem de ${image.productName}.`));
+        }
+        image.uploaded = true;
+    }
+}
+
 const btnPublishGitHub = document.getElementById('btnPublishGitHub');
 if (btnPublishGitHub) {
     btnPublishGitHub.addEventListener('click', async () => {
@@ -177,6 +248,13 @@ if (btnPublishGitHub) {
         
         try {
             if (!loadedFileSha) throw new Error('Recarregue o painel para sincronizar o data.json antes de publicar.');
+
+            await uploadPendingProductImages();
+
+            if (saveStatus) {
+                saveStatus.textContent = 'Publicando dados do cardápio...';
+                saveStatus.className = 'text-xs font-medium text-blue-700';
+            }
 
             const plain = normalizeDB(DB);
             const newContent = encodeBase64Utf8(`${JSON.stringify(plain, null, 2)}\n`);
@@ -198,6 +276,7 @@ if (btnPublishGitHub) {
                 const result = await putRes.json();
                 loadedFileSha = result.content?.sha || loadedFileSha;
                 hasUnsavedChanges = false;
+                pendingProductImages.clear();
                 btnPublishGitHub.disabled = true;
                 if (saveStatus) {
                     saveStatus.textContent = 'Cardápio publicado no GitHub';
@@ -347,21 +426,25 @@ if (productSearch) {
 if (pFileInput) {
     pFileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
-        if (file) {
-            // Check file size (optional, limit to 2MB to avoid huge JSON files)
-            if (file.size > 2 * 1024 * 1024) {
-                showCustomAlert('A imagem é muito grande. Por favor, escolha uma imagem com menos de 2MB.');
-                pFileInput.value = '';
-                return;
-            }
+        selectedProductImageFile = null;
+        if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const base64String = event.target.result;
-                pImage.value = base64String;
-                showCustomAlert('Imagem carregada com sucesso e convertida para Base64!');
-            };
-            reader.readAsDataURL(file);
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+            showCustomAlert('Formato não aceito. Use JPG, PNG, WebP ou GIF.');
+            pFileInput.value = '';
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            showCustomAlert('A imagem é muito grande. Escolha uma imagem com até 2 MB.');
+            pFileInput.value = '';
+            return;
+        }
+
+        selectedProductImageFile = file;
+        if (pUploadStatus) {
+            pUploadStatus.textContent = `${file.name} pronta para enviar ao GitHub`;
+            pUploadStatus.className = 'mt-1 text-xs text-green-700 font-semibold min-h-4';
         }
     });
 }
@@ -383,6 +466,7 @@ function populateCategorySelect() {
 
 function clearProductForm() {
     editingProductId = null;
+    selectedProductImageFile = null;
     pName.value = '';
     pDescription.value = '';
     pCategory.value = '';
@@ -396,7 +480,6 @@ function clearProductForm() {
     pOfferPriceP.value = '';
     pOfferPriceM.value = '';
     pOfferPriceG.value = '';
-    pAvailable.checked = true;
     pAvailable.checked = true;
     if (pFileInput) pFileInput.value = '';
     if (pUploadStatus) pUploadStatus.textContent = '';
@@ -422,12 +505,32 @@ async function saveProduct(event) {
         return;
     }
 
+    const productId = editingProductId || generateId('prod');
+    let imageUrl = pImage.value.trim();
+    if (selectedProductImageFile) {
+        const path = productImagePath(productId, name, selectedProductImageFile);
+        imageUrl = githubPathUrl(path);
+        pendingProductImages.set(productId, {
+            file: selectedProductImageFile,
+            path,
+            url: imageUrl,
+            productId,
+            productName: name,
+            uploaded: false
+        });
+    } else {
+        const pendingImage = pendingProductImages.get(productId);
+        if (pendingImage && pendingImage.url !== imageUrl) {
+            pendingProductImages.delete(productId);
+        }
+    }
+
     const payload = {
-        id: editingProductId || generateId('prod'),
+        id: productId,
         name,
         description: pDescription.value.trim(),
         categoryId,
-        imageUrl: pImage.value.trim(),
+        imageUrl,
         available: pAvailable.checked,
         optionGroupId: pOptionGroup.value || null
     };
@@ -490,6 +593,9 @@ window.productActions = {
         if (!product) return;
 
         editingProductId = id;
+        selectedProductImageFile = null;
+        if (pFileInput) pFileInput.value = '';
+        if (pUploadStatus) pUploadStatus.textContent = '';
         pName.value = product.name;
         pDescription.value = product.description || '';
         pCategory.value = product.categoryId;
@@ -530,6 +636,7 @@ window.productActions = {
         if (!product) return;
         if (!await showCustomConfirm('Excluir este produto?')) return;
         DB.products = DB.products.filter(p => p.id !== id);
+        pendingProductImages.delete(id);
         if (editingProductId === id) {
             clearProductForm();
         }
