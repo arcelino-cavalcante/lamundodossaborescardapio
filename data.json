@@ -1555,7 +1555,68 @@
   ],
   "fees": {
     "base": 5,
-    "sitios": []
+    "sitios": [
+      {
+        "id": "sitio-entupido",
+        "name": "Entupido",
+        "fee": 8
+      },
+      {
+        "id": "sitio-serrinha",
+        "name": "Serrinha",
+        "fee": 5
+      },
+      {
+        "id": "sitio-vieira",
+        "name": "Vieira",
+        "fee": 10
+      },
+      {
+        "id": "sitio-catonho",
+        "name": "Catonho",
+        "fee": 12
+      },
+      {
+        "id": "sitio-cachoeira",
+        "name": "Cachoeira",
+        "fee": 6
+      },
+      {
+        "id": "sitio-fama",
+        "name": "Fama",
+        "fee": 6
+      },
+      {
+        "id": "sitio-capoeira-de-pedra",
+        "name": "Capoeira de Pedra",
+        "fee": 5
+      },
+      {
+        "id": "sitio-batinga",
+        "name": "Batinga",
+        "fee": 5
+      },
+      {
+        "id": "sitio-lagoa",
+        "name": "Lagoa",
+        "fee": 7
+      },
+      {
+        "id": "sitio-manata",
+        "name": "Manata",
+        "fee": 8
+      },
+      {
+        "id": "sitio-matinha",
+        "name": "Matinha",
+        "fee": 12
+      },
+      {
+        "id": "sitio-barbalho",
+        "name": "Barbalho",
+        "fee": 15
+      }
+    ]
   },
   "monteSeu": [],
   "optionGroups": [],
