@@ -92,6 +92,11 @@ export function defaultDB() {
             address: 'Rua José Bezerra Lins, Garanhuns - PE',
             whatsapp: '(87) 98129-0926',
             instagram: '@lamundodossaboresguns',
+            pix: {
+                key: '',
+                holder: '',
+                city: 'Garanhuns'
+            },
             open: true
         },
         sizeLabels: { p: 'Pequena', m: 'Média', g: 'Grande' }
@@ -120,12 +125,26 @@ export function normalizeDB(raw = {}) {
             address: raw.info.address || '',
             whatsapp: raw.info.whatsapp || '',
             instagram: raw.info.instagram || '',
+            pix: raw.info.pix && typeof raw.info.pix === 'object' ? {
+                key: raw.info.pix.key || '',
+                holder: raw.info.pix.holder || '',
+                city: raw.info.pix.city || 'Garanhuns'
+            } : {
+                key: '',
+                holder: '',
+                city: 'Garanhuns'
+            },
             open: typeof raw.info.open === 'boolean' ? raw.info.open : true
         } : {
             description: 'Aberto hoje: 18h–23h',
             address: 'Rua José Bezerra Lins, Garanhuns - PE',
             whatsapp: '(87) 98129-0926',
             instagram: '@lamundodossaboresguns',
+            pix: {
+                key: '',
+                holder: '',
+                city: 'Garanhuns'
+            },
             open: true
         },
         sizeLabels: raw.sizeLabels && typeof raw.sizeLabels === 'object' ? raw.sizeLabels : { p: 'Pequena', m: 'Média', g: 'Grande' }

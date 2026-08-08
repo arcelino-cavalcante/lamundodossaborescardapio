@@ -18,6 +18,22 @@ Não há Firebase, banco externo, KDS/cozinha, impressão térmica ou servidor d
 - `js/ui.js`: alertas e confirmações do painel.
 - `sw.js`: cache básico do PWA, com prioridade para conteúdo atualizado da rede.
 - `vite.config.js`: desenvolvimento e build multipágina de `index.html` e `admin.html`.
+- `bot/`: atendimento no WhatsApp, leitura do pedido, SQLite e impressão térmica ESC/POS pela rede local.
+
+## Bot do WhatsApp e impressão
+
+O bot é um processo Node.js separado do site estático e deve permanecer ligado em um computador com Chrome e acesso à mesma rede da impressora. Ele não usa Firebase nem servidor de pagamentos.
+
+O fluxo é:
+
+1. O cliente envia pelo WhatsApp a mensagem pronta criada pelo cardápio.
+2. O bot valida todos os campos e respeita a forma de pagamento já selecionada.
+3. Para Pix, envia a chave e aguarda o comprovante; para cartão ou dinheiro, mostra diretamente a confirmação.
+4. Após a confirmação, registra o pedido no SQLite.
+5. Envia o cupom ESC/POS pela porta TCP da impressora.
+6. O identificador da mensagem impede a impressão duplicada do mesmo pedido.
+
+Consulte `bot/README.md` para configuração e execução.
 
 ## Fluxo dos dados
 

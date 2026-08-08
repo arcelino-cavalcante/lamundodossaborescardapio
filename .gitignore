@@ -3,3 +3,8 @@
 node_modules/
 dist/
 .env
+bot/.wwebjs_auth/
+bot/.wwebjs_cache/
+bot/*.db
+bot/*.db-*
+bot/logs/

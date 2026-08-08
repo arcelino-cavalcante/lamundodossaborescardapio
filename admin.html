@@ -385,6 +385,29 @@
                     <input id="infoInstagram" class="w-full border rounded-lg px-3 py-2"
                         placeholder="@lamundodossaboresguns" />
                 </div>
+                <div class="border-t pt-4 space-y-4">
+                    <div>
+                        <h2 class="font-semibold text-lg">Pagamento por Pix</h2>
+                        <p class="text-xs text-neutral-500 mt-1">Esses dados serão públicos no cardápio e usados pelo bot para gerar o Pix Copia e Cola com o valor do pedido.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm" for="infoPixKey">Chave Pix</label>
+                        <input id="infoPixKey" class="w-full border rounded-lg px-3 py-2" autocomplete="off"
+                            placeholder="CPF, CNPJ, telefone, e-mail ou chave aleatória" />
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm" for="infoPixHolder">Nome do titular da chave</label>
+                            <input id="infoPixHolder" class="w-full border rounded-lg px-3 py-2"
+                                placeholder="Nome que aparecerá no pagamento" maxlength="25" />
+                        </div>
+                        <div>
+                            <label class="block text-sm" for="infoPixCity">Cidade do titular</label>
+                            <input id="infoPixCity" class="w-full border rounded-lg px-3 py-2"
+                                placeholder="Garanhuns" maxlength="15" />
+                        </div>
+                    </div>
+                </div>
                 <div class="flex items-center gap-2">
                     <input id="infoOpen" type="checkbox" class="scale-125" />
                     <label for="infoOpen">Estamos abertos</label>

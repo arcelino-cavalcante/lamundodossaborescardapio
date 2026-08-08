@@ -1564,6 +1564,11 @@
     "address": "Rua José Bezerra Lins, Garanhuns - PE",
     "whatsapp": "(87) 98129-5167",
     "instagram": "@lamundodossaboresguns",
+    "pix": {
+      "key": "",
+      "holder": "",
+      "city": "Garanhuns"
+    },
     "open": true
   },
   "sizeLabels": {

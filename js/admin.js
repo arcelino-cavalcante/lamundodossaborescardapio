@@ -116,6 +116,9 @@ const infoDescription = document.getElementById('infoDescription');
 const infoAddress = document.getElementById('infoAddress');
 const infoWhatsapp = document.getElementById('infoWhatsapp');
 const infoInstagram = document.getElementById('infoInstagram');
+const infoPixKey = document.getElementById('infoPixKey');
+const infoPixHolder = document.getElementById('infoPixHolder');
+const infoPixCity = document.getElementById('infoPixCity');
 const infoOpen = document.getElementById('infoOpen');
 const btnSaveInfo = document.getElementById('btnSaveInfo');
 
@@ -1274,11 +1277,23 @@ function populateOptionGroupSelects() {
 // --- Info Logic ---
 btnSaveInfo.addEventListener('click', async event => {
     event.preventDefault();
+    const pixKey = infoPixKey.value.trim();
+    const pixHolder = infoPixHolder.value.trim();
+    const pixCity = infoPixCity.value.trim();
+    if (pixKey && (!pixHolder || !pixCity)) {
+        showCustomAlert('Para ativar o Pix, informe também o nome e a cidade do titular.');
+        return;
+    }
     DB.info = {
         description: infoDescription.value.trim(),
         address: infoAddress.value.trim(),
         whatsapp: infoWhatsapp.value.trim(),
         instagram: infoInstagram.value.trim(),
+        pix: {
+            key: pixKey,
+            holder: pixHolder,
+            city: pixCity || 'Garanhuns'
+        },
         open: infoOpen.checked
     };
     try {
@@ -1313,6 +1328,9 @@ function renderAll({ resetForms = false } = {}) {
         infoAddress.value = DB.info.address || '';
         infoWhatsapp.value = DB.info.whatsapp || '';
         infoInstagram.value = DB.info.instagram || '';
+        infoPixKey.value = DB.info.pix?.key || '';
+        infoPixHolder.value = DB.info.pix?.holder || '';
+        infoPixCity.value = DB.info.pix?.city || 'Garanhuns';
         infoOpen.checked = !!DB.info.open;
     }
     if (resetForms) {
