@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { crc16, generatePixPayload, normalizeMerchantText } = require('../src/pix');
+const { buildPixPaymentParams, crc16, detectPixKeyType, generatePixPayload, normalizeMerchantText } = require('../src/pix');
 
 test('normaliza nome e cidade para o padrão Pix', () => {
   assert.equal(normalizeMerchantText('João da Silva', 25), 'JOAO DA SILVA');
@@ -31,4 +31,24 @@ test('confere o CRC do exemplo oficial do Banco Central', () => {
 
 test('recusa gerar Pix sem os dados obrigatórios', () => {
   assert.throws(() => generatePixPayload({ amount: 10 }), /Chave Pix/);
+});
+
+test('detecta o tipo de chave para o cartão nativo do WhatsApp', () => {
+  assert.equal(detectPixKeyType('71557208441'), 'CPF');
+  assert.equal(detectPixKeyType('+5587981295167'), 'PHONE');
+  assert.equal(detectPixKeyType('pix@exemplo.com'), 'EMAIL');
+  assert.equal(detectPixKeyType('123e4567-e12b-12d1-a456-426655440000'), 'EVP');
+});
+
+test('monta os parâmetros payment_info do cartão Pix', () => {
+  const params = buildPixPaymentParams({
+    key: '71557208441',
+    holder: 'Lucas Euclides Cordeiro'
+  }, 'PEDIDO123');
+  const pix = params.payment_settings[0].pix_static_code;
+  assert.equal(params.currency, 'BRL');
+  assert.equal(params.reference_id, 'PEDIDO123');
+  assert.equal(pix.merchant_name, 'Lucas Euclides Cordeiro');
+  assert.equal(pix.key, '71557208441');
+  assert.equal(pix.key_type, 'CPF');
 });

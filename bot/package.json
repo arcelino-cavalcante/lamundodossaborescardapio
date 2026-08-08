@@ -8,6 +8,7 @@
   "scripts": {
     "start": "node app.js",
     "test:printer": "node scripts/printer-check.js",
+    "test:pix-card": "node scripts/pix-card-check.js",
     "test": "node --test"
   },
   "dependencies": {

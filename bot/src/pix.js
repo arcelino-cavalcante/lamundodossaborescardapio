@@ -28,6 +28,49 @@ function crc16(payload) {
   return crc.toString(16).toUpperCase().padStart(4, '0');
 }
 
+function detectPixKeyType(key) {
+  const value = String(key || '').trim();
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'EMAIL';
+  if (/^\+\d{10,15}$/.test(value)) return 'PHONE';
+  if (/^\d{11}$/.test(value)) return 'CPF';
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)) return 'EVP';
+  return 'EVP';
+}
+
+function buildPixPaymentParams({ key, holder }, referenceId = `PEDIDO${Date.now()}`) {
+  const pixKey = String(key || '').trim();
+  const merchantName = String(holder || '').trim();
+  if (!pixKey || !merchantName) throw new Error('Chave e titular do Pix são obrigatórios.');
+
+  return {
+    order: {
+      items: [{
+        name: '',
+        retailer_id: `pedido-${referenceId}`,
+        amount: { offset: 1, value: 0 },
+        quantity: 0
+      }],
+      order_type: 'ORDER_WITHOUT_AMOUNT',
+      status: 'payment_requested',
+      subtotal: { value: 0, offset: 1 }
+    },
+    total_amount: { value: 0, offset: 1 },
+    reference_id: referenceId,
+    payment_settings: [{
+      type: 'pix_static_code',
+      pix_static_code: {
+        merchant_name: merchantName,
+        key: pixKey,
+        key_type: detectPixKeyType(pixKey)
+      }
+    }],
+    external_payment_configurations: [],
+    additional_note: '',
+    currency: 'BRL',
+    type: 'physical-goods'
+  };
+}
+
 function generatePixPayload({ key, holder, city, amount, txid = '***' }) {
   const pixKey = String(key || '').trim();
   const merchantName = normalizeMerchantText(holder, 25);
@@ -92,4 +135,4 @@ async function loadPixSettings(config) {
   }
 }
 
-module.exports = { crc16, generatePixPayload, loadPixSettings, normalizeMerchantText };
+module.exports = { buildPixPaymentParams, crc16, detectPixKeyType, generatePixPayload, loadPixSettings, normalizeMerchantText };

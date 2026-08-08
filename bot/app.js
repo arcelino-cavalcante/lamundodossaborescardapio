@@ -6,6 +6,7 @@ const { createMessages } = require('./src/messages');
 const { isOrderMessage, parseOrder, validateOrder } = require('./src/order-parser');
 const { createPrinter } = require('./src/printer');
 const { generatePixPayload, loadPixSettings } = require('./src/pix');
+const { sendPixCard } = require('./src/whatsapp-pix');
 const { confirmationMessage, money } = require('./src/ticket');
 
 const KEYWORDS = [
@@ -58,9 +59,10 @@ async function pixInstructions(order, chatId) {
     `🔑 *Chave Pix:* ${pix.key}\n` +
     `*Titular:* ${pix.holder}\n` +
     `*Valor Total:* ${money(order.total)}\n\n` +
-    'Copie o código da próxima mensagem no aplicativo do seu banco. Depois, envie o comprovante por aqui.'
+    'Use a próxima mensagem para copiar os dados do Pix. Depois, envie o comprovante por aqui.'
     ),
-    payload
+    payload,
+    pix
   };
 }
 
@@ -171,6 +173,9 @@ async function main() {
           const pixMessage = await pixInstructions(order, chatId);
           if (typeof pixMessage === 'string') return safeReply(message, pixMessage);
           await safeReply(message, pixMessage.details);
+          const referenceId = `PEDIDO${phoneNumber(chatId).slice(-8)}${Date.now().toString().slice(-6)}`;
+          const cardSent = await sendPixCard(client, chatId, pixMessage.pix, referenceId);
+          if (cardSent) return;
           return safeReply(message, `\`\`\`${pixMessage.payload}\`\`\``);
         }
 
