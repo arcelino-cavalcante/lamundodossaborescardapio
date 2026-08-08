@@ -7,13 +7,14 @@ const { sendPixCard } = require('../src/whatsapp-pix');
 async function main() {
   let client;
   try {
+    const puppeteer = {
+      headless: config.headless,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    };
+    if (config.chromePath) puppeteer.executablePath = config.chromePath;
     client = new Client({
       authStrategy: new LocalAuth({ clientId: config.clientId, dataPath: config.authPath }),
-      puppeteer: {
-        headless: config.headless,
-        executablePath: config.chromePath,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      }
+      puppeteer
     });
     client.on('qr', qr => qrcode.generate(qr, { small: true }));
     const ready = new Promise((resolve, reject) => {

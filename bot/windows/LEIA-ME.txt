@@ -1,0 +1,40 @@
+ROBOZINHO LA MUNDO DOS SABORES - WINDOWS
+=========================================
+
+COMO INSTALAR
+
+1. Extraia todo o arquivo ZIP.
+2. Abra a pasta extraida.
+3. Clique duas vezes em INSTALAR.bat.
+4. Informe o IP da impressora (o padrao e 192.168.3.14).
+5. Escolha se deseja iniciar o bot junto com o Windows.
+6. Aguarde o download e a instalacao terminarem.
+
+O instalador nao precisa do Node.js instalado. Ele baixa uma copia portatil
+somente para o Robozinho. O Google Chrome ou Microsoft Edge precisa estar
+instalado; se nenhum for encontrado, o instalador tenta instalar o Chrome.
+
+COMO USAR
+
+- Clique em "Robozinho La Mundo" na Area de Trabalho.
+- O painel abre em http://127.0.0.1:3030/.
+- Na primeira execucao, escaneie o QR Code em:
+  WhatsApp > Aparelhos conectados > Conectar um aparelho.
+- Mantenha a janela do Robozinho aberta durante o funcionamento da pizzaria.
+
+ATALHOS NO MENU INICIAR
+
+- Iniciar Robozinho: inicia o WhatsApp, a impressao e o painel.
+- Abrir painel: abre o painel quando o bot ja esta ligado.
+- Configurar Robozinho: permite alterar IP da impressora e outras opcoes.
+- Diagnostico: verifica internet, cardapio, painel e impressora sem imprimir.
+
+REINSTALACAO E ATUALIZACAO
+
+Pode executar o INSTALAR.bat novamente. O instalador atualiza o programa e
+preserva a configuracao, a sessao do WhatsApp e o historico de pedidos.
+
+SEGURANCA
+
+O ZIP nao inclui token do GitHub, senha, sessao do WhatsApp nem pedidos.
+Esses dados ficam somente no computador onde o Robozinho for instalado.

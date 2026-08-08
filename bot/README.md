@@ -38,6 +38,14 @@ O bot não pergunta novamente a forma de pagamento:
 
 ## Instalação
 
+### Windows — pacote automático
+
+O arquivo `releases/robozinho-la-mundo-windows.zip` contém um instalador para Windows. Depois de extrair o ZIP, execute `INSTALAR.bat`. Ele baixa um Node.js portátil, instala as dependências, encontra Chrome ou Edge, cria a configuração inicial e adiciona os atalhos do Robozinho na Área de Trabalho e no Menu Iniciar.
+
+O instalador pode ser executado novamente para atualizar o bot sem apagar a sessão do WhatsApp, as configurações ou o banco de pedidos. O pacote nunca inclui `.env`, sessão autenticada, cache, banco de dados ou token do GitHub.
+
+### Instalação manual
+
 Dentro da pasta `bot`:
 
 ```bash

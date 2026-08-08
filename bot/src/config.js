@@ -1,5 +1,6 @@
 const path = require('node:path');
 const os = require('node:os');
+const fs = require('node:fs');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
 function booleanValue(value, fallback) {
@@ -8,13 +9,21 @@ function booleanValue(value, fallback) {
 }
 
 function defaultChromePath() {
-  if (os.platform() === 'darwin') {
-    return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-  }
+  const candidates = [];
+
+  if (os.platform() === 'darwin') candidates.push('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome');
   if (os.platform() === 'win32') {
-    return 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+    candidates.push(
+      path.join(process.env.PROGRAMFILES || 'C:\\Program Files', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+      path.join(process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+      path.join(process.env.LOCALAPPDATA || '', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+      path.join(process.env.PROGRAMFILES || 'C:\\Program Files', 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+      path.join(process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)', 'Microsoft', 'Edge', 'Application', 'msedge.exe')
+    );
   }
-  return '/usr/bin/google-chrome-stable';
+  if (os.platform() === 'linux') candidates.push('/usr/bin/google-chrome-stable', '/usr/bin/google-chrome', '/usr/bin/chromium');
+
+  return candidates.find(candidate => candidate && fs.existsSync(candidate)) || '';
 }
 
 const botRoot = path.resolve(__dirname, '..');

@@ -85,13 +85,14 @@ function reportMessage(report, day) {
 
 async function main() {
   const database = await createDatabase(config.dbPath);
+  const puppeteer = {
+    headless: config.headless,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  };
+  if (config.chromePath) puppeteer.executablePath = config.chromePath;
   const client = new Client({
     authStrategy: new LocalAuth({ clientId: config.clientId, dataPath: config.authPath }),
-    puppeteer: {
-      headless: config.headless,
-      executablePath: config.chromePath,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    }
+    puppeteer
   });
 
   async function safeSend(chatId, content, options = {}) {
