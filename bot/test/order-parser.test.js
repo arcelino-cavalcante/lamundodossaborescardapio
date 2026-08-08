@@ -48,6 +48,11 @@ Total: R$ 13,99
 
 *Forma de Pagamento:* Pix`;
 
+const SITIO_ORDER_WITHOUT_STREET = PIX_ORDER.replace(
+  '*Endereço:* Retirada no Local',
+  '*Sítio:* Entupido\n*Local/Ponto de Referência:* Próximo à igreja'
+);
+
 test('reconhece a mensagem gerada pelo cardápio novo', () => {
   assert.equal(isOrderMessage(CASH_ORDER), true);
   assert.equal(isOrderMessage('Olá, quero uma pizza'), false);
@@ -94,6 +99,15 @@ test('lê Pix e retirada sem exigir endereço de entrega', () => {
   assert.equal(order.payment, 'Pix');
   assert.equal(order.deliveryType, 'Retirada');
   assert.equal(order.total, 13.99);
+});
+
+test('aceita entrega em sítio sem exigir endereço de rua', () => {
+  const order = parseOrder(SITIO_ORDER_WITHOUT_STREET);
+  assert.deepEqual(validateOrder(order), []);
+  assert.equal(order.deliveryType, 'Sítio');
+  assert.equal(order.address.street, '');
+  assert.equal(order.address.sitio, 'Entupido');
+  assert.equal(order.address.reference, 'Próximo à igreja');
 });
 
 test('identifica entrega em Jucati na mensagem do cardápio', () => {

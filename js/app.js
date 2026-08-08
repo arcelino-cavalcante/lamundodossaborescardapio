@@ -1501,17 +1501,20 @@ async function finishOrder() {
     // Validate Fields
     const whatsapp = inputWhatsapp.value.trim();
     if (!whatsapp) { showCustomAlert('Informe seu WhatsApp.'); return; }
-    if (deliveryType.value !== 'local' && !inputAddress.value.trim()) {
+    const selectedDeliveryType = deliveryType.value;
+    const requiresStreetAddress = selectedDeliveryType === 'vilaneves' || selectedDeliveryType === 'jucati';
+    if (requiresStreetAddress && !inputAddress.value.trim()) {
         showCustomAlert('Informe o endereço de entrega.');
         return;
     }
-    if (document.getElementById('deliveryType').value === 'sitio') {
+    if (selectedDeliveryType === 'sitio') {
+        if (!selectSitioFee.value) { showCustomAlert('Selecione o sítio da entrega.'); return; }
         if (!inputRef.value.trim()) { showCustomAlert('Informe um ponto de referência.'); return; }
     }
 
     // Get Sitio Name if applicable
     let sitioName = '';
-    if (document.getElementById('deliveryType').value === 'sitio') {
+    if (selectedDeliveryType === 'sitio') {
         const option = selectSitioFee.options[selectSitioFee.selectedIndex];
         if (option) sitioName = option.text.split('—')[0].trim();
     }
@@ -1534,9 +1537,9 @@ async function finishOrder() {
             customer: {
                 name: name,
                 whatsapp: whatsapp,
-                deliveryType: document.getElementById('deliveryType').value,
-                address: inputAddress.value,
-                reference: inputRef.value,
+                deliveryType: selectedDeliveryType,
+                address: requiresStreetAddress ? inputAddress.value.trim() : '',
+                reference: selectedDeliveryType === 'sitio' ? inputRef.value.trim() : '',
                 sitioName: sitioName,
                 observation: inputNote.value.trim()
             },
@@ -1590,13 +1593,13 @@ function formatOrderForWhatsApp(order) {
     if (order.customer.deliveryType === 'local') {
         msg += `*Endereço:* Retirada no Local\n`;
         if (refStr) msg += `*Local/Ponto de Referência:* ${refStr}\n`;
+    } else if (order.customer.deliveryType === 'sitio') {
+        msg += `*Sítio:* ${order.customer.sitioName || ''}\n`;
+        if (refStr) msg += `*Local/Ponto de Referência:* ${refStr}\n`;
     } else {
         msg += `*Endereço:* ${order.customer.address || ''}\n`;
         if (order.customer.deliveryType === 'vilaneves') msg += `*Localidade:* Neves\n`;
         if (order.customer.deliveryType === 'jucati') msg += `*Localidade:* Jucati\n`;
-        if (order.customer.deliveryType === 'sitio') {
-            msg += `*Sítio:* ${order.customer.sitioName || ''}\n`;
-        }
         if (refStr) msg += `*Local/Ponto de Referência:* ${refStr}\n`;
     }
     if (order.customer.observation) {

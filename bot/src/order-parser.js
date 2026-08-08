@@ -209,7 +209,11 @@ function validateOrder(order) {
   if (!order.items.length) errors.push('itens do pedido');
   if (!(order.total > 0)) errors.push('valor total');
   if (!order.payment) errors.push('forma de pagamento');
-  if (order.deliveryType !== 'Retirada' && !order.address.street) errors.push('endereço');
+  if (order.deliveryType === 'Sítio') {
+    if (!order.address.sitio) errors.push('sítio');
+  } else if (order.deliveryType !== 'Retirada' && !order.address.street) {
+    errors.push('endereço');
+  }
   return errors;
 }
 
