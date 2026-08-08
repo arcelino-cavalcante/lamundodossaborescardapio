@@ -40,6 +40,8 @@ function all(db, sql, params = []) {
 
 async function createDatabase(dbPath) {
   const db = new sqlite3.Database(dbPath);
+  await run(db, 'PRAGMA busy_timeout = 5000');
+  await run(db, 'PRAGMA journal_mode = WAL');
   await run(db, `
     CREATE TABLE IF NOT EXISTS pedidos (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,6 +61,22 @@ async function createDatabase(dbPath) {
       dataHora TEXT
     )
   `);
+  await run(db, `
+    CREATE TABLE IF NOT EXISTS configuracoes (
+      chave TEXT PRIMARY KEY,
+      valor TEXT NOT NULL,
+      atualizado_em TEXT NOT NULL
+    )
+  `);
+  await run(db, `
+    CREATE TABLE IF NOT EXISTS logs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nivel TEXT NOT NULL,
+      origem TEXT NOT NULL,
+      mensagem TEXT NOT NULL,
+      dataHora TEXT NOT NULL
+    )
+  `);
 
   const columns = await all(db, 'PRAGMA table_info(pedidos)');
   const existing = new Set(columns.map(column => column.name));
@@ -66,6 +84,8 @@ async function createDatabase(dbPath) {
     if (!existing.has(name)) await run(db, `ALTER TABLE pedidos ADD COLUMN ${name} ${definition}`);
   }
   await run(db, 'CREATE UNIQUE INDEX IF NOT EXISTS idx_pedidos_message_id ON pedidos(message_id)');
+  await run(db, 'CREATE INDEX IF NOT EXISTS idx_pedidos_dataHora ON pedidos(dataHora)');
+  await run(db, 'CREATE INDEX IF NOT EXISTS idx_logs_dataHora ON logs(dataHora)');
 
   return {
     async saveOrder(phone, order, messageId) {
@@ -118,6 +138,129 @@ async function createDatabase(dbPath) {
         GROUP BY sitio ORDER BY quantidade DESC LIMIT 3
       `);
       return { total: Number(total.total || 0), customers, sitios };
+    },
+
+    async dashboardStats() {
+      const today = await get(db, `
+        SELECT COUNT(*) AS pedidos, IFNULL(SUM(total), 0) AS total
+        FROM pedidos
+        WHERE date(dataHora) = date('now', 'localtime')
+      `);
+      const month = await get(db, `
+        SELECT COUNT(*) AS pedidos, IFNULL(SUM(total), 0) AS total
+        FROM pedidos
+        WHERE strftime('%Y-%m', dataHora) = strftime('%Y-%m', 'now', 'localtime')
+      `);
+      const topSite = await get(db, `
+        SELECT json_extract(endereco, '$.sitio') AS sitio,
+               COUNT(*) AS pedidos,
+               IFNULL(SUM(total), 0) AS total
+        FROM pedidos
+        WHERE date(dataHora) = date('now', 'localtime')
+          AND TRIM(IFNULL(json_extract(endereco, '$.sitio'), '')) <> ''
+        GROUP BY sitio
+        ORDER BY total DESC, pedidos DESC
+        LIMIT 1
+      `);
+      const topCustomerWeek = await get(db, `
+        SELECT nome, COUNT(*) AS pedidos, IFNULL(SUM(total), 0) AS total
+        FROM pedidos
+        WHERE date(dataHora) >= date('now', '-6 days', 'localtime')
+          AND TRIM(IFNULL(nome, '')) <> ''
+        GROUP BY nome
+        ORDER BY total DESC, pedidos DESC
+        LIMIT 1
+      `);
+      const topCustomerMonth = await get(db, `
+        SELECT nome, COUNT(*) AS pedidos, IFNULL(SUM(total), 0) AS total
+        FROM pedidos
+        WHERE strftime('%Y-%m', dataHora) = strftime('%Y-%m', 'now', 'localtime')
+          AND TRIM(IFNULL(nome, '')) <> ''
+        GROUP BY nome
+        ORDER BY total DESC, pedidos DESC
+        LIMIT 1
+      `);
+      const orders = await all(db, `
+        SELECT id, nome, whatsapp_cliente, total, pagamento, endereco, dataHora
+        FROM pedidos
+        WHERE date(dataHora) = date('now', 'localtime')
+        ORDER BY datetime(dataHora) DESC, id DESC
+        LIMIT 100
+      `);
+
+      return {
+        today: { orders: Number(today.pedidos || 0), total: Number(today.total || 0) },
+        month: { orders: Number(month.pedidos || 0), total: Number(month.total || 0) },
+        topSite: topSite ? {
+          name: topSite.sitio,
+          orders: Number(topSite.pedidos || 0),
+          total: Number(topSite.total || 0)
+        } : null,
+        topCustomerWeek: topCustomerWeek ? {
+          name: topCustomerWeek.nome,
+          orders: Number(topCustomerWeek.pedidos || 0),
+          total: Number(topCustomerWeek.total || 0)
+        } : null,
+        topCustomerMonth: topCustomerMonth ? {
+          name: topCustomerMonth.nome,
+          orders: Number(topCustomerMonth.pedidos || 0),
+          total: Number(topCustomerMonth.total || 0)
+        } : null,
+        orders: orders.map(order => {
+          let address = {};
+          try { address = JSON.parse(order.endereco || '{}'); } catch {}
+          return {
+            id: order.id,
+            name: order.nome || 'Sem nome',
+            whatsapp: order.whatsapp_cliente || '',
+            total: Number(order.total || 0),
+            payment: order.pagamento || 'Não informado',
+            site: address.sitio || '',
+            delivery: address.street || '',
+            dateTime: order.dataHora
+          };
+        })
+      };
+    },
+
+    async getSetting(key, fallback = '') {
+      const row = await get(db, 'SELECT valor FROM configuracoes WHERE chave = ?', [key]);
+      return row ? row.valor : fallback;
+    },
+
+    async setSetting(key, value) {
+      await run(db, `
+        INSERT INTO configuracoes (chave, valor, atualizado_em)
+        VALUES (?, ?, datetime('now', 'localtime'))
+        ON CONFLICT(chave) DO UPDATE SET
+          valor = excluded.valor,
+          atualizado_em = excluded.atualizado_em
+      `, [key, String(value)]);
+    },
+
+    async addLog(level, source, message) {
+      await run(db, `
+        INSERT INTO logs (nivel, origem, mensagem, dataHora)
+        VALUES (?, ?, ?, datetime('now', 'localtime'))
+      `, [String(level || 'error'), String(source || 'bot'), String(message || '').slice(0, 10000)]);
+      await run(db, `
+        DELETE FROM logs
+        WHERE id NOT IN (SELECT id FROM logs ORDER BY id DESC LIMIT 500)
+      `);
+    },
+
+    async listLogs(limit = 100) {
+      const safeLimit = Math.max(1, Math.min(200, Number(limit) || 100));
+      return all(db, `
+        SELECT id, nivel AS level, origem AS source, mensagem AS message, dataHora AS dateTime
+        FROM logs
+        ORDER BY id DESC
+        LIMIT ?
+      `, [safeLimit]);
+    },
+
+    async clearLogs() {
+      await run(db, 'DELETE FROM logs');
     },
 
     close() {

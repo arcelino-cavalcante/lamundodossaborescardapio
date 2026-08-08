@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>LEONUS — Painel do Bot</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">LA MUNDO DOS SABORES</p>
+      <h1>LEONUS <span>Painel do Bot</span></h1>
+    </div>
+    <div class="status-wrap">
+      <span id="botStatus" class="status status-waiting">Carregando…</span>
+      <span id="lastUpdate" class="last-update"></span>
+    </div>
+  </header>
+
+  <main>
+    <section class="cards" aria-label="Resumo de vendas">
+      <article class="card accent">
+        <span>Vendido hoje</span>
+        <strong id="todayTotal">R$ 0,00</strong>
+        <small id="todayOrders">0 pedidos</small>
+      </article>
+      <article class="card">
+        <span>Vendido no mês</span>
+        <strong id="monthTotal">R$ 0,00</strong>
+        <small id="monthOrders">0 pedidos</small>
+      </article>
+      <article class="card">
+        <span>Sítio que mais comprou hoje</span>
+        <strong id="topSite">—</strong>
+        <small id="topSiteDetails">Nenhum pedido de sítio</small>
+      </article>
+      <article class="card">
+        <span>Cliente da semana</span>
+        <strong id="weekCustomer">—</strong>
+        <small id="weekCustomerDetails">Sem pedidos</small>
+      </article>
+      <article class="card">
+        <span>Cliente do mês</span>
+        <strong id="monthCustomer">—</strong>
+        <small id="monthCustomerDetails">Sem pedidos</small>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="panel orders-panel">
+        <div class="panel-title">
+          <div>
+            <p class="eyebrow">MOVIMENTO DA NOITE</p>
+            <h2>Pedidos de hoje</h2>
+          </div>
+          <button id="refreshButton" class="button secondary" type="button">Atualizar</button>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Hora</th><th>Cliente</th><th>Destino</th><th>Pagamento</th><th>Total</th></tr>
+            </thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+          <p id="emptyOrders" class="empty">Nenhum pedido confirmado hoje.</p>
+        </div>
+      </article>
+
+      <aside class="side-column">
+        <article class="panel">
+          <p class="eyebrow">IMPRESSÃO</p>
+          <h2>Frase no final da comanda</h2>
+          <p class="helper">Esta frase será usada nas próximas impressões. Deixe vazio para não imprimir frase.</p>
+          <label for="ticketFooter" class="sr-only">Frase da comanda</label>
+          <textarea id="ticketFooter" maxlength="180" rows="4" placeholder="Ex.: Obrigado pela preferência!"></textarea>
+          <div class="form-footer">
+            <span id="footerCount">0/180</span>
+            <button id="saveFooter" class="button primary" type="button">Salvar frase</button>
+          </div>
+          <p id="footerMessage" class="message" role="status"></p>
+        </article>
+
+        <article class="panel">
+          <p class="eyebrow">MANUTENÇÃO</p>
+          <h2>WhatsApp e bot</h2>
+          <p class="helper">O bot reinicia sozinho se fechar por erro. Use os botões abaixo somente se o atendimento parar.</p>
+          <div class="actions">
+            <button id="restartBot" class="button secondary" type="button">Reiniciar bot</button>
+            <button id="clearSession" class="button danger" type="button">Apagar sessão do WhatsApp</button>
+          </div>
+          <p class="warning">Ao apagar a sessão, será necessário ler novamente o QR Code mostrado no terminal.</p>
+          <p id="actionMessage" class="message" role="status"></p>
+        </article>
+      </aside>
+    </section>
+
+    <section class="panel logs-panel">
+      <div class="panel-title">
+        <div>
+          <p class="eyebrow">DIAGNÓSTICO</p>
+          <h2>Erros recentes</h2>
+        </div>
+        <button id="clearLogs" class="button ghost" type="button">Limpar lista</button>
+      </div>
+      <div id="logs" class="logs"></div>
+      <p id="emptyLogs" class="empty">Nenhum erro registrado. Tudo certo por aqui.</p>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/dashboard.js" defer></script>
+</body>
+</html>

@@ -43,5 +43,8 @@ module.exports = {
   dbPath: path.resolve(botRoot, process.env.DB_PATH || './leonus.db'),
   timezone: process.env.TIMEZONE || 'America/Recife',
   storeName: process.env.STORE_NAME || 'LA MUNDO DOS SABORES',
-  ticketFooter: process.env.TICKET_FOOTER || 'É hoje que eu como mais uma fatia!'
+  ticketFooter: process.env.TICKET_FOOTER || 'É hoje que eu como mais uma fatia!',
+  dashboardHost: process.env.DASHBOARD_HOST || '127.0.0.1',
+  dashboardPort: Number(process.env.DASHBOARD_PORT || 3030),
+  dashboardAutoOpen: booleanValue(process.env.DASHBOARD_AUTO_OPEN, true)
 };

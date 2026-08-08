@@ -1,6 +1,6 @@
 # LEONUS — Bot do cardápio La Mundo
 
-O bot recebe no WhatsApp a mensagem gerada pelo cardápio novo, continua o atendimento, registra o pedido em SQLite e imprime em uma impressora térmica ESC/POS conectada à rede local. A impressão é enviada diretamente por TCP, sem a biblioteca legada `escpos`.
+O bot recebe no WhatsApp a mensagem gerada pelo cardápio novo, continua o atendimento, registra o pedido em SQLite e imprime em uma impressora térmica ESC/POS conectada à rede local. Junto com ele funciona um painel operacional local para acompanhar as vendas, configurar a comanda e cuidar da sessão do WhatsApp.
 
 ## Compatibilidade com o cardápio
 
@@ -64,9 +64,48 @@ Nunca envie o arquivo `.env` para o GitHub. Ele já está coberto pelo `.gitigno
 npm start
 ```
 
+O comando inicia um supervisor que:
+
+- abre o painel em `http://127.0.0.1:3030`;
+- inicia o atendimento do WhatsApp;
+- reinicia o processo do bot automaticamente se ele fechar por erro;
+- mantém o painel disponível durante uma reinicialização do WhatsApp.
+
+Para iniciar somente o processo de atendimento, sem painel e sem supervisor:
+
+```bash
+npm run start:worker
+```
+
 Na primeira execução, o terminal exibirá um QR Code. No celular da pizzaria, abra **WhatsApp → Aparelhos conectados → Conectar um aparelho** e escaneie o código.
 
 A sessão fica salva em `bot/.wwebjs_auth/`, portanto normalmente não será necessário escanear novamente.
+
+## Painel operacional
+
+O painel fica disponível somente no computador do bot e mostra:
+
+- quantidade e valor dos pedidos confirmados hoje;
+- quantidade e valor vendido no mês;
+- sítio que mais comprou na noite, por valor total;
+- cliente que mais comprou nos últimos sete dias e no mês;
+- relação dos pedidos confirmados no dia;
+- erros recentes registrados pelo supervisor.
+
+A frase salva em **Frase no final da comanda** entra nas próximas impressões. Ela fica armazenada no SQLite e pode ser alterada sem reiniciar o bot.
+
+Em **WhatsApp e bot** há duas ações:
+
+- **Reiniciar bot:** reinicia somente o atendimento e preserva a autenticação.
+- **Apagar sessão do WhatsApp:** remove somente a sessão autenticada depois de duas confirmações. Um novo QR Code aparecerá no terminal.
+
+O endereço, a abertura automática e a porta do painel podem ser configurados no `.env`:
+
+```env
+DASHBOARD_HOST=127.0.0.1
+DASHBOARD_PORT=3030
+DASHBOARD_AUTO_OPEN=true
+```
 
 ## Testes
 
@@ -87,7 +126,7 @@ Somente números listados em `ADMIN_NUMBERS` podem executar:
 
 ## Banco de dados
 
-Os pedidos ficam em `bot/leonus.db`. A tabela antiga é atualizada automaticamente com as novas colunas quando possível. O `message_id` evita que a mesma mensagem seja confirmada e impressa duas vezes.
+Os pedidos, configurações do painel e últimos 500 erros ficam em `bot/leonus.db`. A tabela antiga é atualizada automaticamente com as novas colunas quando possível. O `message_id` evita que a mesma mensagem seja confirmada e impressa duas vezes.
 
 ## Comportamento quando a impressora falha
 
@@ -98,11 +137,17 @@ O pedido continua salvo no SQLite. O bot não afirma que foi impresso: responde 
 ```text
 bot/
 ├── app.js
+├── manager.js
 ├── .env.example
 ├── package.json
+├── dashboard/
+│   ├── index.html
+│   ├── dashboard.js
+│   └── styles.css
 ├── README.md
 ├── src/
 │   ├── config.js
+│   ├── dashboard-server.js
 │   ├── database.js
 │   ├── messages.js
 │   ├── order-parser.js

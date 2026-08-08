@@ -21,6 +21,10 @@ const sessions = new Map();
 const messages = createMessages(config);
 const printer = createPrinter(config);
 
+function notifyManager(type, details = {}) {
+  if (typeof process.send === 'function') process.send({ type, ...details });
+}
+
 function createSession() {
   return { state: 'initial', order: null, sourceMessageId: '' };
 }
@@ -104,15 +108,24 @@ async function main() {
   client.on('qr', qr => {
     console.log('Escaneie o QR Code abaixo com o WhatsApp da pizzaria:');
     qrcode.generate(qr, { small: true });
+    notifyManager('qr');
   });
   client.on('ready', async () => {
     console.log('LEONUS pronto para atender.');
     console.log(`Impressão: ${printer.isEnabled() ? 'ativada' : 'desativada'}`);
     const pix = await loadPixSettings(config);
     console.log(`Pix: ${pix.key ? 'configurado' : 'aguardando configuração no painel admin'}`);
+    notifyManager('ready', { printerEnabled: printer.isEnabled(), pixConfigured: Boolean(pix.key) });
   });
-  client.on('auth_failure', message => console.error('[WHATSAPP] Falha de autenticação:', message));
-  client.on('disconnected', reason => console.error('[WHATSAPP] Desconectado:', reason));
+  client.on('auth_failure', message => {
+    console.error('[WHATSAPP] Falha de autenticação:', message);
+    notifyManager('auth_failure', { reason: String(message || '') });
+  });
+  client.on('disconnected', reason => {
+    console.error('[WHATSAPP] Desconectado:', reason);
+    notifyManager('disconnected', { reason: String(reason || '') });
+    setTimeout(() => process.exit(1), 1000).unref();
+  });
 
   client.on('message', async message => {
     try {
@@ -221,7 +234,8 @@ async function main() {
 
         let printResult;
         try {
-          printResult = await printer.print(session.order);
+          const ticketFooter = await database.getSetting('ticket_footer', config.ticketFooter);
+          printResult = await printer.print(session.order, { ticketFooter });
         } catch (error) {
           console.error('[IMPRESSORA]', error.message || error);
           printResult = { printed: false, reason: 'error' };

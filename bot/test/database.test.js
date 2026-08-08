@@ -23,15 +23,28 @@ test('salva o pedido completo e impede impressão duplicada pelo message_id', as
     payment: 'Cartão',
     paidAmount: 0,
     change: 0,
-    address: { street: 'Rua Teste', sitio: '', reference: '', observation: '' }
+    address: { street: 'Rua Teste', sitio: 'Sítio Teste', reference: '', observation: '' }
   };
 
   const first = await database.saveOrder('5587999990000', order, 'message-123');
   const duplicate = await database.saveOrder('5587999990000', order, 'message-123');
   const report = await database.salesReport('today');
+  await database.setSetting('ticket_footer', 'Obrigado pela preferência!');
+  await database.addLog('error', 'teste', 'Falha simulada');
+  const dashboard = await database.dashboardStats();
+  const logs = await database.listLogs();
 
   assert.equal(first.duplicate, false);
   assert.equal(duplicate.duplicate, true);
   assert.equal(report.total, 45);
   assert.equal(report.customers[0].nome, 'Cliente Teste');
+  assert.equal(await database.getSetting('ticket_footer'), 'Obrigado pela preferência!');
+  assert.equal(dashboard.today.orders, 1);
+  assert.equal(dashboard.today.total, 45);
+  assert.equal(dashboard.topSite.name, 'Sítio Teste');
+  assert.equal(dashboard.topCustomerWeek.name, 'Cliente Teste');
+  assert.equal(dashboard.orders[0].site, 'Sítio Teste');
+  assert.equal(logs[0].message, 'Falha simulada');
+  await database.clearLogs();
+  assert.deepEqual(await database.listLogs(), []);
 });

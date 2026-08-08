@@ -93,14 +93,16 @@ function ticketBuffer(order, config, date) {
   }
   line('='.repeat(width));
 
-  chunks.push(
-    command(ESC, 0x61, 0x01),
-    command(ESC, 0x45, 0x01),
-    encodedLine(config.ticketFooter),
-    command(ESC, 0x45, 0x00),
-    command(ESC, 0x64, 0x03),
-    command(GS, 0x56, 0x00)
-  );
+  const footer = String(config.ticketFooter || '').trim();
+  chunks.push(command(ESC, 0x61, 0x01));
+  if (footer) {
+    chunks.push(
+      command(ESC, 0x45, 0x01),
+      encodedLine(footer),
+      command(ESC, 0x45, 0x00)
+    );
+  }
+  chunks.push(command(ESC, 0x64, 0x03), command(GS, 0x56, 0x00));
   return Buffer.concat(chunks);
 }
 
@@ -116,11 +118,15 @@ function createPrinter(config) {
       return enabled;
     },
 
-    async print(order) {
+    async print(order, options = {}) {
       if (!enabled) return { printed: false, reason: 'disabled' };
 
       const date = formatDatePtBr(new Date(), config.timezone);
-      const payload = ticketBuffer(order, config, date);
+      const printConfig = {
+        ...config,
+        ticketFooter: Object.hasOwn(options, 'ticketFooter') ? options.ticketFooter : config.ticketFooter
+      };
+      const payload = ticketBuffer(order, printConfig, date);
 
       return new Promise((resolve, reject) => {
         const socket = net.createConnection({ host: config.printerIp, port: config.printerPort });

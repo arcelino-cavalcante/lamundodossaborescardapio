@@ -125,4 +125,5 @@ test('gera confirmação e impressão com os campos novos', () => {
   assert.equal(buffer.includes(Buffer.from([0x1b, 0x45, 0x01])), true);
   assert.equal(buffer.includes(Buffer.from([0x1d, 0x21, 0x10])), true);
   assert.equal(buffer.includes(Buffer.from([0x1d, 0x56, 0x00])), true);
+  assert.equal(buffer.includes(Buffer.from('Obrigado!')), true);
 });
