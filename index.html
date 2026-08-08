@@ -113,9 +113,9 @@
                 <i class="fa-solid fa-list text-xl"></i>
                 <span class="text-xs">Menu</span>
             </button>
-            <button id="btnHistory" class="flex flex-col items-center gap-1 text-neutral-300">
-                <i class="fa-solid fa-clock-rotate-left text-xl"></i>
-                <span class="text-xs">Pedidos</span>
+            <button id="btnStory" class="flex flex-col items-center gap-1 text-neutral-300">
+                <i class="fa-solid fa-book-open text-xl"></i>
+                <span class="text-xs">Nossa História</span>
             </button>
             <button id="btnOrder" class="relative flex flex-col items-center gap-1 text-neutral-300">
                 <span class="relative flex items-center justify-center">
@@ -410,22 +410,38 @@
 
 
 
-    <!-- Modal: Histórico -->
-    <div id="historyModal"
-        class="hidden fixed inset-0 bg-black/70 z-50 items-end md:items-center justify-center p-0 md:p-6">
-        <div
-            class="w-full md:max-w-xl bg-neutral-900 rounded-t-2xl md:rounded-2xl border border-neutral-800 flex flex-col max-h-[90vh]">
-            <div class="px-4 py-3 border-b border-neutral-800 flex items-center justify-between">
-                <h3 class="font-semibold">Meus Pedidos (Hoje)</h3>
-                <button class="text-neutral-400 hover:text-white" onclick="closeHistoryModal()"><i
-                        class="fa-solid fa-xmark"></i></button>
+    <!-- Tela: Nossa História -->
+    <div id="storyModal" class="hidden fixed inset-0 bg-black z-50 overflow-y-auto">
+        <div class="min-h-full bg-black">
+            <div class="sticky top-0 z-10 px-4 py-3 bg-black/80 backdrop-blur border-b border-neutral-800 flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] tracking-[0.25em] text-brand-500 font-semibold uppercase">La Mundo dos Sabores</p>
+                    <h3 class="font-semibold text-lg">Nossa História</h3>
+                </div>
+                <button class="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-700 text-neutral-300 hover:text-white"
+                    onclick="closeStory()" aria-label="Fechar Nossa História">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <div id="historyList" class="p-4 overflow-y-auto space-y-3 flex-1">
-                <!-- Pedidos serão inseridos aqui via JS -->
-            </div>
-            <div class="p-4 bg-neutral-900 border-t border-neutral-800 text-xs text-center text-neutral-500">
-                O histórico é limpo automaticamente à meia-noite.
-            </div>
+            <article class="max-w-3xl mx-auto px-4 pb-28">
+                <div class="relative mt-6 overflow-hidden rounded-3xl border border-neutral-800 bg-gradient-to-br from-brand-900/50 via-neutral-900 to-black shadow-glow">
+                    <img id="storyImage" class="hidden w-full h-64 md:h-96 object-cover" alt="Nossa história — La Mundo dos Sabores">
+                    <div id="storyImagePlaceholder" class="h-56 md:h-72 flex flex-col items-center justify-center text-center p-8">
+                        <i class="fa-solid fa-pizza-slice text-5xl text-brand-500 mb-4"></i>
+                        <p class="text-xl font-semibold">Uma história feita de sabor</p>
+                        <p class="text-sm text-neutral-400 mt-2">A imagem da nossa história poderá ser adicionada pelo painel administrativo.</p>
+                    </div>
+                    <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
+                </div>
+                <div class="py-8 md:py-12">
+                    <p class="text-xs tracking-[0.28em] text-brand-500 font-semibold uppercase mb-4">De coração para sua mesa</p>
+                    <div class="text-xl md:text-2xl leading-relaxed text-neutral-200 whitespace-pre-line min-h-48">
+                        <span id="storyText"></span><span id="storyCursor" class="inline-block w-0.5 h-6 ml-1 bg-brand-500 align-middle animate-pulse"></span>
+                    </div>
+                </div>
+                <button class="w-full rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-3"
+                    onclick="closeStory()">Voltar ao cardápio</button>
+            </article>
         </div>
     </div>
 

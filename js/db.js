@@ -92,6 +92,10 @@ export function defaultDB() {
             address: 'Rua José Bezerra Lins, Garanhuns - PE',
             whatsapp: '(87) 98129-0926',
             instagram: '@lamundodossaboresguns',
+            history: {
+                bio: 'Na La Mundo dos Sabores, cada pedido é preparado com carinho, ingredientes selecionados e aquele sabor que reúne pessoas ao redor da mesa.\n\nNossa história é feita de trabalho, dedicação e do apoio de cada cliente que escolhe compartilhar seus melhores momentos com a gente. Mais do que servir pizzas e lanches, queremos criar lembranças saborosas em cada entrega.\n\nEsta é apenas uma apresentação inicial. Em breve, contaremos aqui todos os detalhes da nossa caminhada, das primeiras receitas aos sonhos que continuam crescendo todos os dias.',
+                imageUrl: ''
+            },
             pix: {
                 key: '',
                 holder: '',
@@ -125,6 +129,13 @@ export function normalizeDB(raw = {}) {
             address: raw.info.address || '',
             whatsapp: raw.info.whatsapp || '',
             instagram: raw.info.instagram || '',
+            history: raw.info.history && typeof raw.info.history === 'object' ? {
+                bio: raw.info.history.bio || '',
+                imageUrl: raw.info.history.imageUrl || ''
+            } : {
+                bio: '',
+                imageUrl: ''
+            },
             pix: raw.info.pix && typeof raw.info.pix === 'object' ? {
                 key: raw.info.pix.key || '',
                 holder: raw.info.pix.holder || '',
@@ -140,6 +151,10 @@ export function normalizeDB(raw = {}) {
             address: 'Rua José Bezerra Lins, Garanhuns - PE',
             whatsapp: '(87) 98129-0926',
             instagram: '@lamundodossaboresguns',
+            history: {
+                bio: 'Na La Mundo dos Sabores, cada pedido é preparado com carinho, ingredientes selecionados e aquele sabor que reúne pessoas ao redor da mesa.',
+                imageUrl: ''
+            },
             pix: {
                 key: '',
                 holder: '',

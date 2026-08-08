@@ -51,10 +51,14 @@ const subtotalEl = document.getElementById('subtotal');
 const feeEl = document.getElementById('fee');
 const totalEl = document.getElementById('total');
 
-// History Elements
-const btnHistory = document.getElementById('btnHistory');
-const historyModal = document.getElementById('historyModal');
-const historyList = document.getElementById('historyList');
+// Nossa História
+const btnStory = document.getElementById('btnStory');
+const storyModal = document.getElementById('storyModal');
+const storyImage = document.getElementById('storyImage');
+const storyImagePlaceholder = document.getElementById('storyImagePlaceholder');
+const storyText = document.getElementById('storyText');
+const storyCursor = document.getElementById('storyCursor');
+let storyTypingTimer = null;
 let CUSTOMER_HISTORY = [];
 let HISTORY_DATE = '';
 const headerInfo = document.getElementById('headerInfo');
@@ -180,51 +184,63 @@ function addOrderToHistory(order) {
     localStorage.setItem('customer_history', JSON.stringify(CUSTOMER_HISTORY));
 }
 
-function openHistoryModal() {
-    openModal(historyModal);
-    renderHistory();
+function renderStoryImage(imageUrl) {
+    const value = String(imageUrl || '').trim();
+    if (!value) {
+        storyImage.classList.add('hidden');
+        storyImage.removeAttribute('src');
+        storyImagePlaceholder.classList.remove('hidden');
+        return;
+    }
+    storyImagePlaceholder.classList.add('hidden');
+    storyImage.classList.remove('hidden');
+    storyImage.onerror = () => {
+        storyImage.classList.add('hidden');
+        storyImagePlaceholder.classList.remove('hidden');
+    };
+    storyImage.src = resolveImageUrl(value);
 }
 
-function closeHistoryModal() {
-    closeModal(historyModal);
-}
-window.closeHistoryModal = closeHistoryModal;
+function typeStory(text) {
+    clearInterval(storyTypingTimer);
+    const content = String(text || 'Nossa história está sendo escrita com muito sabor. Em breve, contaremos tudo por aqui.');
+    storyText.textContent = '';
+    storyCursor.classList.remove('hidden');
 
-function renderHistory() {
-    historyList.innerHTML = '';
-    if (!CUSTOMER_HISTORY.length) {
-        historyList.innerHTML = '<p class="text-neutral-500 text-center py-10">Você ainda não fez pedidos hoje.</p>';
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        storyText.textContent = content;
+        storyCursor.classList.add('hidden');
         return;
     }
 
-    CUSTOMER_HISTORY.forEach(order => {
-        const date = new Date(order.date);
-        const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-        const card = document.createElement('div');
-        card.className = 'bg-neutral-800 rounded-lg p-3 border border-neutral-700';
-
-        const itemsHtml = order.items.map(i => {
-            const catLabel = i.meta && i.meta.categoryName ? ` <span class="uppercase">(${i.meta.categoryName})</span>` : '';
-            return `<div class="text-xs text-neutral-400">${i.qty}x ${i.name}${catLabel}</div>`;
-        }).join('');
-
-        card.innerHTML = `
-            <div class="flex justify-between items-start mb-2">
-                <span class="text-xs text-neutral-500">#${(order.id || '').slice(0, 4)} — ${time}</span>
-                <span class="text-xs text-green-500 font-bold">Enviado</span>
-            </div>
-            <div class="space-y-1 mb-2">
-                ${itemsHtml}
-            </div>
-            <div class="flex justify-between items-center border-t border-neutral-700 pt-2">
-                <span class="text-xs text-neutral-400">Total</span>
-                <span class="font-bold text-brand-500">${money(order.total)}</span>
-            </div>
-        `;
-        historyList.appendChild(card);
-    });
+    const startedAt = Date.now();
+    const duration = Math.min(6500, Math.max(1800, content.length * 9));
+    storyTypingTimer = setInterval(() => {
+        const progress = Math.min(1, (Date.now() - startedAt) / duration);
+        const index = Math.min(content.length, Math.ceil(content.length * progress));
+        storyText.textContent = content.slice(0, index);
+        if (index >= content.length) {
+            clearInterval(storyTypingTimer);
+            storyTypingTimer = null;
+            storyCursor.classList.add('hidden');
+        }
+    }, 18);
 }
+
+function openStory() {
+    const history = DB.info?.history || {};
+    renderStoryImage(history.imageUrl);
+    typeStory(history.bio);
+    openModal(storyModal);
+    storyModal.scrollTop = 0;
+}
+
+function closeStory() {
+    clearInterval(storyTypingTimer);
+    storyTypingTimer = null;
+    closeModal(storyModal);
+}
+window.closeStory = closeStory;
 function minPrice(product, useOffer = false) {
     const map = useOffer ? product.offerPrices : product.prices;
     if (!map) return Infinity;
@@ -1594,7 +1610,7 @@ if (btnFinishOrder) {
 }
 
 if (btnMenu) btnMenu.addEventListener('click', openCategoryModal);
-if (btnHistory) btnHistory.addEventListener('click', openHistoryModal);
+if (btnStory) btnStory.addEventListener('click', openStory);
 if (btnOrder) btnOrder.addEventListener('click', openCart);
 if (btnInfo) btnInfo.addEventListener('click', openInfo);
 if (adminBtn) adminBtn.addEventListener('click', () => { window.location.href = 'admin.html'; });

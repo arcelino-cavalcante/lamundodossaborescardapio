@@ -387,6 +387,30 @@
                 </div>
                 <div class="border-t pt-4 space-y-4">
                     <div>
+                        <h2 class="font-semibold text-lg">Nossa História</h2>
+                        <p class="text-xs text-neutral-500 mt-1">Este conteúdo aparece na tela Nossa História do cardápio, com efeito de digitação automática.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm" for="infoHistoryBio">Biografia da pizzaria</label>
+                        <textarea id="infoHistoryBio" class="w-full border rounded-lg px-3 py-2" rows="9"
+                            maxlength="3000" placeholder="Conte como a pizzaria começou, quem faz parte dessa história e o que torna seus sabores especiais."></textarea>
+                        <p class="text-xs text-neutral-500 mt-1"><span id="infoHistoryBioCount">0</span>/3000 caracteres</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm" for="infoHistoryImage">URL da imagem de abertura</label>
+                        <input id="infoHistoryImage" class="w-full border rounded-lg px-3 py-2"
+                            placeholder="https://... ou envie um arquivo abaixo" />
+                    </div>
+                    <div>
+                        <label class="block text-sm" for="infoHistoryFile">Enviar imagem para o GitHub</label>
+                        <input id="infoHistoryFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif"
+                            class="w-full border rounded-lg px-3 py-2 bg-white" />
+                        <p id="infoHistoryUploadStatus" class="mt-1 text-xs text-neutral-500 min-h-4">JPG, PNG, WebP ou GIF, com até 2 MB.</p>
+                    </div>
+                    <img id="infoHistoryPreview" class="hidden w-full max-w-xl h-56 object-cover rounded-xl border" alt="Prévia da imagem de Nossa História">
+                </div>
+                <div class="border-t pt-4 space-y-4">
+                    <div>
                         <h2 class="font-semibold text-lg">Pagamento por Pix</h2>
                         <p class="text-xs text-neutral-500 mt-1">Esses dados serão públicos no cardápio e usados pelo bot para gerar o Pix Copia e Cola com o valor do pedido.</p>
                     </div>

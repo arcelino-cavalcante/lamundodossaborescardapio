@@ -1,5 +1,5 @@
 import { showCustomAlert, showCustomConfirm } from './ui.js';
-import { fetchDB, normalizeDB, defaultDB, money, escapeAttr, generateId } from './db.js';
+import { fetchDB, normalizeDB, defaultDB, money, escapeAttr, generateId, resolveImageUrl } from './db.js';
 
 let DB = defaultDB();
 let editingProductId = null;
@@ -14,6 +14,9 @@ let hasUnsavedChanges = false;
 let loadedFileSha = null;
 let selectedProductImageFile = null;
 const pendingProductImages = new Map();
+let selectedHistoryImageFile = null;
+let pendingHistoryImage = null;
+let historyPreviewObjectUrl = '';
 
 // DOM Elements - Tabs
 const tabProdutos = document.getElementById('tabProdutos');
@@ -116,6 +119,12 @@ const infoDescription = document.getElementById('infoDescription');
 const infoAddress = document.getElementById('infoAddress');
 const infoWhatsapp = document.getElementById('infoWhatsapp');
 const infoInstagram = document.getElementById('infoInstagram');
+const infoHistoryBio = document.getElementById('infoHistoryBio');
+const infoHistoryBioCount = document.getElementById('infoHistoryBioCount');
+const infoHistoryImage = document.getElementById('infoHistoryImage');
+const infoHistoryFile = document.getElementById('infoHistoryFile');
+const infoHistoryUploadStatus = document.getElementById('infoHistoryUploadStatus');
+const infoHistoryPreview = document.getElementById('infoHistoryPreview');
 const infoPixKey = document.getElementById('infoPixKey');
 const infoPixHolder = document.getElementById('infoPixHolder');
 const infoPixCity = document.getElementById('infoPixCity');
@@ -136,7 +145,7 @@ async function persistDB() {
     hasUnsavedChanges = true;
     if (btnPublishGitHub) btnPublishGitHub.disabled = false;
     if (saveStatus) {
-        const imageCount = pendingProductImages.size;
+        const imageCount = pendingProductImages.size + (pendingHistoryImage && !pendingHistoryImage.uploaded ? 1 : 0);
         saveStatus.textContent = imageCount
             ? `Alterações pendentes (${imageCount} ${imageCount === 1 ? 'imagem' : 'imagens'})`
             : 'Alterações pendentes de publicação';
@@ -192,6 +201,16 @@ function productImagePath(productId, productName, file) {
     return `images/products/${slug}-${safeId}-${Date.now()}.${extension}`;
 }
 
+function historyImagePath(file) {
+    const extensionByType = {
+        'image/jpeg': 'jpg',
+        'image/png': 'png',
+        'image/webp': 'webp',
+        'image/gif': 'gif'
+    };
+    return `images/history/nossa-historia-${Date.now()}.${extensionByType[file.type]}`;
+}
+
 function githubPathUrl(pathValue) {
     return `${GITHUB_PAGES_URL}/${pathValue.split('/').map(encodeURIComponent).join('/')}`;
 }
@@ -206,8 +225,9 @@ async function fileToBase64(file) {
     return btoa(binary);
 }
 
-async function uploadPendingProductImages() {
+async function uploadPendingImages() {
     const pending = Array.from(pendingProductImages.values());
+    if (pendingHistoryImage) pending.push(pendingHistoryImage);
     for (let index = 0; index < pending.length; index += 1) {
         const image = pending[index];
         if (image.uploaded) continue;
@@ -225,13 +245,13 @@ async function uploadPendingProductImages() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                message: `Adiciona imagem de ${image.productName}`,
+                message: `Adiciona imagem de ${image.productName || 'Nossa História'}`,
                 content: await fileToBase64(image.file)
             })
         });
 
         if (!response.ok) {
-            throw new Error(await githubErrorMessage(response, `Erro ao enviar a imagem de ${image.productName}.`));
+            throw new Error(await githubErrorMessage(response, `Erro ao enviar a imagem de ${image.productName || 'Nossa História'}.`));
         }
         image.uploaded = true;
     }
@@ -252,7 +272,7 @@ if (btnPublishGitHub) {
         try {
             if (!loadedFileSha) throw new Error('Recarregue o painel para sincronizar o data.json antes de publicar.');
 
-            await uploadPendingProductImages();
+            await uploadPendingImages();
 
             if (saveStatus) {
                 saveStatus.textContent = 'Publicando dados do cardápio...';
@@ -280,6 +300,9 @@ if (btnPublishGitHub) {
                 loadedFileSha = result.content?.sha || loadedFileSha;
                 hasUnsavedChanges = false;
                 pendingProductImages.clear();
+                pendingHistoryImage = null;
+                selectedHistoryImageFile = null;
+                if (infoHistoryFile) infoHistoryFile.value = '';
                 btnPublishGitHub.disabled = true;
                 if (saveStatus) {
                     saveStatus.textContent = 'Cardápio publicado no GitHub';
@@ -448,6 +471,62 @@ if (pFileInput) {
         if (pUploadStatus) {
             pUploadStatus.textContent = `${file.name} pronta para enviar ao GitHub`;
             pUploadStatus.className = 'mt-1 text-xs text-green-700 font-semibold min-h-4';
+        }
+    });
+}
+
+function updateHistoryBioCount() {
+    if (infoHistoryBioCount) infoHistoryBioCount.textContent = String(infoHistoryBio?.value.length || 0);
+}
+
+function showHistoryPreview(source) {
+    if (!infoHistoryPreview) return;
+    if (historyPreviewObjectUrl) {
+        URL.revokeObjectURL(historyPreviewObjectUrl);
+        historyPreviewObjectUrl = '';
+    }
+    if (!source) {
+        infoHistoryPreview.classList.add('hidden');
+        infoHistoryPreview.removeAttribute('src');
+        return;
+    }
+    const previewUrl = source instanceof File ? URL.createObjectURL(source) : resolveImageUrl(source);
+    if (source instanceof File) historyPreviewObjectUrl = previewUrl;
+    infoHistoryPreview.classList.remove('hidden');
+    infoHistoryPreview.onerror = () => infoHistoryPreview.classList.add('hidden');
+    infoHistoryPreview.src = previewUrl;
+}
+
+if (infoHistoryBio) infoHistoryBio.addEventListener('input', updateHistoryBioCount);
+if (infoHistoryImage) {
+    infoHistoryImage.addEventListener('input', () => {
+        if (!selectedHistoryImageFile) showHistoryPreview(infoHistoryImage.value.trim());
+    });
+}
+if (infoHistoryFile) {
+    infoHistoryFile.addEventListener('change', event => {
+        const file = event.target.files[0];
+        selectedHistoryImageFile = null;
+        if (!file) {
+            showHistoryPreview(infoHistoryImage.value.trim());
+            return;
+        }
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+            showCustomAlert('Formato não aceito. Use JPG, PNG, WebP ou GIF.');
+            infoHistoryFile.value = '';
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            showCustomAlert('A imagem é muito grande. Escolha uma imagem com até 2 MB.');
+            infoHistoryFile.value = '';
+            return;
+        }
+        selectedHistoryImageFile = file;
+        showHistoryPreview(file);
+        if (infoHistoryUploadStatus) {
+            infoHistoryUploadStatus.textContent = `${file.name} pronta para enviar ao GitHub`;
+            infoHistoryUploadStatus.className = 'mt-1 text-xs text-green-700 font-semibold min-h-4';
         }
     });
 }
@@ -1284,11 +1363,32 @@ btnSaveInfo.addEventListener('click', async event => {
         showCustomAlert('Para ativar o Pix, informe também o nome e a cidade do titular.');
         return;
     }
+    let historyImageUrl = infoHistoryImage.value.trim();
+    if (selectedHistoryImageFile) {
+        if (!pendingHistoryImage || pendingHistoryImage.file !== selectedHistoryImageFile) {
+            const path = historyImagePath(selectedHistoryImageFile);
+            pendingHistoryImage = {
+                file: selectedHistoryImageFile,
+                path,
+                url: githubPathUrl(path),
+                productName: 'Nossa História',
+                uploaded: false
+            };
+        }
+        historyImageUrl = pendingHistoryImage.url;
+        infoHistoryImage.value = historyImageUrl;
+    } else if (pendingHistoryImage && pendingHistoryImage.url !== historyImageUrl) {
+        pendingHistoryImage = null;
+    }
     DB.info = {
         description: infoDescription.value.trim(),
         address: infoAddress.value.trim(),
         whatsapp: infoWhatsapp.value.trim(),
         instagram: infoInstagram.value.trim(),
+        history: {
+            bio: infoHistoryBio.value.trim(),
+            imageUrl: historyImageUrl
+        },
         pix: {
             key: pixKey,
             holder: pixHolder,
@@ -1328,6 +1428,10 @@ function renderAll({ resetForms = false } = {}) {
         infoAddress.value = DB.info.address || '';
         infoWhatsapp.value = DB.info.whatsapp || '';
         infoInstagram.value = DB.info.instagram || '';
+        infoHistoryBio.value = DB.info.history?.bio || '';
+        infoHistoryImage.value = DB.info.history?.imageUrl || '';
+        updateHistoryBioCount();
+        showHistoryPreview(infoHistoryImage.value.trim());
         infoPixKey.value = DB.info.pix?.key || '';
         infoPixHolder.value = DB.info.pix?.holder || '';
         infoPixCity.value = DB.info.pix?.city || 'Garanhuns';
