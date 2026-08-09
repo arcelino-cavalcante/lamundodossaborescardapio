@@ -324,6 +324,8 @@ if (btnPublishGitHub) {
 
 // --- Tabs Logic ---
 function switchTab(tab) {
+    const selectedTab = String(tab || '').trim().toLowerCase();
+
     // Hide all views
     [viewProdutos, viewCategorias, viewMonteSeu, viewOpcionais, viewInfo, viewTaxas].forEach(v => {
         if (v) v.classList.add('hidden');
@@ -334,27 +336,30 @@ function switchTab(tab) {
         if (t) t.className = 'px-4 py-2 rounded-lg bg-white border';
     });
 
-    if (tab === 'Produtos') {
+    if (selectedTab === 'produtos') {
         if (viewProdutos) viewProdutos.classList.remove('hidden');
         if (tabProdutos) tabProdutos.className = 'px-4 py-2 rounded-lg bg-brand-600 text-white';
-    } else if (tab === 'Categorias') {
+    } else if (selectedTab === 'categorias') {
         if (viewCategorias) viewCategorias.classList.remove('hidden');
         if (tabCategorias) tabCategorias.className = 'px-4 py-2 rounded-lg bg-brand-600 text-white';
-    } else if (tab === 'MonteSeu') {
+    } else if (selectedTab === 'monteseu') {
         if (viewMonteSeu) viewMonteSeu.classList.remove('hidden');
         if (tabMonteSeu) tabMonteSeu.className = 'px-4 py-2 rounded-lg bg-brand-600 text-white';
-    } else if (tab === 'Opcionais') {
+    } else if (selectedTab === 'opcionais') {
         if (viewOpcionais) viewOpcionais.classList.remove('hidden');
         if (tabOpcionais) tabOpcionais.className = 'px-4 py-2 rounded-lg bg-brand-600 text-white';
-    } else if (tab === 'Info') {
+    } else if (selectedTab === 'info') {
         if (viewInfo) viewInfo.classList.remove('hidden');
         if (tabInfo) tabInfo.className = 'px-4 py-2 rounded-lg bg-brand-600 text-white';
-    } else if (tab === 'Taxas') {
+    } else if (selectedTab === 'taxas') {
         if (viewTaxas) viewTaxas.classList.remove('hidden');
         if (tabTaxas) {
             tabTaxas.classList.remove('text-neutral-400');
             tabTaxas.classList.add('bg-neutral-800', 'text-white');
         }
+    } else {
+        if (viewProdutos) viewProdutos.classList.remove('hidden');
+        if (tabProdutos) tabProdutos.className = 'px-4 py-2 rounded-lg bg-brand-600 text-white';
     }
 }
 
@@ -855,7 +860,7 @@ window.categoryActions = {
         cAllowHalf.checked = !!category.allowHalf;
         handleCategorySizeToggle();
         btnSaveCategory.textContent = 'Salvar alterações';
-        switchTab('categorias');
+        switchTab('Categorias');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     deleteCategory: async function (id) {
