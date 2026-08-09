@@ -461,12 +461,14 @@
     {
       "id": "prod-031",
       "name": "Catubresa",
-      "description": "Calabresa, catupiry, mussarela, cheddar, molho de tomate e orégano",
+      "description": "Calabresa, catupiry, mussarela , molho de tomate e orégano",
       "categoryId": "pizzas",
       "imageUrl": "",
       "available": true,
       "optionGroupId": null,
       "prices": {
+        "p": 26,
+        "m": 31,
         "g": 38
       }
     },
