@@ -1478,6 +1478,16 @@
       "available": true,
       "optionGroupId": null,
       "price": 25
+    },
+    {
+      "id": "prod-msl8k6yy73l6",
+      "name": "Clone de Hamburguer",
+      "description": "Pão, Carne, Alface, Tomate, Cebola, Calabresa, Molhos da casa",
+      "categoryId": "hamburgueres",
+      "imageUrl": "https://lamundodossabores.com.br/images/products/clone-de-hamburguer-prod-msl8k6yy73l6-1786245684299.jpg",
+      "available": true,
+      "optionGroupId": null,
+      "price": 15
     }
   ],
   "fees": {
