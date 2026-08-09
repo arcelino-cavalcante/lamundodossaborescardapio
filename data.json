@@ -1500,6 +1500,16 @@
       "available": true,
       "optionGroupId": null,
       "price": 8
+    },
+    {
+      "id": "prod-msl9ekf8yaff",
+      "name": "COMBO FAMILIA",
+      "description": "4,Hamburguer,1porçao batata frita, 1 refrigerante 1l",
+      "categoryId": "hamburgueres",
+      "imageUrl": "",
+      "available": true,
+      "optionGroupId": null,
+      "price": 55
     }
   ],
   "fees": {
