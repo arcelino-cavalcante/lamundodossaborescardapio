@@ -4,7 +4,8 @@
       "id": "pizzas",
       "name": "Pizzas",
       "useSizes": true,
-      "allowHalf": true
+      "allowHalf": true,
+      "optionGroupId": "opt-mslx3syrd20p"
     },
     {
       "id": "hamburgueres",
