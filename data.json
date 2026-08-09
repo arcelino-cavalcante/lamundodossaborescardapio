@@ -1510,6 +1510,16 @@
       "available": true,
       "optionGroupId": null,
       "price": 55
+    },
+    {
+      "id": "prod-msl9qr4mueme",
+      "name": "COMBO CASAL",
+      "description": "2 Hamburguer, porçao batata frita, calabresa",
+      "categoryId": "hamburgueres",
+      "imageUrl": "",
+      "available": true,
+      "optionGroupId": null,
+      "price": 30
     }
   ],
   "fees": {
