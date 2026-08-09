@@ -295,12 +295,12 @@
       "name": "Marguerita",
       "description": "Molho de tomate, mussarela, parmesão, tomate e manjericão",
       "categoryId": "pizzas",
-      "imageUrl": "",
+      "imageUrl": "https://lamundodossabores.com.br/images/products/marguerita-prod-019-1786247963739.jpg",
       "available": true,
       "optionGroupId": null,
       "prices": {
-        "p": 25,
-        "m": 30,
+        "p": 26,
+        "m": 31,
         "g": 37
       }
     },
