@@ -1488,6 +1488,16 @@
       "available": true,
       "optionGroupId": null,
       "price": 15
+    },
+    {
+      "id": "prod-msl8q6gig8a8",
+      "name": "Burguer cheff",
+      "description": "Pão, Carne, Queijo, Alface, tomate, cebola, molho da casa",
+      "categoryId": "hamburgueres",
+      "imageUrl": "",
+      "available": true,
+      "optionGroupId": null,
+      "price": 8
     }
   ],
   "fees": {
