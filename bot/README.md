@@ -40,7 +40,7 @@ O bot não pergunta novamente a forma de pagamento:
 
 ### Windows — pacote automático
 
-O arquivo `releases/robozinho-la-mundo-windows-v3.zip` é o pacote mais recente do instalador para Windows. Depois de extrair o ZIP, execute `INSTALAR.bat`. Ele baixa um Node.js portátil, instala as dependências, encontra Chrome ou Edge, cria a configuração inicial e adiciona os atalhos do Robozinho na Área de Trabalho e no Menu Iniciar.
+O arquivo `releases/robozinho-la-mundo-windows-v4.zip` é o pacote mais recente do instalador para Windows. Depois de extrair o ZIP, execute `INSTALAR.bat`. Ele baixa um Node.js portátil, instala as dependências, encontra Chrome ou Edge, cria a configuração inicial e adiciona os atalhos do Robozinho na Área de Trabalho e no Menu Iniciar.
 
 O instalador pode ser executado novamente para atualizar o bot sem apagar a sessão do WhatsApp, as configurações ou o banco de pedidos. Quando encontra o bot aberto, ele reinicia automaticamente o processo de atendimento para carregar o código novo. O pacote nunca inclui `.env`, sessão autenticada, cache, banco de dados ou token do GitHub.
 
@@ -99,6 +99,8 @@ O painel fica disponível somente no computador do bot e mostra:
 - cliente que mais comprou nos últimos sete dias e no mês;
 - relação dos pedidos confirmados no dia;
 - erros recentes registrados pelo supervisor.
+
+Na relação dos pedidos, use **Editar** para corrigir cliente, horário, entrega, itens, pagamento e valores. Use **Excluir** para remover um registro depois da confirmação de segurança. Os totais e rankings são recalculados assim que a alteração é salva.
 
 A frase salva em **Frase no final da comanda** entra nas próximas impressões. Ela fica armazenada no SQLite e pode ser alterada sem reiniciar o bot.
 

@@ -1,1 +1,1 @@
-Versão 2.2 — tamanhos de texto da comanda e frase final sem cortes
+Versão 2.3 — edição e exclusão de pedidos pelo painel

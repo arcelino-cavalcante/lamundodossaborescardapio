@@ -147,6 +147,45 @@ async function createDatabase(dbPath) {
       }
     },
 
+    async updateOrder(id, order) {
+      const result = await run(db, `
+        UPDATE pedidos SET
+          whatsapp_cliente = ?,
+          nome = ?,
+          itens = ?,
+          subtotal = ?,
+          taxa_entrega = ?,
+          total = ?,
+          pagamento = ?,
+          valor_pago = ?,
+          troco = ?,
+          endereco = ?,
+          observacao = ?,
+          dataHora = ?
+        WHERE id = ?
+      `, [
+        order.customerWhatsapp,
+        order.name,
+        JSON.stringify(order.items),
+        order.subtotal,
+        order.deliveryFee,
+        order.total,
+        order.payment,
+        order.paidAmount,
+        order.change,
+        JSON.stringify(order.address),
+        order.address?.observation || '',
+        order.dateTime,
+        id
+      ]);
+      return result.changes === 1;
+    },
+
+    async deleteOrder(id) {
+      const result = await run(db, 'DELETE FROM pedidos WHERE id = ?', [id]);
+      return result.changes === 1;
+    },
+
     async salesReport(day = 'today') {
       const modifier = day === 'yesterday' ? "'-1 day'" : "'0 day'";
       const total = await get(db, `
@@ -210,7 +249,8 @@ async function createDatabase(dbPath) {
         LIMIT 1
       `);
       const orders = await all(db, `
-        SELECT id, nome, whatsapp_cliente, total, pagamento, endereco, dataHora
+        SELECT id, nome, whatsapp_cliente, itens, subtotal, taxa_entrega, total,
+               pagamento, valor_pago, troco, endereco, observacao, dataHora
         FROM pedidos
         WHERE date(dataHora) = date('now', 'localtime')
         ORDER BY datetime(dataHora) DESC, id DESC
@@ -242,10 +282,22 @@ async function createDatabase(dbPath) {
             id: order.id,
             name: order.nome || 'Sem nome',
             whatsapp: order.whatsapp_cliente || '',
+            items: (() => {
+              try {
+                const items = JSON.parse(order.itens || '[]');
+                return Array.isArray(items) ? items : [];
+              } catch { return []; }
+            })(),
+            subtotal: Number(order.subtotal || 0),
+            deliveryFee: Number(order.taxa_entrega || 0),
             total: Number(order.total || 0),
             payment: order.pagamento || 'Não informado',
+            paidAmount: Number(order.valor_pago || 0),
+            change: Number(order.troco || 0),
+            address,
             site: address.sitio || '',
             delivery: address.street || '',
+            observation: order.observacao || address.observation || '',
             dateTime: order.dataHora
           };
         })

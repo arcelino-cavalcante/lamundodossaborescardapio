@@ -60,7 +60,7 @@
         <div class="table-scroll">
           <table>
             <thead>
-              <tr><th>Hora</th><th>Cliente</th><th>Destino</th><th>Pagamento</th><th>Total</th></tr>
+              <tr><th>Hora</th><th>Cliente</th><th>Destino</th><th>Pagamento</th><th class="money-column">Total</th><th class="actions-column">Ações</th></tr>
             </thead>
             <tbody id="ordersBody"></tbody>
           </table>
@@ -115,6 +115,61 @@
       <p id="emptyLogs" class="empty">Nenhum erro registrado. Tudo certo por aqui.</p>
     </section>
   </main>
+
+  <dialog id="orderDialog" class="order-dialog">
+    <form id="orderForm" class="order-form">
+      <div class="dialog-title">
+        <div>
+          <p class="eyebrow">EDITAR REGISTRO</p>
+          <h2>Pedido <span id="orderNumber"></span></h2>
+        </div>
+        <button id="closeOrderDialog" class="icon-button" type="button" aria-label="Fechar">×</button>
+      </div>
+      <input id="orderId" type="hidden">
+
+      <div class="form-grid two-columns">
+        <label>Cliente<input id="orderName" maxlength="120" required></label>
+        <label>WhatsApp<input id="orderWhatsapp" maxlength="40"></label>
+        <label>Data e hora<input id="orderDateTime" type="datetime-local" required></label>
+        <label>Pagamento
+          <select id="orderPayment" required>
+            <option value="Pix">Pix</option>
+            <option value="Dinheiro">Dinheiro</option>
+            <option value="Cartão">Cartão</option>
+          </select>
+        </label>
+      </div>
+
+      <h3>Entrega</h3>
+      <div class="form-grid two-columns">
+        <label>Endereço ou retirada<input id="orderStreet" maxlength="240"></label>
+        <label>Sítio<input id="orderSite" maxlength="160"></label>
+        <label>Referência<input id="orderReference" maxlength="240"></label>
+        <label>Observação geral<input id="orderObservation" maxlength="300"></label>
+      </div>
+
+      <div class="items-title">
+        <h3>Itens do pedido</h3>
+        <button id="addOrderItem" class="button secondary compact" type="button">+ Adicionar item</button>
+      </div>
+      <div id="orderItems" class="order-items"></div>
+
+      <h3>Valores</h3>
+      <div class="form-grid money-grid">
+        <label>Subtotal (R$)<input id="orderSubtotal" type="number" min="0" max="1000000" step="0.01" required></label>
+        <label>Taxa (R$)<input id="orderDeliveryFee" type="number" min="0" max="1000000" step="0.01" required></label>
+        <label>Total (R$)<input id="orderTotal" type="number" min="0" max="1000000" step="0.01" required></label>
+        <label>Valor recebido (R$)<input id="orderPaidAmount" type="number" min="0" max="1000000" step="0.01"></label>
+        <label>Troco (R$)<input id="orderChange" type="number" min="0" max="1000000" step="0.01"></label>
+      </div>
+
+      <p id="orderMessage" class="message" role="status"></p>
+      <div class="dialog-actions">
+        <button id="cancelOrderEdit" class="button ghost" type="button">Cancelar</button>
+        <button id="saveOrder" class="button primary" type="submit">Salvar pedido</button>
+      </div>
+    </form>
+  </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="/dashboard.js" defer></script>

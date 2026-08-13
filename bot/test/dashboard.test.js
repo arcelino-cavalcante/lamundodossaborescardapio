@@ -34,12 +34,25 @@ test('painel expõe métricas, salva a frase e protege ações do bot', async t 
   });
 
   const baseUrl = server.url;
+  const savedOrder = await database.saveOrder('5587999990000', {
+    name: 'Cliente Painel',
+    customerWhatsapp: '87999990000',
+    items: [{ name: 'Pizza', category: 'Pizzas', quantity: 1, total: 30, details: '', observation: '', border: '' }],
+    subtotal: 30,
+    deliveryFee: 5,
+    total: 35,
+    payment: 'Pix',
+    paidAmount: 0,
+    change: 0,
+    address: { street: 'Rua Teste', sitio: '', reference: '', observation: '' }
+  }, 'dashboard-order-1');
   const dashboardResponse = await fetch(`${baseUrl}/api/dashboard`);
   assert.equal(dashboardResponse.status, 200);
   const dashboard = await dashboardResponse.json();
   assert.equal(dashboard.footer, 'Frase inicial');
   assert.equal(dashboard.printSize, 1);
   assert.equal(dashboard.bot.state, 'online');
+  assert.equal(dashboard.stats.orders[0].items[0].name, 'Pizza');
 
   const blocked = await fetch(`${baseUrl}/api/bot/restart`, { method: 'POST' });
   assert.equal(blocked.status, 403);
@@ -67,6 +80,44 @@ test('painel expõe métricas, salva a frase e protege ações do bot', async t 
     body: JSON.stringify({ footer: 'Teste', printSize: 4 })
   });
   assert.equal(invalidPrintingResponse.status, 400);
+
+  const blockedOrderEdit = await fetch(`${baseUrl}/api/orders/${savedOrder.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: '{}'
+  });
+  assert.equal(blockedOrderEdit.status, 403);
+
+  const orderEditResponse = await fetch(`${baseUrl}/api/orders/${savedOrder.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'X-Leonus-Action': ACTION_HEADER },
+    body: JSON.stringify({
+      name: 'Cliente Editado',
+      whatsapp: '87988880000',
+      dateTime: dashboard.stats.orders[0].dateTime,
+      payment: 'Cartão',
+      address: { street: 'Retirada', sitio: '', reference: '', observation: 'Sem cebola' },
+      items: [{ name: 'Pizza editada', category: 'Pizzas', quantity: 2, total: 60, details: '', observation: '', border: '' }],
+      subtotal: 60,
+      deliveryFee: 0,
+      total: 60,
+      paidAmount: 0,
+      change: 0
+    })
+  });
+  assert.equal(orderEditResponse.status, 200);
+  const editedDashboard = await (await fetch(`${baseUrl}/api/dashboard`)).json();
+  assert.equal(editedDashboard.stats.today.total, 60);
+  assert.equal(editedDashboard.stats.orders[0].name, 'Cliente Editado');
+  assert.equal(editedDashboard.stats.orders[0].items[0].quantity, 2);
+
+  const deleteOrderResponse = await fetch(`${baseUrl}/api/orders/${savedOrder.id}`, {
+    method: 'DELETE',
+    headers: { 'X-Leonus-Action': ACTION_HEADER }
+  });
+  assert.equal(deleteOrderResponse.status, 200);
+  const deletedDashboard = await (await fetch(`${baseUrl}/api/dashboard`)).json();
+  assert.equal(deletedDashboard.stats.today.orders, 0);
 
   const restartResponse = await fetch(`${baseUrl}/api/bot/restart`, {
     method: 'POST',

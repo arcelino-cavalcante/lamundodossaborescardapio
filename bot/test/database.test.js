@@ -51,6 +51,27 @@ test('salva o pedido completo e impede impressão duplicada pelo message_id', as
   assert.equal(dashboard.topCustomerWeek.name, 'Cliente Teste');
   assert.equal(dashboard.orders[0].site, 'Sítio Teste');
   assert.equal(logs[0].message, 'Falha simulada');
+
+  const updated = await database.updateOrder(first.id, {
+    ...order,
+    name: 'Cliente Corrigido',
+    items: [{ ...order.items[0], quantity: 2, total: 80 }],
+    subtotal: 80,
+    deliveryFee: 6,
+    total: 86,
+    dateTime: dashboard.orders[0].dateTime
+  });
+  assert.equal(updated, true);
+  const updatedDashboard = await database.dashboardStats();
+  assert.equal(updatedDashboard.today.total, 86);
+  assert.equal(updatedDashboard.orders[0].name, 'Cliente Corrigido');
+  assert.equal(updatedDashboard.orders[0].items[0].quantity, 2);
+
+  assert.equal(await database.deleteOrder(first.id), true);
+  assert.equal(await database.deleteOrder(first.id), false);
+  const emptyDashboard = await database.dashboardStats();
+  assert.equal(emptyDashboard.today.orders, 0);
+  assert.equal(emptyDashboard.today.total, 0);
   await database.clearLogs();
   assert.deepEqual(await database.listLogs(), []);
 });

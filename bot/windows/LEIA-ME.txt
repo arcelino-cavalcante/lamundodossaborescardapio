@@ -35,6 +35,12 @@ No painel, em "Texto e frase da comanda", escolha Tamanho 1, 2 ou 3 e clique
 em "Salvar impressao". A escolha vale para as proximas comandas. A frase ou
 versiculo e quebrado em varias linhas para nao sair cortado no fim do papel.
 
+EDITAR OU EXCLUIR PEDIDOS
+
+Na lista "Pedidos de hoje", clique em "Editar" para corrigir cliente, entrega,
+itens, pagamento ou valores. Clique em "Excluir" para apagar um pedido depois
+da confirmacao. O total vendido e os rankings sao atualizados na mesma hora.
+
 REINSTALACAO E ATUALIZACAO
 
 Pode executar o INSTALAR.bat novamente. O instalador atualiza o programa e
