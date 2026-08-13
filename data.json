@@ -1609,7 +1609,19 @@
       "options": [
         {
           "name": "Catupiry",
-          "price": 0
+          "price": 3
+        },
+        {
+          "name": "Cheddar",
+          "price": 3
+        },
+        {
+          "name": "Pãoozinho",
+          "price": 9
+        },
+        {
+          "name": "Chocolate",
+          "price": 9
         }
       ]
     }
