@@ -111,6 +111,49 @@ test('painel expõe métricas, salva a frase e protege ações do bot', async t 
   assert.equal(editedDashboard.stats.orders[0].name, 'Cliente Editado');
   assert.equal(editedDashboard.stats.orders[0].items[0].quantity, 2);
 
+  const blockedCredit = await fetch(`${baseUrl}/api/credits`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: '{}'
+  });
+  assert.equal(blockedCredit.status, 403);
+
+  const creditResponse = await fetch(`${baseUrl}/api/credits`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Leonus-Action': ACTION_HEADER },
+    body: JSON.stringify({
+      name: 'Cliente Fiado',
+      value: 25,
+      observation: 'Hambúrguer e refrigerante',
+      dateTime: dashboard.stats.orders[0].dateTime
+    })
+  });
+  assert.equal(creditResponse.status, 201);
+  const savedCredit = await creditResponse.json();
+  const creditDashboard = await (await fetch(`${baseUrl}/api/dashboard`)).json();
+  assert.equal(creditDashboard.stats.today.total, 85);
+  assert.equal(creditDashboard.stats.today.creditSales, 1);
+  assert.equal(creditDashboard.stats.credit.openTotal, 25);
+  assert.equal(creditDashboard.stats.credit.entries[0].name, 'Cliente Fiado');
+
+  const paidResponse = await fetch(`${baseUrl}/api/credits/${savedCredit.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'X-Leonus-Action': ACTION_HEADER },
+    body: JSON.stringify({ paid: true })
+  });
+  assert.equal(paidResponse.status, 200);
+  const paidDashboard = await (await fetch(`${baseUrl}/api/dashboard`)).json();
+  assert.equal(paidDashboard.stats.today.total, 85);
+  assert.equal(paidDashboard.stats.credit.openTotal, 0);
+
+  const deleteCreditResponse = await fetch(`${baseUrl}/api/credits/${savedCredit.id}`, {
+    method: 'DELETE',
+    headers: { 'X-Leonus-Action': ACTION_HEADER }
+  });
+  assert.equal(deleteCreditResponse.status, 200);
+  const noCreditDashboard = await (await fetch(`${baseUrl}/api/dashboard`)).json();
+  assert.equal(noCreditDashboard.stats.today.total, 60);
+
   const deleteOrderResponse = await fetch(`${baseUrl}/api/orders/${savedOrder.id}`, {
     method: 'DELETE',
     headers: { 'X-Leonus-Action': ACTION_HEADER }
@@ -118,6 +161,7 @@ test('painel expõe métricas, salva a frase e protege ações do bot', async t 
   assert.equal(deleteOrderResponse.status, 200);
   const deletedDashboard = await (await fetch(`${baseUrl}/api/dashboard`)).json();
   assert.equal(deletedDashboard.stats.today.orders, 0);
+  assert.equal(deletedDashboard.stats.today.total, 0);
 
   const restartResponse = await fetch(`${baseUrl}/api/bot/restart`, {
     method: 'POST',

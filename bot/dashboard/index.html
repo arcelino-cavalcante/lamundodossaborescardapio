@@ -31,6 +31,11 @@
         <strong id="monthTotal">R$ 0,00</strong>
         <small id="monthOrders">0 pedidos</small>
       </article>
+      <article class="card credit-card">
+        <span>Total em fiado</span>
+        <strong id="creditOpenTotal">R$ 0,00</strong>
+        <small id="creditOpenCount">0 compras em aberto</small>
+      </article>
       <article class="card">
         <span>Sítio que mais comprou hoje</span>
         <strong id="topSite">—</strong>
@@ -101,6 +106,33 @@
           <p id="actionMessage" class="message" role="status"></p>
         </article>
       </aside>
+    </section>
+
+    <section class="panel credits-panel">
+      <div class="panel-title">
+        <div>
+          <p class="eyebrow">CONTROLE DE FIADOS</p>
+          <h2>Clientes fiados</h2>
+          <p class="helper">O lançamento entra no total vendido da data e permanece no card “Total em fiado” até ser marcado como pago.</p>
+        </div>
+      </div>
+      <form id="creditForm" class="credit-form">
+        <label>Nome do cliente<input id="creditName" maxlength="120" required placeholder="Ex.: João da Silva"></label>
+        <label>Valor da compra (R$)<input id="creditValue" type="number" min="0.01" max="1000000" step="0.01" required placeholder="0,00"></label>
+        <label>Data e hora<input id="creditDateTime" type="datetime-local" required></label>
+        <label class="credit-observation">Observação<input id="creditObservation" maxlength="300" placeholder="Ex.: Pizza grande e refrigerante"></label>
+        <button id="saveCredit" class="button primary" type="submit">Cadastrar fiado</button>
+      </form>
+      <p id="creditMessage" class="message" role="status"></p>
+      <div class="table-scroll credit-table-wrap">
+        <table class="credit-table">
+          <thead>
+            <tr><th>Data</th><th>Cliente</th><th>Observação</th><th>Situação</th><th class="money-column">Valor</th><th class="actions-column">Ações</th></tr>
+          </thead>
+          <tbody id="creditsBody"></tbody>
+        </table>
+        <p id="emptyCredits" class="empty">Nenhuma compra fiada cadastrada.</p>
+      </div>
     </section>
 
     <section class="panel logs-panel">

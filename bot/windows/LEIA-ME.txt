@@ -43,6 +43,13 @@ Na lista "Pedidos de hoje", clique em "Editar" para corrigir cliente, entrega,
 itens, pagamento ou valores. Clique em "Excluir" para apagar um pedido depois
 da confirmacao. O total vendido e os rankings sao atualizados na mesma hora.
 
+CLIENTES FIADOS
+
+No painel, use "Clientes fiados" para cadastrar o nome, o valor, a data e uma
+observacao. A compra entra no valor vendido e no card "Total em fiado". Quando
+o cliente pagar, clique em "Marcar pago": a venda continua no total, mas sai
+do saldo fiado em aberto. Use "Excluir" somente para lancamentos incorretos.
+
 REINSTALACAO E ATUALIZACAO
 
 Pode executar o INSTALAR.bat novamente. O instalador atualiza o programa e

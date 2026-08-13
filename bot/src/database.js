@@ -85,6 +85,17 @@ async function createDatabase(dbPath) {
       dataHora TEXT NOT NULL
     )
   `);
+  await run(db, `
+    CREATE TABLE IF NOT EXISTS clientes_fiados (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nome TEXT NOT NULL,
+      valor REAL NOT NULL,
+      observacao TEXT,
+      status TEXT NOT NULL DEFAULT 'aberto',
+      dataHora TEXT NOT NULL,
+      pago_em TEXT
+    )
+  `);
 
   const columns = await all(db, 'PRAGMA table_info(pedidos)');
   const existing = new Set(columns.map(column => column.name));
@@ -95,6 +106,8 @@ async function createDatabase(dbPath) {
   await run(db, 'CREATE INDEX IF NOT EXISTS idx_pedidos_dataHora ON pedidos(dataHora)');
   await run(db, 'CREATE INDEX IF NOT EXISTS idx_logs_dataHora ON logs(dataHora)');
   await run(db, 'CREATE INDEX IF NOT EXISTS idx_mensagens_processadas_dataHora ON mensagens_processadas(dataHora)');
+  await run(db, 'CREATE INDEX IF NOT EXISTS idx_clientes_fiados_dataHora ON clientes_fiados(dataHora)');
+  await run(db, 'CREATE INDEX IF NOT EXISTS idx_clientes_fiados_status ON clientes_fiados(status)');
   await run(db, "DELETE FROM mensagens_processadas WHERE dataHora < datetime('now', '-30 days', 'localtime')");
 
   let claimedMessageCount = 0;
@@ -186,11 +199,38 @@ async function createDatabase(dbPath) {
       return result.changes === 1;
     },
 
+    async saveCreditSale(entry) {
+      const result = await run(db, `
+        INSERT INTO clientes_fiados (nome, valor, observacao, status, dataHora)
+        VALUES (?, ?, ?, 'aberto', ?)
+      `, [entry.name, entry.value, entry.observation, entry.dateTime]);
+      return { id: result.id };
+    },
+
+    async setCreditPaid(id, paid) {
+      const result = await run(db, `
+        UPDATE clientes_fiados
+        SET status = ?, pago_em = CASE WHEN ? = 1 THEN datetime('now', 'localtime') ELSE NULL END
+        WHERE id = ?
+      `, [paid ? 'pago' : 'aberto', paid ? 1 : 0, id]);
+      return result.changes === 1;
+    },
+
+    async deleteCreditSale(id) {
+      const result = await run(db, 'DELETE FROM clientes_fiados WHERE id = ?', [id]);
+      return result.changes === 1;
+    },
+
     async salesReport(day = 'today') {
       const modifier = day === 'yesterday' ? "'-1 day'" : "'0 day'";
       const total = await get(db, `
         SELECT IFNULL(SUM(total), 0) AS total
         FROM pedidos
+        WHERE date(dataHora) = date('now', ${modifier}, 'localtime')
+      `);
+      const creditTotal = await get(db, `
+        SELECT IFNULL(SUM(valor), 0) AS total
+        FROM clientes_fiados
         WHERE date(dataHora) = date('now', ${modifier}, 'localtime')
       `);
       const customers = await all(db, `
@@ -205,7 +245,7 @@ async function createDatabase(dbPath) {
         WHERE date(dataHora) = date('now', ${modifier}, 'localtime')
         GROUP BY sitio ORDER BY quantidade DESC LIMIT 3
       `);
-      return { total: Number(total.total || 0), customers, sitios };
+      return { total: Number(total.total || 0) + Number(creditTotal.total || 0), customers, sitios };
     },
 
     async dashboardStats() {
@@ -218,6 +258,27 @@ async function createDatabase(dbPath) {
         SELECT COUNT(*) AS pedidos, IFNULL(SUM(total), 0) AS total
         FROM pedidos
         WHERE strftime('%Y-%m', dataHora) = strftime('%Y-%m', 'now', 'localtime')
+      `);
+      const creditToday = await get(db, `
+        SELECT COUNT(*) AS lancamentos, IFNULL(SUM(valor), 0) AS total
+        FROM clientes_fiados
+        WHERE date(dataHora) = date('now', 'localtime')
+      `);
+      const creditMonth = await get(db, `
+        SELECT COUNT(*) AS lancamentos, IFNULL(SUM(valor), 0) AS total
+        FROM clientes_fiados
+        WHERE strftime('%Y-%m', dataHora) = strftime('%Y-%m', 'now', 'localtime')
+      `);
+      const creditOpen = await get(db, `
+        SELECT COUNT(*) AS clientes, IFNULL(SUM(valor), 0) AS total
+        FROM clientes_fiados
+        WHERE status = 'aberto'
+      `);
+      const credits = await all(db, `
+        SELECT id, nome, valor, observacao, status, dataHora, pago_em
+        FROM clientes_fiados
+        ORDER BY CASE WHEN status = 'aberto' THEN 0 ELSE 1 END, datetime(dataHora) DESC, id DESC
+        LIMIT 200
       `);
       const topSite = await get(db, `
         SELECT json_extract(endereco, '$.sitio') AS sitio,
@@ -258,8 +319,29 @@ async function createDatabase(dbPath) {
       `);
 
       return {
-        today: { orders: Number(today.pedidos || 0), total: Number(today.total || 0) },
-        month: { orders: Number(month.pedidos || 0), total: Number(month.total || 0) },
+        today: {
+          orders: Number(today.pedidos || 0),
+          creditSales: Number(creditToday.lancamentos || 0),
+          total: Number(today.total || 0) + Number(creditToday.total || 0)
+        },
+        month: {
+          orders: Number(month.pedidos || 0),
+          creditSales: Number(creditMonth.lancamentos || 0),
+          total: Number(month.total || 0) + Number(creditMonth.total || 0)
+        },
+        credit: {
+          openCount: Number(creditOpen.clientes || 0),
+          openTotal: Number(creditOpen.total || 0),
+          entries: credits.map(entry => ({
+            id: entry.id,
+            name: entry.nome,
+            value: Number(entry.valor || 0),
+            observation: entry.observacao || '',
+            status: entry.status,
+            dateTime: entry.dataHora,
+            paidAt: entry.pago_em || ''
+          }))
+        },
         topSite: topSite ? {
           name: topSite.sitio,
           orders: Number(topSite.pedidos || 0),

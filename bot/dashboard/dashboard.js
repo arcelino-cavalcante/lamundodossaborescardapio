@@ -11,6 +11,18 @@ const formatDateTime = value => {
   const date = new Date(String(value).replace(' ', 'T'));
   return Number.isNaN(date.getTime()) ? value : date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 };
+const formatFullDateTime = value => {
+  if (!value) return '—';
+  const date = new Date(String(value).replace(' ', 'T'));
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString('pt-BR', {
+    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
+};
+const movementLabel = stats => {
+  const orders = plural(stats.orders, 'pedido', 'pedidos');
+  const credits = Number(stats.creditSales || 0);
+  return credits ? `${orders} + ${plural(credits, 'fiado', 'fiados')}` : orders;
+};
 
 function toast(message) {
   const element = byId('toast');
@@ -86,6 +98,130 @@ function renderOrders(orders) {
     actionsCell.append(actions);
     row.append(actionsCell);
     body.append(row);
+  }
+}
+
+function renderCredits(credit) {
+  const entries = credit?.entries || [];
+  const body = byId('creditsBody');
+  body.replaceChildren();
+  byId('emptyCredits').hidden = entries.length > 0;
+
+  for (const entry of entries) {
+    const row = document.createElement('tr');
+    if (entry.status === 'pago') row.className = 'credit-paid';
+    const values = [formatFullDateTime(entry.dateTime), entry.name, entry.observation || '—'];
+    for (const value of values) {
+      const cell = document.createElement('td');
+      cell.textContent = value;
+      row.append(cell);
+    }
+
+    const statusCell = document.createElement('td');
+    const status = document.createElement('span');
+    status.className = `credit-status ${entry.status === 'pago' ? 'paid' : 'open'}`;
+    status.textContent = entry.status === 'pago' ? 'Pago' : 'Em aberto';
+    statusCell.append(status);
+    row.append(statusCell);
+
+    const valueCell = document.createElement('td');
+    valueCell.className = 'money-column';
+    valueCell.textContent = money.format(entry.value);
+    row.append(valueCell);
+
+    const actionsCell = document.createElement('td');
+    actionsCell.className = 'actions-column';
+    const actions = document.createElement('div');
+    actions.className = 'row-actions';
+    const paidButton = document.createElement('button');
+    paidButton.className = 'button secondary';
+    paidButton.type = 'button';
+    paidButton.textContent = entry.status === 'pago' ? 'Reabrir' : 'Marcar pago';
+    paidButton.addEventListener('click', () => setCreditPaid(entry, entry.status !== 'pago', paidButton));
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'button danger';
+    deleteButton.type = 'button';
+    deleteButton.textContent = 'Excluir';
+    deleteButton.addEventListener('click', () => deleteCredit(entry, deleteButton));
+    actions.append(paidButton, deleteButton);
+    actionsCell.append(actions);
+    row.append(actionsCell);
+    body.append(row);
+  }
+}
+
+function localDateTimeNow() {
+  const date = new Date();
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
+function resetCreditForm() {
+  byId('creditForm').reset();
+  byId('creditDateTime').value = localDateTimeNow();
+}
+
+async function saveCredit(event) {
+  event.preventDefault();
+  const button = byId('saveCredit');
+  button.disabled = true;
+  setText('creditMessage', 'Salvando…');
+  try {
+    const response = await fetch('/api/credits', {
+      method: 'POST',
+      headers: actionHeaders,
+      body: JSON.stringify({
+        name: byId('creditName').value,
+        value: Number(byId('creditValue').value),
+        dateTime: byId('creditDateTime').value,
+        observation: byId('creditObservation').value
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Não foi possível cadastrar o fiado.');
+    resetCreditForm();
+    setText('creditMessage', 'Compra fiada cadastrada e incluída no total vendido.');
+    toast('Fiado cadastrado');
+    await loadDashboard({ quiet: true });
+  } catch (error) {
+    setText('creditMessage', error.message);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function setCreditPaid(entry, paid, button) {
+  const question = paid
+    ? `Confirmar que ${entry.name} pagou ${money.format(entry.value)}?`
+    : `Reabrir o fiado de ${entry.name} no valor de ${money.format(entry.value)}?`;
+  if (!confirm(question)) return;
+  button.disabled = true;
+  try {
+    const response = await fetch(`/api/credits/${entry.id}`, {
+      method: 'PUT', headers: actionHeaders, body: JSON.stringify({ paid })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Não foi possível alterar o fiado.');
+    toast(paid ? 'Fiado marcado como pago' : 'Fiado reaberto');
+    await loadDashboard({ quiet: true });
+  } catch (error) {
+    toast(error.message);
+    button.disabled = false;
+  }
+}
+
+async function deleteCredit(entry, button) {
+  if (!confirm(`Excluir o fiado de ${entry.name}, no valor de ${money.format(entry.value)}? O valor também sairá do total vendido.`)) return;
+  button.disabled = true;
+  try {
+    const response = await fetch(`/api/credits/${entry.id}`, { method: 'DELETE', headers: actionHeaders });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Não foi possível excluir o fiado.');
+    toast('Fiado excluído');
+    await loadDashboard({ quiet: true });
+  } catch (error) {
+    toast(error.message);
+    button.disabled = false;
   }
 }
 
@@ -302,9 +438,11 @@ async function loadDashboard({ quiet = false } = {}) {
     const data = await response.json();
     const stats = data.stats;
     setText('todayTotal', money.format(stats.today.total));
-    setText('todayOrders', plural(stats.today.orders, 'pedido', 'pedidos'));
+    setText('todayOrders', movementLabel(stats.today));
     setText('monthTotal', money.format(stats.month.total));
-    setText('monthOrders', plural(stats.month.orders, 'pedido', 'pedidos'));
+    setText('monthOrders', movementLabel(stats.month));
+    setText('creditOpenTotal', money.format(stats.credit?.openTotal || 0));
+    setText('creditOpenCount', plural(stats.credit?.openCount || 0, 'compra em aberto', 'compras em aberto'));
     setText('topSite', stats.topSite?.name || '—');
     setText(
       'topSiteDetails',
@@ -313,6 +451,7 @@ async function loadDashboard({ quiet = false } = {}) {
     renderPerson('week', stats.topCustomerWeek);
     renderPerson('month', stats.topCustomerMonth);
     renderOrders(stats.orders);
+    renderCredits(stats.credit);
     renderLogs(data.logs);
     renderStatus(data.bot);
     if (!footerDirty && document.activeElement !== byId('ticketFooter')) {
@@ -369,6 +508,7 @@ byId('ticketFooter').addEventListener('input', () => { footerDirty = true; updat
 byId('printSize').addEventListener('change', () => { footerDirty = true; });
 byId('saveFooter').addEventListener('click', saveFooter);
 byId('refreshButton').addEventListener('click', () => loadDashboard());
+byId('creditForm').addEventListener('submit', saveCredit);
 byId('orderForm').addEventListener('submit', saveOrder);
 byId('closeOrderDialog').addEventListener('click', closeOrderEditor);
 byId('cancelOrderEdit').addEventListener('click', closeOrderEditor);
@@ -399,5 +539,6 @@ byId('clearLogs').addEventListener('click', async () => {
   } catch (error) { toast(error.message); }
 });
 
+resetCreditForm();
 loadDashboard({ quiet: true });
 setInterval(() => loadDashboard({ quiet: true }), 10000);

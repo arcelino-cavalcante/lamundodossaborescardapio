@@ -97,6 +97,17 @@ function normalizeOrder(body) {
   };
 }
 
+function normalizeCreditSale(body) {
+  const value = validMoney(body.value, 'Valor fiado');
+  if (value <= 0) throw new Error('O valor fiado deve ser maior que zero.');
+  return {
+    name: limitedText(body.name, 120, 'Nome do cliente', { required: true }),
+    value,
+    observation: limitedText(body.observation, 300, 'Observação'),
+    dateTime: validDateTime(body.dateTime)
+  };
+}
+
 async function startDashboard({ database, controller, config }) {
   const publicDirectory = path.resolve(__dirname, '..', 'dashboard');
   const server = http.createServer(async (req, res) => {
@@ -163,6 +174,35 @@ async function startDashboard({ database, controller, config }) {
         const deleted = await database.deleteOrder(orderId);
         if (!deleted) return json(res, 404, { error: 'Pedido não encontrado.' });
         return json(res, 200, { ok: true, message: 'Pedido excluído.' });
+      }
+
+      if (req.method === 'POST' && url.pathname === '/api/credits') {
+        if (!actionAllowed(req)) return json(res, 403, { error: 'Ação não autorizada.' });
+        let entry;
+        try {
+          entry = normalizeCreditSale(await readJson(req));
+        } catch (error) {
+          return json(res, 400, { error: error.message || 'Dados do fiado inválidos.' });
+        }
+        const saved = await database.saveCreditSale(entry);
+        return json(res, 201, { ok: true, id: saved.id, message: 'Compra fiada cadastrada.' });
+      }
+
+      const creditRoute = url.pathname.match(/^\/api\/credits\/(\d+)$/);
+      if (creditRoute && req.method === 'PUT') {
+        if (!actionAllowed(req)) return json(res, 403, { error: 'Ação não autorizada.' });
+        const body = await readJson(req);
+        if (typeof body.paid !== 'boolean') return json(res, 400, { error: 'Situação do pagamento inválida.' });
+        const updated = await database.setCreditPaid(Number.parseInt(creditRoute[1], 10), body.paid);
+        if (!updated) return json(res, 404, { error: 'Lançamento fiado não encontrado.' });
+        return json(res, 200, { ok: true, message: body.paid ? 'Fiado marcado como pago.' : 'Fiado reaberto.' });
+      }
+
+      if (creditRoute && req.method === 'DELETE') {
+        if (!actionAllowed(req)) return json(res, 403, { error: 'Ação não autorizada.' });
+        const deleted = await database.deleteCreditSale(Number.parseInt(creditRoute[1], 10));
+        if (!deleted) return json(res, 404, { error: 'Lançamento fiado não encontrado.' });
+        return json(res, 200, { ok: true, message: 'Lançamento fiado excluído.' });
       }
 
       if (req.method === 'POST' && url.pathname === '/api/bot/restart') {
