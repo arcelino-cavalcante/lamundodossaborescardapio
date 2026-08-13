@@ -114,6 +114,7 @@ function ticketBuffer(order, config, date) {
     write(title, { size: profile.emphasisCommand, width: profile.emphasisWidth, bold: true, align: 1 });
   };
 
+  write('SÓ VITÓRIA', { size: 0x11, width: Math.floor(Number(config.printerCharsPerLine || 40) / 2), bold: true, align: 1 });
   write(config.storeName, { size: 0x11, width: Math.floor(Number(config.printerCharsPerLine || 40) / 2), bold: true, align: 1 });
   write('COMPROVANTE DO PEDIDO', { size: 0x10, width: Number(config.printerCharsPerLine || 40), bold: true, align: 1 });
   line('='.repeat(profile.bodyWidth));

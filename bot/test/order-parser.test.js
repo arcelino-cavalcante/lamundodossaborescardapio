@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const iconv = require('iconv-lite');
 const { isOrderMessage, parseMoneyBR, parseOrder, validateOrder } = require('../src/order-parser');
 const { confirmationMessage, ticketLines } = require('../src/ticket');
 const { printProfile, ticketBuffer, wrapText } = require('../src/printer');
@@ -150,6 +151,7 @@ test('gera confirmação e impressão com os campos novos', () => {
   assert.equal(buffer.includes(Buffer.from([0x1b, 0x45, 0x01])), true);
   assert.equal(buffer.includes(Buffer.from([0x1d, 0x21, 0x10])), true);
   assert.equal(buffer.includes(Buffer.from([0x1d, 0x56, 0x00])), true);
+  assert.equal(iconv.decode(buffer, 'cp860').includes('SÓ VITÓRIA'), true);
   assert.equal(buffer.includes(Buffer.from('Obrigado!')), true);
 });
 
