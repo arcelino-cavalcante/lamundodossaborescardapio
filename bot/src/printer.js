@@ -17,44 +17,106 @@ function encodedText(value = '') {
   return iconv.encode(String(value), 'cp860');
 }
 
+function normalizePrintSize(value) {
+  const size = Number.parseInt(value, 10);
+  return [1, 2, 3].includes(size) ? size : 1;
+}
+
+function wrapText(value, width) {
+  const safeWidth = Math.max(4, Number(width) || 40);
+  const paragraphs = String(value ?? '').replace(/\r/g, '').split('\n');
+  const lines = [];
+
+  for (const paragraph of paragraphs) {
+    const words = paragraph.trim().split(/\s+/).filter(Boolean);
+    if (!words.length) {
+      lines.push('');
+      continue;
+    }
+
+    let current = '';
+    for (let word of words) {
+      while (word.length > safeWidth) {
+        if (current) {
+          lines.push(current);
+          current = '';
+        }
+        lines.push(word.slice(0, safeWidth));
+        word = word.slice(safeWidth);
+      }
+
+      if (!word) continue;
+      if (!current) {
+        current = word;
+      } else if (`${current} ${word}`.length <= safeWidth) {
+        current += ` ${word}`;
+      } else {
+        lines.push(current);
+        current = word;
+      }
+    }
+    if (current) lines.push(current);
+  }
+
+  return lines.length ? lines : [''];
+}
+
+function printProfile(value, charsPerLine = 40) {
+  const printSize = normalizePrintSize(value);
+  const baseWidth = Math.max(20, Number(charsPerLine) || 40);
+  if (printSize === 2) {
+    return { printSize, bodyCommand: 0x10, emphasisCommand: 0x11, bodyWidth: baseWidth, emphasisWidth: Math.floor(baseWidth / 2) };
+  }
+  if (printSize === 3) {
+    return { printSize, bodyCommand: 0x11, emphasisCommand: 0x11, bodyWidth: Math.floor(baseWidth / 2), emphasisWidth: Math.floor(baseWidth / 2) };
+  }
+  return { printSize, bodyCommand: 0x00, emphasisCommand: 0x10, bodyWidth: baseWidth, emphasisWidth: baseWidth };
+}
+
 function ticketBuffer(order, config, date) {
-  const width = Number(config.printerCharsPerLine || 40);
-  const separator = '-'.repeat(width);
+  const profile = printProfile(config.printSize, config.printerCharsPerLine);
+  const separator = '-'.repeat(profile.bodyWidth);
   const address = order.address || {};
   const chunks = [
     command(ESC, 0x40),
     command(ESC, 0x74, 0x03),
     command(ESC, 0x61, 0x01),
     command(ESC, 0x45, 0x01),
-    command(GS, 0x21, 0x11),
-    encodedLine(config.storeName),
-    command(GS, 0x21, 0x10),
-    encodedLine('COMPROVANTE DO PEDIDO'),
-    command(GS, 0x21, 0x00),
-    command(ESC, 0x61, 0x00)
+    command(GS, 0x21, 0x11)
   ];
 
-  const line = value => chunks.push(encodedLine(value));
+  const write = (value, { size = profile.bodyCommand, width = profile.bodyWidth, bold = false, align = 0 } = {}) => {
+    chunks.push(command(ESC, 0x61, align), command(GS, 0x21, size), command(ESC, 0x45, bold ? 0x01 : 0x00));
+    wrapText(value, width).forEach(textLine => chunks.push(encodedLine(textLine)));
+  };
+  const line = value => write(value);
   const boldLine = (label, value, large = false) => {
-    if (large) chunks.push(command(GS, 0x21, 0x10));
-    chunks.push(command(ESC, 0x45, 0x01), encodedText(`${label}: `));
-    chunks.push(command(ESC, 0x45, 0x00), encodedLine(value));
-    if (large) chunks.push(command(GS, 0x21, 0x00));
+    const size = large ? profile.emphasisCommand : profile.bodyCommand;
+    const width = large ? profile.emphasisWidth : profile.bodyWidth;
+    const prefix = `${label}: `;
+    const text = String(value ?? '');
+
+    chunks.push(command(ESC, 0x61, 0), command(GS, 0x21, size));
+    if (prefix.length >= width - 3) {
+      chunks.push(command(ESC, 0x45, 0x01), encodedLine(prefix.trimEnd()), command(ESC, 0x45, 0x00));
+      wrapText(text, width).forEach(textLine => chunks.push(encodedLine(textLine)));
+      return;
+    }
+
+    const firstWidth = width - prefix.length;
+    const words = wrapText(text, firstWidth);
+    chunks.push(command(ESC, 0x45, 0x01), encodedText(prefix), command(ESC, 0x45, 0x00), encodedLine(words.shift() || ''));
+    const continuation = words.join(' ');
+    if (continuation) wrapText(continuation, width).forEach(textLine => chunks.push(encodedLine(textLine)));
   };
   const section = title => {
     line(separator);
-    chunks.push(
-      command(ESC, 0x61, 0x01),
-      command(ESC, 0x45, 0x01),
-      command(GS, 0x21, 0x10),
-      encodedLine(title),
-      command(GS, 0x21, 0x00),
-      command(ESC, 0x45, 0x00),
-      command(ESC, 0x61, 0x00)
-    );
+    write(title, { size: profile.emphasisCommand, width: profile.emphasisWidth, bold: true, align: 1 });
   };
 
-  line('='.repeat(width));
+  write(config.storeName, { size: 0x11, width: Math.floor(Number(config.printerCharsPerLine || 40) / 2), bold: true, align: 1 });
+  write('COMPROVANTE DO PEDIDO', { size: 0x10, width: Number(config.printerCharsPerLine || 40), bold: true, align: 1 });
+  line('='.repeat(profile.bodyWidth));
   boldLine('CLIENTE', order.name || 'Não informado', true);
   boldLine('WHATSAPP', order.customerWhatsapp || 'Não informado');
   boldLine('DATA', date || '');
@@ -67,13 +129,11 @@ function ticketBuffer(order, config, date) {
   section('ITENS DO PEDIDO');
   (order.items || []).forEach((item, index) => {
     const category = item.category ? ` [${String(item.category).toUpperCase()}]` : '';
-    chunks.push(
-      command(ESC, 0x45, 0x01),
-      command(GS, 0x21, 0x10),
-      encodedLine(`${index + 1}. ${item.quantity}x ${String(item.name || '').toUpperCase()}${category}`),
-      command(GS, 0x21, 0x00),
-      command(ESC, 0x45, 0x00)
-    );
+    write(`${index + 1}. ${item.quantity}x ${String(item.name || '').toUpperCase()}${category}`, {
+      size: profile.emphasisCommand,
+      width: profile.emphasisWidth,
+      bold: true
+    });
     boldLine('TOTAL DO ITEM', money(item.total));
     if (item.border) boldLine('BORDA', item.border);
     if (item.details) boldLine('DETALHES', item.details);
@@ -91,18 +151,19 @@ function ticketBuffer(order, config, date) {
     boldLine('VALOR RECEBIDO', money(order.paidAmount));
     boldLine('TROCO', money(order.change), true);
   }
-  line('='.repeat(width));
+  line('='.repeat(profile.bodyWidth));
 
   const footer = String(config.ticketFooter || '').trim();
-  chunks.push(command(ESC, 0x61, 0x01));
   if (footer) {
-    chunks.push(
-      command(ESC, 0x45, 0x01),
-      encodedLine(footer),
-      command(ESC, 0x45, 0x00)
-    );
+    write(footer, { size: profile.bodyCommand, width: profile.bodyWidth, bold: true, align: 1 });
   }
-  chunks.push(command(ESC, 0x64, 0x03), command(GS, 0x56, 0x00));
+  chunks.push(
+    command(ESC, 0x45, 0x00),
+    command(GS, 0x21, 0x00),
+    command(ESC, 0x61, 0x00),
+    command(ESC, 0x64, 0x05),
+    command(GS, 0x56, 0x00)
+  );
   return Buffer.concat(chunks);
 }
 
@@ -124,7 +185,8 @@ function createPrinter(config) {
       const date = formatDatePtBr(new Date(), config.timezone);
       const printConfig = {
         ...config,
-        ticketFooter: Object.hasOwn(options, 'ticketFooter') ? options.ticketFooter : config.ticketFooter
+        ticketFooter: Object.hasOwn(options, 'ticketFooter') ? options.ticketFooter : config.ticketFooter,
+        printSize: Object.hasOwn(options, 'printSize') ? options.printSize : config.printSize
       };
       const payload = ticketBuffer(order, printConfig, date);
 
@@ -154,4 +216,4 @@ function createPrinter(config) {
   };
 }
 
-module.exports = { createPrinter, ticketBuffer };
+module.exports = { createPrinter, normalizePrintSize, printProfile, ticketBuffer, wrapText };

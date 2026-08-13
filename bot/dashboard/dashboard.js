@@ -110,6 +110,7 @@ async function loadDashboard({ quiet = false } = {}) {
     renderStatus(data.bot);
     if (!footerDirty && document.activeElement !== byId('ticketFooter')) {
       byId('ticketFooter').value = data.footer || '';
+      byId('printSize').value = String(data.printSize || 1);
       updateFooterCount();
     }
     setText('lastUpdate', `Atualizado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`);
@@ -128,16 +129,19 @@ async function saveFooter() {
   const button = byId('saveFooter');
   button.disabled = true;
   try {
-    const response = await fetch('/api/settings/footer', {
+    const response = await fetch('/api/settings/printing', {
       method: 'PUT',
       headers: actionHeaders,
-      body: JSON.stringify({ footer: byId('ticketFooter').value })
+      body: JSON.stringify({
+        footer: byId('ticketFooter').value,
+        printSize: Number(byId('printSize').value)
+      })
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Não foi possível salvar.');
     footerDirty = false;
-    setText('footerMessage', 'Frase salva para as próximas comandas.');
-    toast('Frase salva');
+    setText('footerMessage', 'Tamanho e frase salvos para as próximas comandas.');
+    toast('Impressão configurada');
   } catch (error) {
     setText('footerMessage', error.message);
   } finally {
@@ -155,6 +159,7 @@ async function action(url, method, successMessage) {
 }
 
 byId('ticketFooter').addEventListener('input', () => { footerDirty = true; updateFooterCount(); });
+byId('printSize').addEventListener('change', () => { footerDirty = true; });
 byId('saveFooter').addEventListener('click', saveFooter);
 byId('refreshButton').addEventListener('click', () => loadDashboard());
 byId('restartBot').addEventListener('click', async () => {

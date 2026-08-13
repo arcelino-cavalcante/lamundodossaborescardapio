@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { isOrderMessage, parseMoneyBR, parseOrder, validateOrder } = require('../src/order-parser');
 const { confirmationMessage, ticketLines } = require('../src/ticket');
-const { ticketBuffer } = require('../src/printer');
+const { printProfile, ticketBuffer, wrapText } = require('../src/printer');
 
 const CASH_ORDER = `*Olá, gostaria de fazer o seguinte pedido:*
 
@@ -151,4 +151,27 @@ test('gera confirmação e impressão com os campos novos', () => {
   assert.equal(buffer.includes(Buffer.from([0x1d, 0x21, 0x10])), true);
   assert.equal(buffer.includes(Buffer.from([0x1d, 0x56, 0x00])), true);
   assert.equal(buffer.includes(Buffer.from('Obrigado!')), true);
+});
+
+test('configura três tamanhos e quebra a frase final sem cortar palavras', () => {
+  assert.deepEqual(wrapText('O Senhor é meu pastor e nada me faltará', 15), [
+    'O Senhor é meu',
+    'pastor e nada',
+    'me faltará'
+  ]);
+  assert.equal(printProfile(1, 40).bodyWidth, 40);
+  assert.equal(printProfile(2, 40).bodyCommand, 0x10);
+  assert.equal(printProfile(3, 40).bodyWidth, 20);
+
+  const buffer = ticketBuffer(parseOrder(PIX_ORDER), {
+    printerCharsPerLine: 40,
+    printSize: 3,
+    storeName: 'LA MUNDO DOS SABORES',
+    ticketFooter: 'Obrigado por escolher a La Mundo dos Sabores. Deus abençoe sua família!'
+  }, '13/08/2026 às 18:00');
+
+  assert.equal(buffer.includes(Buffer.from([0x1d, 0x21, 0x11])), true);
+  assert.equal(buffer.includes(Buffer.from([0x1b, 0x64, 0x05])), true);
+  assert.equal(buffer.includes(Buffer.from('Obrigado por')), true);
+  assert.equal(buffer.includes(Buffer.from('dos Sabores. Deus')), true);
 });

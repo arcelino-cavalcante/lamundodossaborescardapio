@@ -39,6 +39,7 @@ module.exports = {
   printerPort: Number(process.env.PRINTER_PORT || 9100),
   printEnabled: booleanValue(process.env.PRINT_ENABLED, true),
   printerCharsPerLine: Number(process.env.PRINTER_CHARS_PER_LINE || 40),
+  printSize: Number(process.env.PRINT_SIZE || 1),
   adminNumbers: new Set(
     (process.env.ADMIN_NUMBERS || '')
       .split(',')

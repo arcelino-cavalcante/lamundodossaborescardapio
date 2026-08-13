@@ -71,13 +71,20 @@
       <aside class="side-column">
         <article class="panel">
           <p class="eyebrow">IMPRESSÃO</p>
-          <h2>Frase no final da comanda</h2>
-          <p class="helper">Esta frase será usada nas próximas impressões. Deixe vazio para não imprimir frase.</p>
+          <h2>Texto e frase da comanda</h2>
+          <p class="helper">Escolha o tamanho das letras. A frase será quebrada em linhas automaticamente para não sair cortada.</p>
+          <label for="printSize" class="field-label">Tamanho das letras</label>
+          <select id="printSize">
+            <option value="1">Tamanho 1 — padrão atual</option>
+            <option value="2">Tamanho 2 — letras maiores</option>
+            <option value="3">Tamanho 3 — letras bem maiores</option>
+          </select>
+          <label for="ticketFooter" class="field-label">Frase ou versículo no final</label>
           <label for="ticketFooter" class="sr-only">Frase da comanda</label>
           <textarea id="ticketFooter" maxlength="180" rows="4" placeholder="Ex.: Obrigado pela preferência!"></textarea>
           <div class="form-footer">
             <span id="footerCount">0/180</span>
-            <button id="saveFooter" class="button primary" type="button">Salvar frase</button>
+            <button id="saveFooter" class="button primary" type="button">Salvar impressão</button>
           </div>
           <p id="footerMessage" class="message" role="status"></p>
         </article>

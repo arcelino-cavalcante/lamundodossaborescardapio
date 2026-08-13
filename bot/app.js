@@ -257,8 +257,11 @@ async function main() {
 
         let printResult;
         try {
-          const ticketFooter = await database.getSetting('ticket_footer', config.ticketFooter);
-          printResult = await printer.print(session.order, { ticketFooter });
+          const [ticketFooter, printSize] = await Promise.all([
+            database.getSetting('ticket_footer', config.ticketFooter),
+            database.getSetting('print_size', config.printSize || 1)
+          ]);
+          printResult = await printer.print(session.order, { ticketFooter, printSize });
         } catch (error) {
           console.error('[IMPRESSORA]', error.message || error);
           printResult = { printed: false, reason: 'error' };

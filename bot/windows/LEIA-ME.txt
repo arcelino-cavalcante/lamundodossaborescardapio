@@ -29,6 +29,12 @@ ATALHOS NO MENU INICIAR
 - Configurar Robozinho: permite alterar IP da impressora e outras opcoes.
 - Diagnostico: verifica internet, cardapio, painel e impressora sem imprimir.
 
+TAMANHO DA COMANDA
+
+No painel, em "Texto e frase da comanda", escolha Tamanho 1, 2 ou 3 e clique
+em "Salvar impressao". A escolha vale para as proximas comandas. A frase ou
+versiculo e quebrado em varias linhas para nao sair cortado no fim do papel.
+
 REINSTALACAO E ATUALIZACAO
 
 Pode executar o INSTALAR.bat novamente. O instalador atualiza o programa e

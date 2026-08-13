@@ -40,7 +40,7 @@ O bot não pergunta novamente a forma de pagamento:
 
 ### Windows — pacote automático
 
-O arquivo `releases/robozinho-la-mundo-windows.zip` contém um instalador para Windows. Depois de extrair o ZIP, execute `INSTALAR.bat`. Ele baixa um Node.js portátil, instala as dependências, encontra Chrome ou Edge, cria a configuração inicial e adiciona os atalhos do Robozinho na Área de Trabalho e no Menu Iniciar.
+O arquivo `releases/robozinho-la-mundo-windows-v3.zip` é o pacote mais recente do instalador para Windows. Depois de extrair o ZIP, execute `INSTALAR.bat`. Ele baixa um Node.js portátil, instala as dependências, encontra Chrome ou Edge, cria a configuração inicial e adiciona os atalhos do Robozinho na Área de Trabalho e no Menu Iniciar.
 
 O instalador pode ser executado novamente para atualizar o bot sem apagar a sessão do WhatsApp, as configurações ou o banco de pedidos. Quando encontra o bot aberto, ele reinicia automaticamente o processo de atendimento para carregar o código novo. O pacote nunca inclui `.env`, sessão autenticada, cache, banco de dados ou token do GitHub.
 
@@ -101,6 +101,14 @@ O painel fica disponível somente no computador do bot e mostra:
 - erros recentes registrados pelo supervisor.
 
 A frase salva em **Frase no final da comanda** entra nas próximas impressões. Ela fica armazenada no SQLite e pode ser alterada sem reiniciar o bot.
+
+Em **Texto e frase da comanda**, o painel também permite escolher:
+
+- **Tamanho 1:** padrão atual;
+- **Tamanho 2:** letras maiores, mantendo boa quantidade de texto por linha;
+- **Tamanho 3:** letras bem maiores para facilitar a leitura na cozinha.
+
+A frase ou versículo final é quebrado automaticamente em quantas linhas forem necessárias. A impressora avança papel adicional antes do corte para não cortar a última linha.
 
 Em **WhatsApp e bot** há duas ações:
 

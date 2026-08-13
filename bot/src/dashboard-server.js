@@ -40,14 +40,16 @@ async function startDashboard({ database, controller, config }) {
       const url = new URL(req.url, `http://${config.dashboardHost}:${config.dashboardPort}`);
 
       if (req.method === 'GET' && url.pathname === '/api/dashboard') {
-        const [stats, footer, logs] = await Promise.all([
+        const [stats, footer, printSize, logs] = await Promise.all([
           database.dashboardStats(),
           database.getSetting('ticket_footer', config.ticketFooter),
+          database.getSetting('print_size', config.printSize || 1),
           database.listLogs(100)
         ]);
         return json(res, 200, {
           stats,
           footer,
+          printSize: Number(printSize) || 1,
           logs,
           bot: controller.status()
         });
@@ -60,6 +62,20 @@ async function startDashboard({ database, controller, config }) {
         if (footer.length > 180) return json(res, 400, { error: 'A frase deve ter no máximo 180 caracteres.' });
         await database.setSetting('ticket_footer', footer);
         return json(res, 200, { ok: true, footer });
+      }
+
+      if (req.method === 'PUT' && url.pathname === '/api/settings/printing') {
+        if (!actionAllowed(req)) return json(res, 403, { error: 'Ação não autorizada.' });
+        const body = await readJson(req);
+        const footer = String(body.footer ?? '').trim();
+        const printSize = Number.parseInt(body.printSize, 10);
+        if (footer.length > 180) return json(res, 400, { error: 'A frase deve ter no máximo 180 caracteres.' });
+        if (![1, 2, 3].includes(printSize)) return json(res, 400, { error: 'Selecione um tamanho de impressão válido.' });
+        await Promise.all([
+          database.setSetting('ticket_footer', footer),
+          database.setSetting('print_size', printSize)
+        ]);
+        return json(res, 200, { ok: true, footer, printSize });
       }
 
       if (req.method === 'POST' && url.pathname === '/api/bot/restart') {
