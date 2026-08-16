@@ -1520,6 +1520,17 @@
       "available": true,
       "optionGroupId": null,
       "price": 30
+    },
+    {
+      "id": "prod-msw3xfconr6k",
+      "name": "4 hamburguer",
+      "description": "4, hamburguer",
+      "categoryId": "hamburgueres",
+      "imageUrl": "https://lamundodossabores.com.br/images/products/4-hamburguer-prod-msw3xfconr6k-1786903031544.jpg",
+      "available": true,
+      "optionGroupId": null,
+      "price": 32,
+      "offerPrice": 25
     }
   ],
   "fees": {
