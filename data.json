@@ -526,7 +526,7 @@
       "prices": {
         "p": 25,
         "m": 30,
-        "g": 36
+        "g": 37
       }
     },
     {
@@ -619,18 +619,6 @@
       "id": "prod-043",
       "name": "Formigueiro em Chocolate Branco",
       "description": "Creme de leite, chocolate branco, brigadeiro",
-      "categoryId": "pizzas",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "prices": {
-        "g": 45
-      }
-    },
-    {
-      "id": "prod-044",
-      "name": "Pizza Sorvete",
-      "description": "Creme de leite, chocolate, sorvete",
       "categoryId": "pizzas",
       "imageUrl": "",
       "available": true,
@@ -1520,17 +1508,6 @@
       "available": true,
       "optionGroupId": null,
       "price": 30
-    },
-    {
-      "id": "prod-msw3xfconr6k",
-      "name": "4 hamburguer",
-      "description": "4, hamburguer",
-      "categoryId": "hamburgueres",
-      "imageUrl": "https://lamundodossabores.com.br/images/products/4-hamburguer-prod-msw3xfconr6k-1786903031544.jpg",
-      "available": true,
-      "optionGroupId": null,
-      "price": 32,
-      "offerPrice": 25
     }
   ],
   "fees": {
