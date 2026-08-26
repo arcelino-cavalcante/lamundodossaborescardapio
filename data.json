@@ -985,7 +985,7 @@
       "description": "6 Carnes, 6 Ovos, Presunto, Calabresa, Queijo, Salada, Batata frita, cheddar e molho especial",
       "categoryId": "hamburgueres",
       "imageUrl": "https://lamundodossabores.com.br/images/products/mega-hamburgao-prod-079-1787240589617.jpg",
-      "available": false,
+      "available": true,
       "optionGroupId": null,
       "price": 65
     },
