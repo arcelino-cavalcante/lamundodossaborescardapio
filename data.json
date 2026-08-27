@@ -1508,6 +1508,17 @@
       "available": true,
       "optionGroupId": null,
       "price": 30
+    },
+    {
+      "id": "prod-mtbv77uyioye",
+      "name": "4 hamburguer",
+      "description": "4 hamburguer",
+      "categoryId": "hamburgueres",
+      "imageUrl": "https://lamundodossabores.com.br/images/products/4-hamburguer-prod-mtbv77uyioye-1787855830666.jpg",
+      "available": true,
+      "optionGroupId": null,
+      "price": 32,
+      "offerPrice": 25
     }
   ],
   "fees": {
