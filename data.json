@@ -1336,7 +1336,7 @@
       "description": "Brigadeiro, leite condensado, leite em pó, granola, frutas (banana ou morango)",
       "categoryId": "acai",
       "imageUrl": "",
-      "available": false,
+      "available": true,
       "optionGroupId": null,
       "price": 23
     },
