@@ -975,7 +975,7 @@
       "description": "3 Carnes, 3 Ovos, Presunto, Calabresa, Queijo, Salada, Batata frita, cheddar e molho especial",
       "categoryId": "hamburgueres",
       "imageUrl": "https://lamundodossabores.com.br/images/products/hamburgao-irado-prod-078-1786220154583.jpg",
-      "available": true,
+      "available": false,
       "optionGroupId": null,
       "price": 36,
       "offerPrice": 30
