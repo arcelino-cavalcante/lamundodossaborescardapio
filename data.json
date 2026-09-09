@@ -987,7 +987,8 @@
       "imageUrl": "https://lamundodossabores.com.br/images/products/mega-hamburgao-prod-079-1787240589617.jpg",
       "available": true,
       "optionGroupId": null,
-      "price": 65
+      "price": 65,
+      "offerPrice": 55
     },
     {
       "id": "prod-080",
