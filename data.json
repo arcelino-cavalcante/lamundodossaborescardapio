@@ -506,13 +506,13 @@
       "name": "Romeu e Julieta",
       "description": "Queijo mussarela, goiabada",
       "categoryId": "pizzas",
-      "imageUrl": "",
+      "imageUrl": "https://lamundodossabores.com.br/images/products/romeu-e-julieta-prod-034-1789736325536.jpg",
       "available": true,
       "optionGroupId": null,
       "prices": {
         "p": 25,
         "m": 30,
-        "g": 36
+        "g": 38
       }
     },
     {
