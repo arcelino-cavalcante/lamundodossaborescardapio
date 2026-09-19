@@ -157,7 +157,7 @@
       "description": "Molho de tomate, mussarela, charque, tomate, azeitona",
       "categoryId": "pizzas",
       "imageUrl": "",
-      "available": true,
+      "available": false,
       "optionGroupId": null,
       "prices": {
         "p": 26,
