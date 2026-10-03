@@ -999,16 +999,6 @@
       "price": 8
     },
     {
-      "id": "prod-091",
-      "name": "Charque + Cream Cheese",
-      "description": "Pastel de charque com cream cheese",
-      "categoryId": "pasteis",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "price": 10
-    },
-    {
       "id": "prod-092",
       "name": "Calabrês",
       "description": "Pastel de calabresa, queijo e molho de tomate",
