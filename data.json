@@ -432,20 +432,6 @@
       }
     },
     {
-      "id": "prod-029",
-      "name": "Vegetariana",
-      "description": "Molho de tomate, mussarela, palmito, azeitona, cebola, tomate",
-      "categoryId": "pizzas",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "prices": {
-        "p": 25,
-        "m": 30,
-        "g": 36
-      }
-    },
-    {
       "id": "prod-030",
       "name": "Vegetariana 3 Queijos",
       "description": "Molho de tomate, mussarela, catupiry, cheddar, parmesão",
@@ -577,54 +563,6 @@
       "optionGroupId": null,
       "prices": {
         "g": 38
-      }
-    },
-    {
-      "id": "prod-040",
-      "name": "Chocobom",
-      "description": "Creme de leite, chocolate, bombom",
-      "categoryId": "pizzas",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "prices": {
-        "g": 45
-      }
-    },
-    {
-      "id": "prod-041",
-      "name": "Óreo",
-      "description": "Creme de leite, chocolate branco, mini óreo",
-      "categoryId": "pizzas",
-      "imageUrl": "https://lamundodossabores.com.br/images/products/oreo-prod-041-1786248059919.jpg",
-      "available": true,
-      "optionGroupId": null,
-      "prices": {
-        "g": 45
-      }
-    },
-    {
-      "id": "prod-042",
-      "name": "Contemplação",
-      "description": "Creme de leite, chocolate, morango, banana, coco ralado, leite condensado",
-      "categoryId": "pizzas",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "prices": {
-        "g": 45
-      }
-    },
-    {
-      "id": "prod-043",
-      "name": "Formigueiro em Chocolate Branco",
-      "description": "Creme de leite, chocolate branco, brigadeiro",
-      "categoryId": "pizzas",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "prices": {
-        "g": 45
       }
     },
     {
@@ -870,16 +808,6 @@
       "price": 19
     },
     {
-      "id": "prod-068",
-      "name": "Salsichão Burger",
-      "description": "Carne artesanal, salsicha, ovo, salada, molhos da casa",
-      "categoryId": "hamburgueres",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "price": 14
-    },
-    {
       "id": "prod-069",
       "name": "Triplo do Cheff",
       "description": "3 carnes artesanais, bacon, ovo, salada, molhos da casa",
@@ -985,7 +913,7 @@
       "description": "6 Carnes, 6 Ovos, Presunto, Calabresa, Queijo, Salada, Batata frita, cheddar e molho especial",
       "categoryId": "hamburgueres",
       "imageUrl": "https://lamundodossabores.com.br/images/products/mega-hamburgao-prod-079-1787240589617.jpg",
-      "available": true,
+      "available": false,
       "optionGroupId": null,
       "price": 65
     },
