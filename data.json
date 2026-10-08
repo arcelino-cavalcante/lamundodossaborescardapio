@@ -875,7 +875,8 @@
       "imageUrl": "",
       "available": true,
       "optionGroupId": null,
-      "price": 16
+      "price": 16,
+      "offerPrice": 10
     },
     {
       "id": "prod-076",
