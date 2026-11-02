@@ -465,7 +465,7 @@
       "description": "Chocolate, coco ralado",
       "categoryId": "pizzas",
       "imageUrl": "",
-      "available": true,
+      "available": false,
       "optionGroupId": null,
       "prices": {
         "p": 25,
@@ -527,30 +527,6 @@
         "p": 25,
         "m": 30,
         "g": 36
-      }
-    },
-    {
-      "id": "prod-037",
-      "name": "Banana Nevada",
-      "description": "Creme de leite, banana, chocolate branco, canela, açúcar",
-      "categoryId": "pizzas",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "prices": {
-        "g": 50
-      }
-    },
-    {
-      "id": "prod-038",
-      "name": "Kit Kat",
-      "description": "Creme de leite, chocolate, kit kat",
-      "categoryId": "pizzas",
-      "imageUrl": "",
-      "available": true,
-      "optionGroupId": null,
-      "prices": {
-        "g": 45
       }
     },
     {
