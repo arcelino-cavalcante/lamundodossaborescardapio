@@ -507,7 +507,7 @@
       "description": "Chocolate, granulado",
       "categoryId": "pizzas",
       "imageUrl": "",
-      "available": true,
+      "available": false,
       "optionGroupId": null,
       "prices": {
         "p": 25,
