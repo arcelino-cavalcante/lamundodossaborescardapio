@@ -479,7 +479,7 @@
       "description": "Chocolate, morango, leite condensado",
       "categoryId": "pizzas",
       "imageUrl": "https://lamundodossabores.com.br/images/products/morango-prod-033-1786247425160.jpg",
-      "available": true,
+      "available": false,
       "optionGroupId": null,
       "prices": {
         "p": 25,
