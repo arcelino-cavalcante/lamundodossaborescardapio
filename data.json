@@ -535,7 +535,7 @@
       "description": "Creme de leite, chocolate, M&M",
       "categoryId": "pizzas",
       "imageUrl": "https://lamundodossabores.com.br/images/products/m-m-prod-039-1787240985695.jpg",
-      "available": true,
+      "available": false,
       "optionGroupId": null,
       "prices": {
         "g": 38
